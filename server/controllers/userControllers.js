@@ -70,8 +70,11 @@ export const getUser = async (req, res) => {
 
 //get all users
 export const getAllUsers = async (req, res) => {
+  const query = req.query.new;
   try {
-    const users = await User.find().select("-password");
+    const users = query
+      ? await User.find().sort({ _id: -1 }).limit(5)
+      : await User.find().select("-password");
     res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
