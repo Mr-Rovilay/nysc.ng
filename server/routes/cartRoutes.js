@@ -1,6 +1,7 @@
 import express from "express";
 import {
-  creatCart,
+  createCart,
+  deleteCart,
   getAllCart,
   getUserCart,
   updateCart,
@@ -12,7 +13,7 @@ import {
 import { validateCart } from "../middleware/validate.js";
 const router = express();
 
-router.post("/", verifyTokenAndAuthorization, validateCart, creatCart);
+router.post("/", verifyTokenAndAuthorization, validateCart, createCart);
 router.put("/:id", verifyTokenAndAuthorization, validateCart, updateCart);
 router.delete("/:id", verifyTokenAndAuthorization, deleteCart);
 router.get("/:userId", verifyTokenAndAuthorization, getUserCart);

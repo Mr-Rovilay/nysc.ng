@@ -1,4 +1,4 @@
-import Cart from "../models/cartModel";
+import Cart from "../models/cartModel.js";
 
 export const createCart = async (req, res) => {
   const newCart = req.body;
@@ -32,7 +32,7 @@ export const updateCart = async (req, res) => {
   }
 };
 
-export const deletedCart = async (req, res) => {
+export const deleteCart = async (req, res) => {
   try {
     const id = req.params.id;
     const cart = await Cart.findByIdAndDelete(id);
