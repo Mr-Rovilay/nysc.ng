@@ -19,10 +19,6 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    google_auth: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,
