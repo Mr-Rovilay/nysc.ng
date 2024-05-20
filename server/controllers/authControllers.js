@@ -14,17 +14,17 @@ const signUp = async (req, res) => {
 
     if (fullname.length < 3) {
       return res
-        .status(403)
+        .status(400)
         .json({ error: "Fullname must be at least 3 characters long" });
     }
     if (!email.length) {
-      return res.status(403).json({ error: "Enter email address" });
+      return res.status(400).json({ error: "Email address is required" });
     }
     if (!emailRegex.test(email)) {
-      return res.status(403).json({ error: "Invalid email address" });
+      return res.status(400).json({ error: "Invalid email address" });
     }
     if (!passwordRegex.test(password)) {
-      return res.status(403).json({
+      return res.status(400).json({
         error:
           "Password should be 6 to 20 characters long with numeric, 1 lowercase and 1 uppercase letter",
       });
@@ -44,7 +44,7 @@ const signUp = async (req, res) => {
     const savedUser = await user.save();
 
     const responseData = formatDataToSend(savedUser);
-    delete responseData.password;
+    //delete responseData.password;
 
     return res.status(201).json(responseData);
   } catch (err) {
@@ -53,22 +53,26 @@ const signUp = async (req, res) => {
 };
 
 // post
-
 const signIn = async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "description cant be empty" });
-  }
-
   try {
+    const { email, password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ message: "Password cant be empty" });
+    }
+    if (!email.length) {
+      return res.status(400).json({ error: "Email address is required" });
+    }
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email address" });
+    }
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(403).json({ error: "Email not found" });
+      return res.status(404).json({ error: "Email not found" });
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(403).json({ error: "Incorrect password" });
+      return res.status(400).json({ error: "Incorrect password" });
     }
 
     return res.status(200).json(formatDataToSend(user));
