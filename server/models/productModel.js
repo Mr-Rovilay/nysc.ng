@@ -18,6 +18,7 @@ const productSchema = mongoose.Schema(
     size: {
       type: String,
     },
+    stock: { type: Number, default: 0 },
     color: {
       type: String,
     },

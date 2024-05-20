@@ -13,12 +13,7 @@ import {
 const router = express.Router();
 
 router.put("/:id", verifyTokenAndAuthorization, updateUser);
-router.delete(
-  "/:id",
-  verifyTokenAndAdmin,
-  verifyTokenAndAuthorization,
-  deleteUser
-);
+router.delete("/:id", verifyTokenAndAuthorization, deleteUser);
 router.get("/:id", verifyTokenAndAuthorization, getUser);
 router.get("/", verifyTokenAndAdmin, getAllUsers);
 
