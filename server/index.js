@@ -6,7 +6,6 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import "dotenv/config";
 
-connectDB();
 const app = express();
 
 app.use(cors());
@@ -21,6 +20,8 @@ app.get("/", (req, res) => {
   res.send("OK...my message");
 });
 
-app.listen(process.env.PORT, () => {
-  console.log("Server listening on port " + process.env.PORT);
+connectDB().then(() => {
+  app.listen(process.env.PORT, () => {
+    console.log("Server listening on port " + process.env.PORT);
+  });
 });

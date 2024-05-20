@@ -66,13 +66,6 @@ const signIn = async (req, res) => {
     if (!user) {
       return res.status(403).json({ error: "Email not found" });
     }
-
-    if (user.google_auth) {
-      return res.status(403).json({
-        error: "Account was created using Google. Try logging in with Google.",
-      });
-    }
-
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(403).json({ error: "Incorrect password" });
