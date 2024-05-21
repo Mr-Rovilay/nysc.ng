@@ -18,6 +18,6 @@ router.post("/", verifyJWT, validateOrder, createOrder);
 router.put("/:id", verifyTokenAndAdmin, validateOrder, updateOrder);
 router.delete("/:id", verifyTokenAndAdmin, deleteOrder);
 router.get("/", verifyTokenAndAdmin, getAllOrders);
-router.get("/:userId", verifyTokenAndAuthorization, getUserOrders);
+router.get("/:userId", verifyJWT, getUserOrders);
 
 export default router;
