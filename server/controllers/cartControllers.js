@@ -23,7 +23,7 @@ export const updateCart = async (req, res) => {
     if (!updatedCart) {
       return res.status(404).json({ message: "Cart not found" });
     }
-    res.status(200).json(updatedCart);
+    res.status(201).json(updatedCart);
   } catch (error) {
     console.error("Error updating cart:", error);
     res

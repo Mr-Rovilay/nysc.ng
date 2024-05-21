@@ -44,7 +44,7 @@ export const getAllProduct = async (req, res) => {
   try {
     let product;
     if (New) {
-      product = await Product.find().sort({ createdAt: -1 }).limit(2);
+      product = await Product.find().sort({ createdAt: -1 }).limit(5);
     } else if (Category) {
       product = await Product.find({
         categories: {
@@ -76,7 +76,7 @@ export const updateProduct = async (req, res) => {
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
-    res.status(200).json(updatedProduct);
+    res.status(201).json(updatedProduct);
   } catch (error) {
     res
       .status(500)

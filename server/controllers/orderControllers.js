@@ -13,12 +13,13 @@ export const createOrder = async (req, res) => {
     });
 
     const order = await newOrder.save();
+    // Adjust stock for each product in the order
     for (let item of products) {
       const product = await Product.findById(item.productId);
       if (!product) {
         return res.status(404).send(`Product not found: ${item.productId}`);
       }
-
+      // Adjust stock based on the quantity of each product
       product.stock -= item.quantity;
       if (product.stock < 0) {
         return res
@@ -77,7 +78,7 @@ export const updateOrder = async (req, res) => {
     if (status) order.status = status;
 
     const updatedOrder = await order.save();
-    res.status(200).json(updatedOrder);
+    res.status(201).json(updatedOrder);
   } catch (error) {
     console.error("Error updating the order:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -92,7 +93,7 @@ export const deleteOrder = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-    res.status(200).json({ message: "Order deleted successfully" });
+    res.status(204).json();
   } catch (error) {
     console.error("Error deleting the order:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -111,5 +112,14 @@ export const getUserOrders = async (req, res) => {
   } catch (error) {
     console.error("Error fetching user orders:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json(err);
   }
 };
