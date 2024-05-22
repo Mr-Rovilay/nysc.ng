@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FiMenu } from "react-icons/fi";
 import { GrClose } from "react-icons/gr";
 import Button from "./Button";
+import { Link } from "react-router-dom";
 
 const CustomNavbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -31,9 +32,11 @@ const CustomNavbar = () => {
         }`}
       >
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold italic uppercase text-gray-700">
-            Space Travels.
-          </h1>
+          <Link to={"/"}>
+            <h1 className="text-2xl font-bold italic uppercase text-green-500">
+              NYSC.NG
+            </h1>
+          </Link>
         </div>
         <ul
           className={`md:flex gap-12 font-medium text-gray-700 [&>li]:cursor-pointer absolute md:static top-20 bg-white max-md:p-3 text-left ${
@@ -45,9 +48,11 @@ const CustomNavbar = () => {
           }`}
           style={{ left: 0 }}
         >
-          <li className="hover:text-blue-400 ml-2 mb-2 md:mb-0">
-            <a href="/">Home</a>
-          </li>
+          <Link to={"/"}>
+            <li className="hover:text-blue-400 ml-2 mb-2 md:mb-0">
+              <a href="/">Home</a>
+            </li>
+          </Link>
           <li className="hover:text-blue-400 ml-2 mb-2 md:mb-0">
             <a href="/">About</a>
           </li>
@@ -58,13 +63,21 @@ const CustomNavbar = () => {
             <a href="/">Testimonials</a>
           </li>
           <div className="md:hidden flex flex-col gap-2 mt-4">
-            <Button text="Sign In" variant="primary" />
-            <Button text="Sign Up" variant="secondary" />
+            <Link to={"/signin"}>
+              <Button text="Sign In" variant="primary" />
+            </Link>
+            <Link to={"/signup"}>
+              <Button text="Sign Up" variant="secondary" />
+            </Link>
           </div>
         </ul>
         <div className="hidden md:flex items-center gap-x-1">
-          <Button text="Sign In" variant="primary" />
-          <Button text="Sign Up" variant="secondary" />
+          <Link to={"/signin"}>
+            <Button text="Sign In" variant="primary" />
+          </Link>
+          <Link to={"/signup"}>
+            <Button text="Sign Up" variant="secondary" />
+          </Link>
         </div>
 
         {/* MOBILE MENU ICONS */}
