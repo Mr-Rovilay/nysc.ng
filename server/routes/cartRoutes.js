@@ -7,15 +7,17 @@ import {
   updateCart,
 } from "../controllers/cartControllers.js";
 import {
+  verifyJWT,
   verifyTokenAndAdmin,
   verifyTokenAndAuthorization,
 } from "../middleware/verifyJWT.js";
 import { validateCart } from "../middleware/validate.js";
 const router = express();
 
-router.post("/", verifyTokenAndAuthorization, validateCart, createCart);
-router.put("/:id", verifyTokenAndAuthorization, validateCart, updateCart);
-router.delete("/:id", verifyTokenAndAuthorization, deleteCart);
-router.get("/:userId", verifyTokenAndAuthorization, getUserCart);
+router.post("/:userId/add", verifyJWT, validateCart, createCart);
+router.put("/:userId", verifyTokenAndAuthorization, validateCart, updateCart);
+router.delete("/:id", deleteCart);
+router.get("/:id", verifyTokenAndAuthorization, getUserCart);
 router.get("/", verifyTokenAndAdmin, getAllCart);
+
 export default router;

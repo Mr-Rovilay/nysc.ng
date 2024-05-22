@@ -27,9 +27,6 @@ export const validateProduct = [
 
 export const validateCart = [
   check("userId").isMongoId().withMessage("User ID must be a valid Mongo ID"),
-  check("products")
-    .isArray({ min: 1 })
-    .withMessage("Products must be an array with at least one item"),
   check("products.*.productId")
     .isMongoId()
     .withMessage("Product ID must be a valid Mongo ID"),
