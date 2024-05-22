@@ -44,7 +44,6 @@ const signUp = async (req, res) => {
     const savedUser = await user.save();
 
     const responseData = formatDataToSend(savedUser);
-    delete responseData.password;
     return res.status(201).json(responseData);
   } catch (err) {
     return res.status(500).json({ error: err.message });
