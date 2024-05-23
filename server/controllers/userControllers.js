@@ -12,9 +12,6 @@ export const updateUser = async (req, res) => {
     if (!isValidOperation) {
       return res.status(400).json({ error: "Invalid updates!" });
     }
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
-    }
     const updatedUser = await User.findByIdAndUpdate(
       req.decoded.id,
       { $set: req.body },
