@@ -3,6 +3,7 @@ import { FiMenu } from "react-icons/fi";
 import { GrClose } from "react-icons/gr";
 import Button from "./Button";
 import { Link } from "react-router-dom";
+import { TiShoppingCart } from "react-icons/ti";
 
 const CustomNavbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -72,6 +73,9 @@ const CustomNavbar = () => {
           </div>
         </ul>
         <div className="hidden md:flex items-center gap-x-1">
+          <div className="">
+            <TiShoppingCart />
+          </div>
           <Link to={"/signin"}>
             <Button text="Sign In" variant="primary" />
           </Link>
@@ -81,7 +85,10 @@ const CustomNavbar = () => {
         </div>
 
         {/* MOBILE MENU ICONS */}
-        <div className="md:hidden">
+        <div className="md:hidden flex gap-6 justify-center items-center">
+          <div className="w-6">
+            <TiShoppingCart />
+          </div>
           <button
             className="text-gray-700"
             onClick={menuHandler}
