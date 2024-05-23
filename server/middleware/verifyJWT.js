@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers.token;
+  const authHeader = req.headers.authorization;
 
   if (!authHeader) {
     return res.status(401).send({ error: "Unauthorized" });

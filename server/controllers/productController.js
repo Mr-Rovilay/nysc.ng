@@ -50,24 +50,41 @@ export const getProduct = async (req, res) => {
 };
 
 export const getAllProduct = async (req, res) => {
-  const isNew = req.query.new;
+  const isNew = req.query.new === "true";
   const category = req.query.category;
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit) || 5;
 
   try {
-    let products;
+    let query = {};
+
     if (isNew) {
-      products = await Product.find().sort({ createdAt: -1 });
+      query = {};
     } else if (category) {
-      products = await Product.find({
+      query = {
         categories: {
           $in: [category],
         },
-      }).sort({ createdAt: -1 });
-    } else {
-      products = await Product.find();
+      };
     }
 
-    res.status(200).json(products);
+    const products = await Product.find(query)
+      .sort({ createdAt: isNew ? -1 : 1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const totalProducts = await Product.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    res.status(200).json({
+      products,
+      pagination: {
+        totalProducts,
+        totalPages,
+        currentPage: page,
+        perPage: limit,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

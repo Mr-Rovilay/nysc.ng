@@ -11,6 +11,9 @@ import {
 const signUp = async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
+    if (!fullname) {
+      return res.status(400).json({ error: "Fullname is required" });
+    }
 
     if (fullname.length < 3) {
       return res
