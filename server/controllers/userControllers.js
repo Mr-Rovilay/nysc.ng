@@ -77,34 +77,42 @@ export const getMyInfo = async (req, res) => {
 //get all users
 export const getAllUsers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  const skip = (page - 1) * limit;
+  const limit = parseInt(req.query.limit) || 10;
 
   try {
+    const totalUsers = await User.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+    let currentPage = page;
+    if (currentPage < 1) {
+      currentPage = 1;
+    } else if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+    const skip = (currentPage - 1) * limit;
+
     const query = req.query.new;
     let users;
-
     if (query) {
-      // If query is specified, sort by creation date
       users = await User.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
     } else {
-      // Otherwise, fetch all users and exclude the password field
       users = await User.find().select("-password").skip(skip).limit(limit);
     }
 
-    const totalUsers = await User.countDocuments();
-    const totalPages = Math.ceil(totalUsers / limit);
-
     res.status(200).json({
       users,
-      currentPage: page,
-      totalPages,
+      pagination: {
+        currentPage,
+        totalPages,
+        totalUsers,
+        perPage: limit,
+      },
     });
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 export const makeUserAnAdmin = async (req, res) => {
   const { id } = req.params;
   try {
