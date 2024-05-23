@@ -34,7 +34,7 @@ const CustomNavbar = () => {
         <div className="flex items-center">
           <Link to={"/"}>
             <h1 className="text-2xl font-bold italic uppercase text-green-500">
-              NYSC.NG
+              NYSCkit.NG
             </h1>
           </Link>
         </div>
