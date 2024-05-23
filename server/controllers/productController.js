@@ -1,18 +1,19 @@
 import Product from "../models/productModel.js";
 
 export const createPost = async (req, res) => {
-  const product = ({
-    title,
-    description,
-    image,
-    categories,
-    size,
-    stock,
-    color,
-    price,
-  } = req.body);
+  const { title, description, image, categories, size, stock, color, price } =
+    req.body;
   try {
-    const newProduct = await Product.create(product);
+    const newProduct = await Product.create({
+      title,
+      description,
+      image,
+      categories,
+      size,
+      stock,
+      color,
+      price,
+    });
     res.status(201).json(newProduct);
   } catch (error) {
     res.status(500).json({ message: error.message });
