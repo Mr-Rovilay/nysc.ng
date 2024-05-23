@@ -65,7 +65,9 @@ export const deleteUser = async (req, res) => {
 
 export const getMyInfo = async (req, res) => {
   try {
-    const user = await User.findById(req.decoded.id).select("-password");
+    const user = await User.findById(req.decoded.id)
+      .select("-password")
+      .select("-isAdmin");
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
