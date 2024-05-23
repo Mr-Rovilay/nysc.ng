@@ -4,7 +4,6 @@ import Product from "../models/productModel.js";
 export const createCart = async (req, res) => {
   const { userId } = req.params;
   const { productId, quantity } = req.body;
-
   try {
     let cart = await Cart.findOne({ userId });
     const product = await Product.findById(productId);
@@ -69,9 +68,27 @@ export const updateCart = async (req, res) => {
   }
 };
 
+export const removeFromCart = async (req, res) => {
+  const { userId, productId } = req.body;
+
+  try {
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    cart.products = cart.products.filter((p) => p.productId !== productId);
+
+    await cart.save();
+    res.status(200).json(cart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const deleteCart = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.decoded.id;
     const cart = await Cart.findByIdAndDelete(id);
 
     if (!cart) {
@@ -87,7 +104,7 @@ export const deleteCart = async (req, res) => {
 
 export const getUserCart = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.decoded.id;
     const cart = await Cart.findOne({ userId });
 
     if (!cart) {
@@ -98,17 +115,5 @@ export const getUserCart = async (req, res) => {
   } catch (error) {
     console.error("Error fetching cart:", error);
     res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-export const getAllCart = async (req, res) => {
-  try {
-    const carts = await Cart.find();
-    if (!carts) {
-      return res.status(404).send("Cart not found");
-    }
-    res.status(200).json(carts);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 };
