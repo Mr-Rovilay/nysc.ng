@@ -3,7 +3,7 @@ import User from "../models/userModel.js";
 
 export const updateUser = async (req, res) => {
   try {
-    const allowedUpdates = ["fullname", "email", "password"];
+    const allowedUpdates = ["fullname", "email"];
     const updates = Object.keys(req.body);
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
@@ -16,10 +16,12 @@ export const updateUser = async (req, res) => {
       req.body.password = await bcrypt.hash(req.body.password, 10);
     }
     const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
+      req.decoded.id,
       { $set: req.body },
       { new: true, runValidators: true }
-    ).select("-password");
+    )
+      .select("-password")
+      .select("-isAdmin");
 
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
@@ -33,7 +35,7 @@ export const updateUser = async (req, res) => {
 
 export const deleteMyInfo = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.decoded.id).select("-password");
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
@@ -63,7 +65,7 @@ export const deleteUser = async (req, res) => {
 
 export const getMyInfo = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.decoded.id).select("-password");
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
@@ -104,7 +106,6 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 export const makeUserAnAdmin = async (req, res) => {
   const { id } = req.params;
   try {
@@ -113,9 +114,11 @@ export const makeUserAnAdmin = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    // Update the user's role to "admin"
-    user.isAdmin = "admin";
+
+    // Update the user's role to admin by setting isAdmin to true
+    user.isAdmin = true;
     await user.save();
+
     res.status(200).json({ message: "User has been made an admin" });
   } catch (error) {
     console.error("Error making user an admin:", error);

@@ -22,10 +22,6 @@ export const validateUpdateUser = [
     .isString()
     .withMessage("Fullname must be a string"),
   check("email").optional().isEmail().withMessage("Email must be valid"),
-  check("password")
-    .optional()
-    .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters long"),
 
   (req, res, next) => {
     const errors = validationResult(req);

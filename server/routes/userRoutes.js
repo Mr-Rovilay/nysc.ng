@@ -19,8 +19,8 @@ router.get("/me", verifyJWT, getMyInfo);
 //admin to get all user
 router.get("/", verifyTokenAndAdmin, getAllUsers);
 //admin to delete user
-router.delete("/:id", verifyJWT, verifyTokenAndAdmin, deleteUser);
+router.delete("/:id", verifyTokenAndAdmin, deleteUser);
 //make user an admin
-router.patch("/:id", verifyTokenAndAdmin, makeUserAnAdmin);
+router.patch("/:id", verifyJWT, verifyTokenAndAdmin, makeUserAnAdmin);
 
 export default router;
