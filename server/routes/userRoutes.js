@@ -5,16 +5,13 @@ import {
   getUser,
   updateUser,
 } from "../controllers/userControllers.js";
-import {
-  verifyTokenAndAdmin,
-  verifyTokenAndAuthorization,
-} from "../middleware/verifyJWT.js";
+import { verifyJWT, verifyTokenAndAdmin } from "../middleware/verifyJWT.js";
 
 const router = express.Router();
 
-router.put("/:id", verifyTokenAndAuthorization, updateUser);
-router.delete("/:id", verifyTokenAndAuthorization, deleteUser);
-router.get("/:id", verifyTokenAndAuthorization, getUser);
+router.put("/:id", verifyJWT, updateUser);
+router.delete("/:id", verifyJWT, deleteUser);
+router.get("/:id", verifyJWT, getUser);
 router.get("/", verifyTokenAndAdmin, getAllUsers);
 
 export default router;
