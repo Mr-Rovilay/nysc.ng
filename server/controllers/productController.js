@@ -1,15 +1,25 @@
 import Product from "../models/productModel.js";
 
 export const createPost = async (req, res) => {
+  const product = ({
+    title,
+    description,
+    image,
+    categories,
+    size,
+    stock,
+    color,
+    price,
+  } = req.body);
   try {
-    const newProduct = await Product.create(req.body);
+    const newProduct = await Product.create(product);
     res.status(201).json(newProduct);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const deletedProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const product = await Product.findByIdAndDelete(id);
@@ -39,25 +49,24 @@ export const getProduct = async (req, res) => {
 };
 
 export const getAllProduct = async (req, res) => {
-  const New = req.query.new;
-  const Category = req.query.category;
+  const isNew = req.query.new;
+  const category = req.query.category;
+
   try {
-    let product;
-    if (New) {
-      product = await Product.find().sort({ createdAt: -1 }).limit(2);
-    } else if (Category) {
-      product = await Product.find({
+    let products;
+    if (isNew) {
+      products = await Product.find().sort({ createdAt: -1 });
+    } else if (category) {
+      products = await Product.find({
         categories: {
-          $in: [Category],
+          $in: [category],
         },
-      })
-        .sort({ createdAt: -1 })
-        .limit(5);
+      }).sort({ createdAt: -1 });
     } else {
-      product = await Product.find();
+      products = await Product.find();
     }
 
-    res.status(200).json(product);
+    res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
