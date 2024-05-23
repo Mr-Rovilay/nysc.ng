@@ -78,7 +78,7 @@ export const getMyInfo = async (req, res) => {
 //get all users
 export const getAllUsers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 20;
   const skip = (page - 1) * limit;
 
   try {

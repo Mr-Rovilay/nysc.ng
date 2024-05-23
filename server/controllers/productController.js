@@ -53,7 +53,7 @@ export const getAllProduct = async (req, res) => {
   const isNew = req.query.new === "true";
   const category = req.query.category;
   const page = parseInt(req.query.page);
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 20;
 
   try {
     let query = {};
