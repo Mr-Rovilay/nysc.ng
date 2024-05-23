@@ -72,10 +72,15 @@ const CustomNavbar = () => {
             </Link>
           </div>
         </ul>
-        <div className="hidden md:flex items-center gap-x-1">
-          <div className="">
-            <TiShoppingCart />
-          </div>
+        <div className="hidden md:flex items-center gap-x-2">
+          <Link to="#" className="flex items-center gap-4">
+            <div className="relative flex items-center justify-center ">
+              <TiShoppingCart className=" md:w-5 md:h-5" />
+              <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">
+                <p className="text-dark-grey">0</p>
+              </div>
+            </div>
+          </Link>
           <Link to={"/signin"}>
             <Button text="Sign In" variant="primary" />
           </Link>
@@ -86,9 +91,14 @@ const CustomNavbar = () => {
 
         {/* MOBILE MENU ICONS */}
         <div className="md:hidden flex gap-6 justify-center items-center">
-          <div className="w-6">
-            <TiShoppingCart />
-          </div>
+          <Link to="#" className="flex items-center gap-4">
+            <div className="relative flex items-center justify-center ">
+              <TiShoppingCart className="fill w-6 h-6 md:w-5 md:h-5" />
+              <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">
+                <p className="text-dark-grey">0</p>
+              </div>
+            </div>
+          </Link>
           <button
             className="text-gray-700"
             onClick={menuHandler}

@@ -20,7 +20,7 @@ const Hero = () => {
           Discover amazing features and services that await you.
         </p>
         <div className="inline-flex gap-3">
-          <Button text={"Get started"} variant="primary" />
+          <Button text={"Get started"} variant="primary" className={""} />
           <a href="tel:+2348114080865">
             <Button text={"Call to order directly"} variant="secondary" />
           </a>
