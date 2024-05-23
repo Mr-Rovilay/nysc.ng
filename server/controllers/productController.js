@@ -1,15 +1,26 @@
 import Product from "../models/productModel.js";
 
 export const createPost = async (req, res) => {
+  const { title, description, image, categories, size, stock, color, price } =
+    req.body;
   try {
-    const newProduct = await Product.create(req.body);
+    const newProduct = await Product.create({
+      title,
+      description,
+      image,
+      categories,
+      size,
+      stock,
+      color,
+      price,
+    });
     res.status(201).json(newProduct);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const deletedProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const product = await Product.findByIdAndDelete(id);
@@ -39,25 +50,48 @@ export const getProduct = async (req, res) => {
 };
 
 export const getAllProduct = async (req, res) => {
-  const New = req.query.new;
-  const Category = req.query.category;
+  const isNew = req.query.new === "true";
+  const category = req.query.category;
+  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+  const limit = parseInt(req.query.limit) || 10;
+
   try {
-    let product;
-    if (New) {
-      product = await Product.find().sort({ createdAt: -1 }).limit(2);
-    } else if (Category) {
-      product = await Product.find({
+    let query = {};
+
+    if (isNew) {
+      query = {};
+    } else if (category) {
+      query = {
         categories: {
-          $in: [Category],
+          $in: [category],
         },
-      })
-        .sort({ createdAt: -1 })
-        .limit(5);
-    } else {
-      product = await Product.find();
+      };
     }
 
-    res.status(200).json(product);
+    const totalProducts = await Product.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    let currentPage = page;
+    if (page < 1) {
+      currentPage = 1;
+    } else if (page > totalPages) {
+      currentPage = totalPages;
+    }
+
+    const products = await Product.find(query)
+      .sort({ createdAt: isNew ? -1 : 1 })
+      .skip((currentPage - 1) * limit)
+      .limit(limit);
+
+    res.status(200).json({
+      products,
+      pagination: {
+        totalProducts,
+        totalPages,
+        currentPage: currentPage,
+        perPage: limit,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
