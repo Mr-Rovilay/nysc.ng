@@ -27,7 +27,7 @@ const CustomNavbar = () => {
   return (
     <>
       <nav
-        className={`flex justify-between items-center bg-white h-20 p-6 md:p-12 w-full md:w-[85%] m-auto fixed left-1/2 transform -translate-x-1/2 drop-shadow-xl z-20 ${
+        className={`flex justify-between items-center bg-white h-20 p-6 md:p-12 w-full md:w-[86%] m-auto fixed left-1/2 transform -translate-x-1/2 drop-shadow-xl z-20 ${
           scrolling ? "top-0 w-full rounded-none md:p-6" : "top-5 rounded-xl"
         }`}
       >

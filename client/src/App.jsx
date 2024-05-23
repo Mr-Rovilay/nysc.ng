@@ -6,7 +6,7 @@ import HomePage from "../pages/HomePage";
 
 const App = () => {
   return (
-    <div className="app">
+    <div className="">
       <CustomNavbar />
       <Routes>
         <Route index element={<HomePage />} />
