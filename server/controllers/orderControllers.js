@@ -129,8 +129,8 @@ export const deleteOrder = async (req, res) => {
   }
 };
 
-export const getUserOrders = async (req, res) => {
-  const userId = req.params.userId;
+export const getMyOrders = async (req, res) => {
+  const userId = req.decoded.id;
 
   try {
     const orders = await Order.find({ userId });
