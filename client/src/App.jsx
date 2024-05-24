@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import CustomNavbar from "./components/CustomNavbar";
-import Signup from "./components/Signup";
-import Signin from "./components/Signin";
 import HomePage from "../pages/HomePage";
+import Signup from "../pages/Signup";
+import Signin from "../pages/Signin";
+import ProductList from "../pages/ProductList";
+import CustomNavbar from "./components/CustomNavbar";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <Route index element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
+        <Route path="/products" element={<ProductList />} />
       </Routes>
     </div>
   );

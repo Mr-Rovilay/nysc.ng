@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import Button from "./Button";
-import AnimationWrapper from "../common/AnimationWrapper";
+import Button from "../src/components/Button";
+import AnimationWrapper from "../src/common/AnimationWrapper";
 
 const Signin = () => {
   return (

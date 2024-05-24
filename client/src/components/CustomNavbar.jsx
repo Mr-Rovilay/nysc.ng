@@ -26,10 +26,12 @@ const CustomNavbar = () => {
   }, []);
 
   return (
-    <>
+    <div className="">
       <nav
-        className={`flex justify-between items-center bg-white h-20 p-6 md:p-12 w-full md:w-[86%] m-auto fixed left-1/2 transform -translate-x-1/2 drop-shadow-xl z-20 ${
-          scrolling ? "top-0 w-full rounded-none md:p-6" : "top-5 rounded-xl"
+        className={`flex justify-between items-center bg-white h-20 p-6 md:p-12 w-full md:w-[92.2%] m-auto fixed left-1/2 transform -translate-x-1/2 drop-shadow-xl z-20 ${
+          scrolling
+            ? "top-0 w-full rounded-none md:p-6"
+            : "top-5 rounded-xl w-full"
         }`}
       >
         <div className="flex items-center">
@@ -55,7 +57,7 @@ const CustomNavbar = () => {
             </li>
           </Link>
           <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-            <a href="/">About</a>
+            <a href="/products">Products</a>
           </li>
           <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
             <a href="/">Pricing</a>
@@ -75,7 +77,7 @@ const CustomNavbar = () => {
         <div className="hidden md:flex items-center gap-x-2">
           <Link to="#" className="flex items-center gap-4">
             <div className="relative flex items-center justify-center ">
-              <TiShoppingCart className=" md:w-5 md:h-5" />
+              <TiShoppingCart className=" text-5xl" />
               <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">
                 <p className="text-dark-grey">0</p>
               </div>
@@ -93,7 +95,7 @@ const CustomNavbar = () => {
         <div className="md:hidden flex gap-6 justify-center items-center">
           <Link to="#" className="flex items-center gap-4">
             <div className="relative flex items-center justify-center ">
-              <TiShoppingCart className="fill w-6 h-6 md:w-5 md:h-5" />
+              <TiShoppingCart className="text-3xl" />
               <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">
                 <p className="text-dark-grey">0</p>
               </div>
@@ -114,7 +116,7 @@ const CustomNavbar = () => {
           className="h-screen w-screen absolute top-0 left-0 z-10"
         ></div>
       )}
-    </>
+    </div>
   );
 };
 

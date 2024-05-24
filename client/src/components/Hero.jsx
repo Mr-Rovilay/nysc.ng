@@ -2,7 +2,7 @@ import Button from "./Button";
 
 const Hero = () => {
   return (
-    <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden">
+    <div className="relative bg-gradient-to-r h-screen text-white overflow-hidden">
       <div className="absolute inset-0">
         <img
           src="https://nyscwhatsappgroup.com/wp-content/uploads/2024/02/NYSC-essential-items.jpg"
@@ -11,8 +11,7 @@ const Hero = () => {
         />
         <div className="absolute inset-0 bg-black opacity-50"></div>
       </div>
-
-      <div className="app relative z-10 flex flex-col justify-center items-center h-full text-center">
+      <div className="absolute inset-0 flex flex-col justify-center items-center text-center z-10">
         <h1 className="text-5xl font-bold leading-tight mb-4">
           Welcome to Our Awesome Website
         </h1>
@@ -20,9 +19,9 @@ const Hero = () => {
           Discover amazing features and services that await you.
         </p>
         <div className="inline-flex gap-3">
-          <Button text={"Get started"} variant="primary" className={""} />
+          <Button text={"shop now"} variant="primary" className={"bg-white"} />
           <a href="tel:+2348114080865">
-            <Button text={"Call to order directly"} variant="secondary" />
+            <Button text={"Call to Order Directly"} variant="secondary" />
           </a>
         </div>
         <p className="mt-4">or</p>
