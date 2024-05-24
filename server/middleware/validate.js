@@ -70,7 +70,6 @@ export const validateProduct = [
 ];
 
 export const validateCart = [
-  check("userId").isMongoId().withMessage("User ID must be a valid Mongo ID"),
   check("products.*.productId")
     .isMongoId()
     .withMessage("Product ID must be a valid Mongo ID"),

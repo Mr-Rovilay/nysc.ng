@@ -2,7 +2,7 @@ import express from "express";
 import {
   createCart,
   deleteCart,
-  getUserCart,
+  getMyCart,
   removeFromCart,
   updateCart,
 } from "../controllers/cartControllers.js";
@@ -10,10 +10,10 @@ import { verifyJWT } from "../middleware/verifyJWT.js";
 import { validateCart } from "../middleware/validate.js";
 const router = express();
 
-router.post("/add", verifyJWT, validateCart, createCart);
-router.delete("/remove", verifyJWT, validateCart, removeFromCart);
-router.put("/:userId", verifyJWT, validateCart, updateCart);
+router.post("/", verifyJWT, validateCart, createCart);
+router.delete("/items", verifyJWT, removeFromCart);
+router.put("/", verifyJWT, validateCart, updateCart);
 router.delete("/", verifyJWT, deleteCart);
-router.get("/", verifyJWT, getUserCart);
+router.get("/", verifyJWT, getMyCart);
 
 export default router;
