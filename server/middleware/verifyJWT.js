@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers.token;
+  const authHeader = req.headers.authorization;
 
   if (!authHeader) {
     return res.status(401).send({ error: "Unauthorized" });
@@ -10,20 +10,10 @@ export const verifyJWT = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user) => {
     if (err) {
-      return res.status(403).send({ error: "Invalid token" });
+      return res.status(401).send({ error: "Invalid token" });
     }
     req.decoded = user;
     next();
-  });
-};
-
-export const verifyTokenAndAuthorization = (req, res, next) => {
-  verifyJWT(req, res, () => {
-    if (req.decoded.id === req.params.id || req.decoded.isAdmin) {
-      next();
-    } else {
-      return res.status(403).send({ error: "You are not authorized" });
-    }
   });
 };
 

@@ -2,22 +2,18 @@ import express from "express";
 import {
   createCart,
   deleteCart,
-  getAllCart,
-  getUserCart,
+  getMyCart,
+  removeFromCart,
   updateCart,
 } from "../controllers/cartControllers.js";
-import {
-  verifyJWT,
-  verifyTokenAndAdmin,
-  verifyTokenAndAuthorization,
-} from "../middleware/verifyJWT.js";
+import { verifyJWT } from "../middleware/verifyJWT.js";
 import { validateCart } from "../middleware/validate.js";
 const router = express();
 
 router.post("/", verifyJWT, validateCart, createCart);
-router.put("/:id", verifyTokenAndAuthorization, validateCart, updateCart);
-router.delete("/:id", verifyTokenAndAuthorization, deleteCart);
-router.get("/:userId", verifyTokenAndAuthorization, getUserCart);
-router.get("/", verifyTokenAndAdmin, getAllCart);
+router.delete("/items/:productId", verifyJWT, removeFromCart);
+router.put("/", verifyJWT, validateCart, updateCart);
+router.delete("/", verifyJWT, deleteCart);
+router.get("/", verifyJWT, getMyCart);
 
 export default router;
