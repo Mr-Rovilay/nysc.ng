@@ -75,7 +75,7 @@ const CustomNavbar = () => {
           </div>
         </ul>
         <div className="hidden md:flex items-center gap-x-2">
-          <Link to="#" className="flex items-center gap-4">
+          <Link to="/cart" className="flex items-center gap-4">
             <div className="relative flex items-center justify-center ">
               <TiShoppingCart className=" text-5xl" />
               <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">
@@ -93,7 +93,7 @@ const CustomNavbar = () => {
 
         {/* MOBILE MENU ICONS */}
         <div className="md:hidden flex gap-6 justify-center items-center">
-          <Link to="#" className="flex items-center gap-4">
+          <Link to="/cart" className="flex items-center gap-4">
             <div className="relative flex items-center justify-center ">
               <TiShoppingCart className="text-3xl" />
               <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import Button from "../src/components/Button";
-import AnimationWrapper from "../src/common/AnimationWrapper";
+import AnimationWrapper from "../common/AnimationWrapper";
+import Button from "./Button";
 
 const Signup = () => {
   return (
@@ -22,21 +22,6 @@ const Signup = () => {
                 Create an account
               </h1>
               <form className="space-y-4 md:space-y-6" action="#">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="fullname"
-                    id="fullname"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="your full name"
-                  />
-                </div>
                 <div>
                   <label
                     htmlFor="email"

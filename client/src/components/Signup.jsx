@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import Button from "../src/components/Button";
-import AnimationWrapper from "../src/common/AnimationWrapper";
+import AnimationWrapper from "../common/AnimationWrapper";
+import Button from "./Button";
 
-const Signin = () => {
+const Signup = () => {
   return (
     <AnimationWrapper>
       <div className="flex items-center justify-center min-h-screen bg-white">
@@ -16,12 +16,27 @@ const Signin = () => {
               />
             </Link>
           </div>
-          <div className="px-14 bg-white rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:text-gray-800 dark:border-gray-700 shadow-lg">
+          <div className="px-14 bg-white rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:text-gray-800  dark:border-gray-700 shadow-lg">
             <div className="p-6 space-y-8 md:space-y-8 w-full sm:p-8">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-green-500 md:text-2xl">
-                Welcome back
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-green-500 md:text-2xl ">
+                Create an account
               </h1>
               <form className="space-y-4 md:space-y-6" action="#">
+                <div>
+                  <label
+                    htmlFor=""
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    name="fullname"
+                    id="fullname"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="your full name"
+                  />
+                </div>
                 <div>
                   <label
                     htmlFor="email"
@@ -34,7 +49,7 @@ const Signin = () => {
                     name="email"
                     id="email"
                     placeholder="name@company.com"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -61,12 +76,12 @@ const Signin = () => {
                   />
                 </div>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Dont have an account?{" "}
+                  Already have an account?{" "}
                   <Link
-                    to="/signup"
+                    to="/signin"
                     className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
-                    Signup here
+                    Login here
                   </Link>
                 </p>
               </form>
@@ -78,4 +93,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default Signup;
