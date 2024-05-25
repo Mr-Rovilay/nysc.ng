@@ -20,6 +20,7 @@ app.use("/auth", authRoutes);
 app.use("/carts", cartRoutes);
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   res.send("OK...my message");
