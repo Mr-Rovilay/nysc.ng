@@ -47,7 +47,8 @@ export const createCart = async (req, res) => {
 };
 
 export const removeFromCart = async (req, res) => {
-  const { productId, quantity } = req.body;
+  const { quantity } = req.body;
+  const { productId } = req.params;
   try {
     const userId = req.decoded.id;
 
@@ -86,7 +87,15 @@ export const updateCart = async (req, res) => {
     const userId = req.decoded.id;
     const { products } = req.body;
 
-    // Check the stock for each product
+    // Find the cart by user ID
+    let cart = await Cart.findOne({ userId });
+
+    // If the cart doesn't exist, create a new one
+    if (!cart) {
+      cart = new Cart({ userId, products: [] });
+    }
+
+    // Check the stock for each product and update the cart accordingly
     for (let item of products) {
       const product = await Product.findById(item.productId);
       if (!product) {
@@ -94,23 +103,31 @@ export const updateCart = async (req, res) => {
           .status(404)
           .send(`Product with ID ${item.productId} not found`);
       }
-      if (item.quantity > product.stock) {
-        return res
-          .status(400)
-          .send(`Not enough stock for product ${product.title}`);
+
+      const productIndex = cart.products.findIndex(
+        (product) => product.productId.toString() === item.productId
+      );
+
+      if (productIndex > -1) {
+        // If the product already exists in the cart, update its quantity
+        const newQuantity =
+          cart.products[productIndex].quantity + item.quantity;
+        if (newQuantity > product.stock) {
+          return res
+            .status(400)
+            .send(`Not enough stock for product ${product.title}`);
+        }
+        cart.products[productIndex].quantity = newQuantity;
+      } else {
+        // If the product does not exist in the cart, add it
+        if (item.quantity > product.stock) {
+          return res
+            .status(400)
+            .send(`Not enough stock for product ${product.title}`);
+        }
+        cart.products.push(item);
       }
     }
-
-    // Find the cart by user ID
-    let cart = await Cart.findOne({ userId });
-
-    // If the cart doesn't exist, return a 404 error
-    if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
-    }
-
-    // Update the products in the cart
-    cart.products = products;
 
     // Save the updated cart
     const updatedCart = await cart.save();

@@ -11,7 +11,7 @@ import { validateCart } from "../middleware/validate.js";
 const router = express();
 
 router.post("/", verifyJWT, validateCart, createCart);
-router.delete("/items", verifyJWT, removeFromCart);
+router.delete("/items/:productId", verifyJWT, removeFromCart);
 router.put("/", verifyJWT, validateCart, updateCart);
 router.delete("/", verifyJWT, deleteCart);
 router.get("/", verifyJWT, getMyCart);
