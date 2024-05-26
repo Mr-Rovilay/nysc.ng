@@ -87,30 +87,18 @@ export const validateCart = [
 ];
 
 export const validateOrder = [
-  check("userId").isMongoId().withMessage("User ID must be a valid Mongo ID"),
   check("products")
     .isArray({ min: 1 })
     .withMessage("Products must be an array with at least one item"),
   check("products.*.productId")
     .isMongoId()
     .withMessage("Product ID must be a valid Mongo ID"),
-  check("products.*.quantity")
-    .isInt({ gt: 0 })
-    .withMessage("Quantity must be a positive integer"),
-  check("amount")
-    .isFloat({ gt: 0 })
-    .withMessage("Amount must be a positive number"),
   check("address").isObject().withMessage("Address must be an object"),
   check("address.street").notEmpty().withMessage("Street is required"),
   check("address.city").notEmpty().withMessage("City is required"),
   check("address.state").notEmpty().withMessage("State is required"),
   check("address.postalCode").notEmpty().withMessage("Postal code is required"),
   check("address.country").notEmpty().withMessage("Country is required"),
-  check("status")
-    .optional()
-    .isIn(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"])
-    .withMessage("Invalid status"),
-
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -118,4 +106,11 @@ export const validateOrder = [
     }
     next();
   },
+];
+// Validate order status
+export const validateOrderStatus = [
+  check("status")
+    .optional()
+    .isIn(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"])
+    .withMessage("Invalid status"),
 ];

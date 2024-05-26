@@ -1,7 +1,8 @@
 import express from "express";
-import { validateOrder } from "../middleware/validate.js";
+import { validateOrder, validateOrderStatus } from "../middleware/validate.js";
 import { verifyJWT, verifyTokenAndAdmin } from "../middleware/verifyJWT.js";
 import {
+  adminDeleteOrder,
   createOrder,
   deleteOrder,
   getAllOrders,
@@ -11,9 +12,13 @@ import {
 const router = express.Router();
 
 router.post("/", verifyJWT, validateOrder, createOrder);
-router.put("/:id", verifyTokenAndAdmin, validateOrder, updateOrder);
-router.delete("/:id", verifyTokenAndAdmin, deleteOrder);
+router.put("/:orderId", verifyTokenAndAdmin, validateOrderStatus, updateOrder);
+//users can delete there orders
+router.delete("/:id", verifyJWT, deleteOrder);
+//admin can delete order
+router.delete("/admin/:id", verifyJWT, verifyTokenAndAdmin, adminDeleteOrder);
+//admin get all orders
 router.get("/", verifyTokenAndAdmin, getAllOrders);
-router.get("/", verifyJWT, getMyOrders);
+router.get("/myorders", verifyJWT, getMyOrders);
 
 export default router;

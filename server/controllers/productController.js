@@ -110,7 +110,7 @@ export const updateProduct = async (req, res) => {
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
-    res.status(201).json(updatedProduct);
+    res.status(200).json(updatedProduct);
   } catch (error) {
     res
       .status(500)
