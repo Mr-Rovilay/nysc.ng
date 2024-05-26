@@ -6,6 +6,7 @@ import SingleProduct from "../pages/SingleProduct";
 import CartPage from "../pages/CartPage";
 import Signin from "./components/Signin";
 import NotFoundPage from "../pages/NotFoundPage";
+import CheckoutPage from "../pages/CheckoutPage";
 export const url = "http://localhost:4000";
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/products" element={<ProductList />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/product/:id" element={<SingleProduct />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>

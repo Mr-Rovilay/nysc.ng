@@ -51,19 +51,17 @@ const CustomNavbar = () => {
           }`}
           style={{ left: 0 }}
         >
-          <Link to={"/"}>
-            <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-              <a href="/">Home</a>
-            </li>
-          </Link>
+          <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
+            <a href="/">Home</a>
+          </li>
           <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
             <a href="/products">Products</a>
           </li>
           <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-            <a href="/">Pricing</a>
+            <a href="#">Pricing</a>
           </li>
           <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-            <a href="/">Testimonials</a>
+            <a href="#">Testimonials</a>
           </li>
           <div className="md:hidden flex flex-col gap-2 mt-4">
             <Link to={"/signin"}>
