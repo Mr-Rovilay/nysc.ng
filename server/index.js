@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import "dotenv/config";
 
 const app = express();
@@ -19,6 +20,7 @@ app.use("/auth", authRoutes);
 app.use("/carts", cartRoutes);
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   res.send("OK...my message");

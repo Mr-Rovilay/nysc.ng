@@ -85,3 +85,32 @@ export const validateCart = [
     next();
   },
 ];
+
+export const validateOrder = [
+  check("products")
+    .isArray({ min: 1 })
+    .withMessage("Products must be an array with at least one item"),
+  check("products.*.productId")
+    .isMongoId()
+    .withMessage("Product ID must be a valid Mongo ID"),
+  check("address").isObject().withMessage("Address must be an object"),
+  check("address.street").notEmpty().withMessage("Street is required"),
+  check("address.city").notEmpty().withMessage("City is required"),
+  check("address.state").notEmpty().withMessage("State is required"),
+  check("address.postalCode").notEmpty().withMessage("Postal code is required"),
+  check("address.country").notEmpty().withMessage("Country is required"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+// Validate order status
+export const validateOrderStatus = [
+  check("status")
+    .optional()
+    .isIn(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"])
+    .withMessage("Invalid status"),
+];
