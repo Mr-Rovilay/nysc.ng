@@ -8,23 +8,25 @@ export const createOrder = async (req, res) => {
   try {
     // Initialize an array to collect products with insufficient stock
     const insufficientStockProducts = [];
-    // Initialize the total amount
-    const totalAmount = 0;
-    // Check stock and calculate the total amount for all products
-    for (let item of products) {
-      const product = await Product.findById(item.productId);
-      if (!product) {
-        return res.status(404).send(`Product not found: ${item.productId}`);
-      }
-      if (product.stock < item.quantity) {
+
+    // Create an object to hold the product quantities for easy access
+    const productQuantities = products.reduce((acc, item) => {
+      acc[item.productId] = item.quantity;
+      return acc;
+    }, {});
+
+    // Find all products in a single query
+    const productIds = products.map((item) => item.productId);
+    const productDocs = await Product.find({ _id: { $in: productIds } });
+
+    // Check stock for all products
+    productDocs.forEach((product) => {
+      const requiredQuantity = productQuantities[product._id.toString()];
+      if (product.stock < requiredQuantity) {
         insufficientStockProducts.push(product.title); // Collect product titles with insufficient stock
       }
-      // Add the product price to the item
-      item.price = product.price;
+    });
 
-      // Calculate the total amount
-      totalAmount += product.price * item.quantity;
-    }
     // If there are any products with insufficient stock, return an error message
     if (insufficientStockProducts.length > 0) {
       return res
@@ -35,18 +37,26 @@ export const createOrder = async (req, res) => {
           )}`
         );
     }
+
     // Create the order if all products have sufficient stock
+    const amount = productDocs.reduce((total, product) => {
+      const quantity = productQuantities[product._id.toString()];
+      return total + product.price * quantity;
+    }, 0);
+
     const newOrder = new Order({
       userId,
       products,
-      amount: totalAmount,
+      amount,
       address,
     });
+
     const order = await newOrder.save();
+
     // Deduct stock for all products after creating the order
-    for (let item of products) {
-      const product = await Product.findById(item.productId);
-      product.stock -= item.quantity;
+    for (let product of productDocs) {
+      const quantity = productQuantities[product._id.toString()];
+      product.stock -= quantity;
       await product.save();
     }
 
@@ -151,5 +161,53 @@ export const getAllOrders = async (req, res) => {
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json(err);
+  }
+};
+
+export const cancelOrder = async (req, res) => {
+  const userId = req.decoded.id; // Assuming you use JWT and store the user ID in the token
+  const orderId = req.params.id;
+
+  try {
+    const order = await Order.findOne({ _id: orderId, userId });
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Check if the order is cancelable (e.g., it is in "Pending" or "Processing" status)
+    if (order.status !== "Pending" && order.status !== "Processing") {
+      return res.status(400).json({ message: "Order cannot be canceled" });
+    }
+
+    const orderCreationTime = new Date(order.createdAt).getTime();
+    const currentTime = new Date().getTime();
+    const timeDifference = currentTime - orderCreationTime;
+
+    const timeLimit = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+    if (timeDifference > timeLimit) {
+      return res
+        .status(403)
+        .json({ message: "Order cancellation time window has expired" });
+    }
+
+    // Restock the products in the order
+    for (let item of order.products) {
+      const product = await Product.findById(item.productId);
+      if (product) {
+        product.stock += item.quantity;
+        await product.save();
+      }
+    }
+
+    // Update the order status to "Cancelled"
+    order.status = "Cancelled";
+    await order.save();
+
+    res.status(200).json({ message: "Order canceled successfully", order });
+  } catch (error) {
+    console.error("Error canceling order:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
