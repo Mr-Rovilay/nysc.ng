@@ -3,13 +3,65 @@ import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Footer from "../src/components/Footer";
 import Button from "../src/components/Button";
 import AnimationWrapper from "../src/common/AnimationWrapper";
-import Announcement from "../src/components/Announcement";
 import CustomNavbar from "../src/components/CustomNavbar";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { publicRequest } from "../src/middleware";
+import { Select, Option } from "@material-tailwind/react";
 
 const SingleProduct = () => {
+  const location = useLocation();
+  const id = location.pathname.split("/")[2];
+  const [product, setProduct] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await publicRequest.get(`/products/${id}`);
+        setProduct(res.data);
+      } catch (error) {
+        setError("Failed to fetch product data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    getProduct();
+  }, [id]);
+
+  const handleQuantityChange = (type) => {
+    if (type === "increment") {
+      setQuantity(quantity + 1);
+    } else {
+      if (quantity > 1) {
+        setQuantity(quantity - 1);
+      }
+    }
+  };
+
+  const handleColorChange = (value) => {
+    setColor(value);
+  };
+
+  const handleSizeChange = (value) => {
+    setSize(value);
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+  const handleClick
+
   return (
     <AnimationWrapper>
-      <Announcement />
       <CustomNavbar />
       <div className="D app max-h-screen bg-gray-100 dark:bg-gray-800 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,44 +69,49 @@ const SingleProduct = () => {
             <div className="md:flex-1 px-4">
               <div className="h-[600px] md:h-[800px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
                 <img
-                  className="w-full h-full object-cover rounded-lg mt-4 "
-                  src="https://cdn.pixabay.com/photo/2020/05/22/17/53/mockup-5206355_960_720.jpg"
-                  alt="Product Image"
+                  className="w-full h-full object-cover rounded-lg mt-4"
+                  src={product.image}
+                  alt={product.title}
                 />
               </div>
               <div className="flex items-center justify-center mt-4">
                 <div className="w-1/2 px-2 mt-4">
-                  <Button text={"add to cart"} variant="secondary" />
+                  <Button
+                    text={"Add to Cart"}
+                    variant="secondary"
+                    onClick={handleClick}
+                  />
                 </div>
                 <div className="flex items-center font-bold pt-3">
-                  <div className="text-2xl cursor-pointer">
+                  <div
+                    className="text-2xl cursor-pointer"
+                    onClick={() => handleQuantityChange("decrement")}
+                  >
                     <IoIosRemoveCircleOutline />
                   </div>
                   <span className="w-8 h-8 border border-teal-500 flex items-center justify-center mx-1 rounded-md">
-                    1
+                    {quantity}
                   </span>
-                  <div className="text-2xl cursor-pointer">
+                  <div
+                    className="text-2xl cursor-pointer"
+                    onClick={() => handleQuantityChange("increment")}
+                  >
                     <IoMdAdd />
                   </div>
                 </div>
               </div>
             </div>
             <div className="md:flex-1 px-4 mt-6 md:mt-0">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-                Product Name
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2 capitalize">
+                {product.title}
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed
-                ante justo. Integer euismod libero id mauris malesuada
-                tincidunt.
-              </p>
               <div className="flex mb-4">
                 <div className="mr-4">
                   <span className="font-bold text-gray-700 dark:text-gray-300">
                     Price:
                   </span>
                   <span className="text-gray-600 dark:text-gray-300 ml-2">
-                    $29.99
+                    ${product.price}
                   </span>
                 </div>
                 <div>
@@ -62,7 +119,7 @@ const SingleProduct = () => {
                     Availability:
                   </span>
                   <span className="text-gray-600 dark:text-gray-300 ml-2">
-                    In Stock
+                    {product.stock > 0 ? "In Stock" : "Out of Stock"}
                   </span>
                 </div>
               </div>
@@ -70,50 +127,50 @@ const SingleProduct = () => {
                 <span className="font-bold text-gray-700 dark:text-gray-300">
                   Select Color:
                 </span>
-                <div className="flex items-center mt-2">
-                  <button className="w-6 h-6 rounded-full bg-gray-800 dark:bg-gray-200 mr-2 border border-gray-400"></button>
-                  <button className="w-6 h-6 rounded-full bg-red-500 dark:bg-red-700 mr-2 border border-gray-400"></button>
-                  <button className="w-6 h-6 rounded-full bg-blue-500 dark:bg-blue-700 mr-2 border border-gray-400"></button>
-                  <button className="w-6 h-6 rounded-full bg-yellow-500 dark:bg-yellow-700 mr-2 border border-gray-400"></button>
+                <div className="">
+                  <Select
+                    onChange={(value) => handleColorChange(value)}
+                    name="color"
+                    label="Color"
+                    className="cursor-pointer"
+                  >
+                    {product.color?.map((color) => (
+                      <Option key={color} value={color}>
+                        {color}
+                      </Option>
+                    ))}
+                  </Select>
                 </div>
               </div>
               <div className="mb-4">
                 <span className="font-bold text-gray-700 dark:text-gray-300">
                   Select Size:
                 </span>
-                <div className="flex items-center mt-2">
-                  {["S", "M", "L", "XL", "XXL"].map((size) => (
-                    <button
-                      key={size}
-                      className="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 dark:hover:bg-gray-600 transition duration-300"
-                    >
+                <Select
+                  onChange={(value) => handleSizeChange(value)}
+                  name="size"
+                  className="cursor-pointer"
+                >
+                  {product.size?.map((size) => (
+                    <Option key={size} value={size}>
                       {size}
-                    </button>
+                    </Option>
                   ))}
-                </div>
+                </Select>
               </div>
               <div>
                 <span className="font-bold text-gray-700 dark:text-gray-300">
                   Product Description:
                 </span>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  sed ante justo. Integer euismod libero id mauris malesuada
-                  tincidunt. Vivamus commodo nulla ut lorem rhoncus aliquet.
-                  Duis dapibus augue vel ipsum pretium, et venenatis sem
-                  blandit. Quisque ut erat vitae nisi ultrices placerat non eget
-                  velit. Integer ornare mi sed ipsum lacinia, non sagittis
-                  mauris blandit. Morbi fermentum libero vel nisl suscipit, nec
-                  tincidunt mi consectetur.
+                <p className="text-gray-600 dark:text-gray-300 text-sm mt-2 capitalize">
+                  {product.description}
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-4">
-        <Footer />
-      </div>
+      <Footer />
     </AnimationWrapper>
   );
 };

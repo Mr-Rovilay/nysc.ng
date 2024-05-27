@@ -7,7 +7,6 @@ import CartPage from "../pages/CartPage";
 import Signin from "./components/Signin";
 import NotFoundPage from "../pages/NotFoundPage";
 import CheckoutPage from "../pages/CheckoutPage";
-export const url = "http://localhost:4000";
 
 const App = () => {
   return (

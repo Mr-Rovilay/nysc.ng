@@ -5,10 +5,9 @@ import CustomNavbar from "../src/components/CustomNavbar";
 import Footer from "../src/components/Footer";
 import Products from "../src/components/Products";
 import { Select, Option } from "@material-tailwind/react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const ProductList = () => {
-  const { category } = useParams();
   const location = useLocation();
   const cat = location.pathname.split("/")[2];
   const [filters, setFilters] = useState({});
@@ -27,8 +26,9 @@ const ProductList = () => {
       <CustomNavbar />
       <div className="pt-20 max-h-screen py-6 px-6">
         <h1 className="D text-4xl font-bold p-5 ml-4 capitalize">
-          Dresses: {category}
+          Dresses: {cat ? cat : "All"}
         </h1>
+
         <div className="md:w-[92.2%] flex flex-col md:flex-row justify-between m-5">
           <div className="m-5 flex flex-col gap-4 md:flex-row md:items-center md:w-auto">
             <span className="text-xl font-semibold mr-5 mb-2 md:mb-0">
@@ -75,7 +75,6 @@ const ProductList = () => {
                 label="Newest"
                 className="cursor-pointer"
               >
-                <Option value="newest">Newest</Option>
                 <Option value="asc">Price (asc)</Option>
                 <Option value="desc">Price (desc)</Option>
               </Select>
