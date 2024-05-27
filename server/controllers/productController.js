@@ -52,7 +52,7 @@ export const getProduct = async (req, res) => {
 export const getAllProduct = async (req, res) => {
   const isNew = req.query.new === "true";
   const category = req.query.category;
-  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+  const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
   try {
