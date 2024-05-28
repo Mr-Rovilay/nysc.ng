@@ -1,4 +1,5 @@
 import { IoMdAdd } from "react-icons/io";
+import { FiShoppingCart } from "react-icons/fi";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Footer from "../src/components/Footer";
 import Button from "../src/components/Button";
@@ -6,7 +7,7 @@ import AnimationWrapper from "../src/common/AnimationWrapper";
 import CustomNavbar from "../src/components/CustomNavbar";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { publicRequest } from "../src/middleware";
+import { publicRequest } from "../middleware/middleware";
 import { Select, Option } from "@material-tailwind/react";
 
 const SingleProduct = () => {
@@ -58,18 +59,17 @@ const SingleProduct = () => {
   if (error) {
     return <p>{error}</p>;
   }
-  const handleClick
+  const handleClick = () => {};
 
   return (
     <AnimationWrapper>
-      <CustomNavbar />
-      <div className="D app max-h-screen bg-gray-100 dark:bg-gray-800 py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-h-screen bg-gray-100 dark:bg-gray-800 py-8">
+        <div className="max-w-6xl flex justify-center items-center mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row -mx-4">
             <div className="md:flex-1 px-4">
               <div className="h-[600px] md:h-[800px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
                 <img
-                  className="w-full h-full object-cover rounded-lg mt-4"
+                  className="object-cover rounded-lg mt-4 w-full h-full"
                   src={product.image}
                   alt={product.title}
                 />

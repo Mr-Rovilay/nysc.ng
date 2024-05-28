@@ -7,12 +7,15 @@ import CartPage from "../pages/CartPage";
 import Signin from "./components/Signin";
 import NotFoundPage from "../pages/NotFoundPage";
 import CheckoutPage from "../pages/CheckoutPage";
+import CustomNavbar from "./components/CustomNavbar";
+import AuthProvider from "../middleware/AuthContext";
 
 const App = () => {
   return (
-    <div>
+    <AuthProvider>
+      <CustomNavbar />
       <Routes>
-        <Route path="/" index element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/products/:category" element={<ProductList />} />
@@ -22,7 +25,7 @@ const App = () => {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </div>
+    </AuthProvider>
   );
 };
 

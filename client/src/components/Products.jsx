@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Product from "./Product";
 import Pagination from "./Pagination";
-import { publicRequest } from "../middleware";
+import { publicRequest } from "../../middleware/middleware";
 
 const Products = ({ cat, filters, sort }) => {
   const [products, setProducts] = useState([]);
@@ -55,7 +55,7 @@ const Products = ({ cat, filters, sort }) => {
   };
 
   return (
-    <div className="px-16 py-8">
+    <div className="px-16 py-8 bg-gray-100 mb-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {loading ? (
           <p>Loading...</p>

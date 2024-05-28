@@ -13,11 +13,13 @@
 
 body {
   min-height: 100vh;
-}
-.app {
   width: 80%;
   margin: auto;
 }
+
 .D {
   margin-top: 150px;
+}
+.mt {
+  margin-top: 20px;
 }

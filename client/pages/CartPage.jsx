@@ -2,25 +2,21 @@ import { IoMdAdd } from "react-icons/io";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import AnimationWrapper from "../src/common/AnimationWrapper";
-import Announcement from "../src/components/Announcement";
-import CustomNavbar from "../src/components/CustomNavbar";
 
 const CartPage = () => {
   return (
     <AnimationWrapper>
-      <Announcement />
-      <CustomNavbar />
-      <div className="D min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100">
         <div className="p-5 sm:p-2">
           <h1 className="text-3xl font-light text-center mb-8">YOUR CART</h1>
-          <div className="flex items-center justify-between p-5 bg-white rounded-lg shadow-md mb-8">
+          <div className="flex flex-col items-center sm:flex-row justify-between p-5 bg-white rounded-lg shadow-md mb-8">
             <Link to={"/products"}>
-              <button className="px-4 py-2 font-semibold border border-gray-300 rounded-lg bg-transparent hover:bg-gray-100 transition duration-300">
+              <button className="px-4 py-2 font-semibold border border-gray-300 rounded-lg bg-transparent hover:bg-gray-100 transition duration-300 mb-2 sm:mb-0">
                 CONTINUE SHOPPING
               </button>
             </Link>
-            <div className="sm:grid gap-2">
-              <div className="underline cursor-pointer mx-2">
+            <div className="sm:flex sm:items-center">
+              <div className="underline cursor-pointer mx-2 mb-2 sm:mb-0">
                 Shopping Bag(2)
               </div>
               <div className="underline cursor-pointer mx-2">
@@ -34,7 +30,7 @@ const CartPage = () => {
           <div className="flex flex-col md:flex-row justify-between gap-5">
             <div className="flex-3 bg-white rounded-lg shadow-md p-5">
               <div className="flex flex-col md:flex-row justify-between mb-5">
-                <div className="flex-2 border-solid border-2 rounded-md border-gray-500 flex items-center">
+                <div className="flex-1 space-y-8 border border-gray-300 rounded-lg p-5 bg-white shadow-md">
                   <img
                     className="w-52 rounded-lg"
                     src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png"
@@ -65,7 +61,7 @@ const CartPage = () => {
               </div>
 
               <div className="flex flex-col md:flex-row justify-between mb-5">
-                <div className="flex-2 border-solid border-2 rounded-md border-gray-500 flex items-center">
+                <div className="flex-1 space-y-8 border border-gray-300 rounded-lg p-5 bg-white shadow-md">
                   <img
                     className="w-52 rounded-lg object-cover"
                     src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png"

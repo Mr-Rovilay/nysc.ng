@@ -1,7 +1,5 @@
 import { useState } from "react";
 import AnimationWrapper from "../src/common/AnimationWrapper";
-import Announcement from "../src/components/Announcement";
-import CustomNavbar from "../src/components/CustomNavbar";
 import Footer from "../src/components/Footer";
 import Products from "../src/components/Products";
 import { Select, Option } from "@material-tailwind/react";
@@ -22,10 +20,8 @@ const ProductList = () => {
 
   return (
     <AnimationWrapper>
-      <Announcement />
-      <CustomNavbar />
       <div className="pt-20 max-h-screen py-6 px-6">
-        <h1 className="D text-4xl font-bold p-5 ml-4 capitalize">
+        <h1 className="text-4xl font-bold p-5 ml-4 capitalize">
           Dresses: {cat ? cat : "All"}
         </h1>
 

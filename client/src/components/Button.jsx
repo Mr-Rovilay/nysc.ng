@@ -1,6 +1,4 @@
-import PropTypes from "prop-types";
-
-const Button = ({ text, variant, className }) => {
+const Button = ({ text, variant, className, onClick, type }) => {
   const baseStyles =
     "focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer capitalize";
   const variantStyles = {
@@ -11,20 +9,13 @@ const Button = ({ text, variant, className }) => {
   };
 
   return (
-    <button className={`${baseStyles} ${variantStyles[variant]} ${className}`}>
+    <button
+      className={`${baseStyles} ${variantStyles[variant]} ${className} ${type}`}
+      onClick={onClick}
+    >
       {text}
     </button>
   );
-};
-
-Button.propTypes = {
-  text: PropTypes.string.isRequired,
-  variant: PropTypes.oneOf(["primary", "secondary"]).isRequired,
-  className: PropTypes.string,
-};
-
-Button.defaultProps = {
-  className: "",
 };
 
 export default Button;

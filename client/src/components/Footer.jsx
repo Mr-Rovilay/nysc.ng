@@ -8,9 +8,9 @@ import { CiMail } from "react-icons/ci";
 const Footer = () => {
   return (
     <div className="flex flex-col md:flex-row bg-gray-100 py-12 px-6 md:px-20">
-      <div className="flex-1 md:mr-10">
-        <h1 className="text-2xl font-bold mb-4 italic uppercase text-green-500">
-          NYSCkit.NG
+      <div className="flex-1 start-0 md:mr-10">
+        <h1 className="mr-4 cursor-pointer py-1.5 text-xl font-semibold mb-4">
+          NYSCKIT.NG
         </h1>
         <p className="mb-4">
           There are many variations of passages of Lorem Ipsum available, but
@@ -33,10 +33,10 @@ const Footer = () => {
         <h3 className="text-xl font-semibold mb-4">Useful Links</h3>
         <ul className="list-none">
           <li className="mb-2">
-            <a href="#">Home</a>
+            <a href="/">Home</a>
           </li>
           <li className="mb-2">
-            <a href="#">Cart</a>
+            <a href="/cart">Cart</a>
           </li>
           <li className="mb-2">
             <a href="#">Man Fashion</a>
@@ -54,7 +54,7 @@ const Footer = () => {
             <a href="#">Order Tracking</a>
           </li>
           <li className="mb-2">
-            <a href="#">Wishlist</a>
+            <a href="/products">Products</a>
           </li>
           <li>
             <a href="#">Terms</a>

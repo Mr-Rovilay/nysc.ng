@@ -1,119 +1,322 @@
-import { useState, useEffect } from "react";
-import { FiMenu } from "react-icons/fi";
-import { GrClose } from "react-icons/gr";
-import Button from "./Button";
-import { Link } from "react-router-dom";
-import { TiShoppingCart } from "react-icons/ti";
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Navbar,
+  Typography,
+  Button,
+  IconButton,
+  Input,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+  Collapse,
+} from "@material-tailwind/react";
+import {
+  UserCircleIcon,
+  Cog6ToothIcon,
+  InboxArrowDownIcon,
+  LifebuoyIcon,
+  PowerIcon,
+} from "@heroicons/react/24/outline";
+import { FiShoppingCart } from "react-icons/fi";
+import { AuthContext } from "../../middleware/AuthContext";
+
+// Profile menu items
+const profileMenuItems = [
+  {
+    label: "My Profile",
+    icon: UserCircleIcon,
+  },
+  {
+    label: "Edit Profile",
+    icon: Cog6ToothIcon,
+  },
+  {
+    label: "Inbox",
+    icon: InboxArrowDownIcon,
+  },
+  {
+    label: "Help",
+    icon: LifebuoyIcon,
+  },
+  {
+    label: "Sign Out",
+    icon: PowerIcon,
+  },
+];
 
 const CustomNavbar = () => {
-  const [openMenu, setOpenMenu] = useState(false);
-  const [scrolling, setScrolling] = useState(false);
+  const [openNav, setOpenNav] = useState(false);
+  const [openProfileMenu, setOpenProfileMenu] = useState(false);
+  const [cartItems, setCartItems] = useState(3);
+  const { isAuthenticated, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const menuHandler = () => {
-    setOpenMenu(!openMenu);
+  const handleLogout = () => {
+    logout();
+    navigate("/signin");
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolling(window.scrollY > 0);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    window.addEventListener(
+      "resize",
+      () => window.innerWidth >= 960 && setOpenNav(false)
+    );
   }, []);
 
-  return (
-    <div className="">
-      <nav
-        className={`flex justify-between items-center bg-white h-20 p-6 md:p-12 w-full md:w-[92.2%] m-auto fixed left-1/2 transform -translate-x-1/2 drop-shadow-xl z-20 ${
-          scrolling
-            ? "top-0 w-full rounded-none md:p-6"
-            : "top-5 rounded-xl w-full"
-        }`}
-      >
-        <div className="flex items-center">
-          <Link to={"/"}>
-            <h1 className="text-2xl font-bold italic uppercase text-green-500">
-              NYSCkit.NG
-            </h1>
-          </Link>
-        </div>
-        <ul
-          className={`md:flex gap-12 font-medium text-gray-700 [&>li]:cursor-pointer absolute md:static top-20 bg-white max-md:p-3 text-left ${
-            openMenu ? "animate-fadeInDown" : "hidden"
-          } ${
-            scrolling && openMenu
-              ? "top-12 w-full right-0 rounded-b-none"
-              : "rounded-b-xl right-0 w-full md:w-auto"
-          }`}
-          style={{ left: 0 }}
-        >
-          <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-            <a href="/">Home</a>
-          </li>
-          <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-            <a href="/products">Products</a>
-          </li>
-          <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-            <a href="#">Pricing</a>
-          </li>
-          <li className="hover:text-green-500 ml-2 mb-2 md:mb-0">
-            <a href="#">Testimonials</a>
-          </li>
-          <div className="md:hidden flex flex-col gap-2 mt-4">
-            <Link to={"/signin"}>
-              <Button text="Sign In" variant="primary" />
-            </Link>
-            <Link to={"/signup"}>
-              <Button text="Sign Up" variant="secondary" />
-            </Link>
-          </div>
-        </ul>
-        <div className="hidden md:flex items-center gap-x-2">
-          <Link to="/cart" className="flex items-center gap-4">
-            <div className="relative flex items-center justify-center ">
-              <TiShoppingCart className=" text-5xl" />
-              <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">
-                <p className="text-dark-grey">0</p>
-              </div>
-            </div>
-          </Link>
-          <Link to={"/signin"}>
-            <Button text="Sign In" variant="primary" />
-          </Link>
-          <Link to={"/signup"}>
-            <Button text="Sign Up" variant="secondary" />
-          </Link>
-        </div>
+  const closeMenu = () => setOpenProfileMenu(false);
 
-        {/* MOBILE MENU ICONS */}
-        <div className="md:hidden flex gap-6 justify-center items-center">
-          <Link to="/cart" className="flex items-center gap-4">
-            <div className="relative flex items-center justify-center ">
-              <TiShoppingCart className="text-3xl" />
-              <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center">
-                <p className="text-dark-grey">0</p>
-              </div>
-            </div>
-          </Link>
-          <button
-            className="text-gray-700"
-            onClick={menuHandler}
-            aria-label="Menu"
+  const navList = (
+    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+      <Typography
+        as="li"
+        variant="small"
+        color="blue-gray"
+        className="p-1 font-normal"
+      >
+        <Link to="/" className="flex items-center">
+          Home
+        </Link>
+      </Typography>
+      <Typography
+        as="li"
+        variant="small"
+        color="blue-gray"
+        className="p-1 font-normal"
+      >
+        <Link to="/products" className="flex items-center">
+          Products
+        </Link>
+      </Typography>
+      <Typography
+        as="li"
+        variant="small"
+        color="blue-gray"
+        className="p-1 font-normal"
+      >
+        <Link to="#" className="flex items-center">
+          Contacts
+        </Link>
+      </Typography>
+      <Typography
+        as="li"
+        variant="small"
+        color="blue-gray"
+        className="p-1 font-normal"
+      >
+        <Link to="#" className="flex items-center">
+          About us
+        </Link>
+      </Typography>
+    </ul>
+  );
+
+  return (
+    <div className="sticky top-0 w-full bg-white shadow-md z-50">
+      <Navbar className="max-w-7xl mx-auto px-4 py-2 lg:px-8 lg:py-4">
+        <div className="flex items-center justify-between text-blue-gray-900">
+          <Typography
+            as="a"
+            href="/"
+            className="mr-4 cursor-pointer py-1.5 text-xl font-semibold"
           >
-            {openMenu ? <GrClose size={25} /> : <FiMenu size={25} />}
-          </button>
+            NYSCKIT.NG
+          </Typography>
+          <div className="hidden lg:flex md:items-center md:gap-4">
+            <div className="relative flex w-full gap-2 md:w-max">
+              <Input
+                type="search"
+                label="Type here..."
+                className="pr-20"
+                containerProps={{
+                  className: "min-w-[288px]",
+                }}
+              />
+              <Button size="sm" className="!absolute right-1 top-1 rounded">
+                Search
+              </Button>
+            </div>
+          </div>
+          <div className="hidden lg:block">{navList}</div>
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <Menu open={openProfileMenu} handler={setOpenProfileMenu}>
+                <MenuHandler>
+                  <IconButton
+                    variant="text"
+                    className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent"
+                  >
+                    <UserCircleIcon className="h-6 w-6" />
+                  </IconButton>
+                </MenuHandler>
+                <MenuList className="p-1">
+                  {profileMenuItems.map(({ label, icon }, key) => {
+                    const isLastItem = key === profileMenuItems.length - 1;
+                    return (
+                      <MenuItem
+                        key={label}
+                        onClick={isLastItem ? handleLogout : closeMenu}
+                        className={`flex items-center gap-2 rounded ${
+                          isLastItem
+                            ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+                            : ""
+                        }`}
+                      >
+                        {React.createElement(icon, {
+                          className: `h-4 w-4 ${
+                            isLastItem ? "text-red-500" : ""
+                          }`,
+                          strokeWidth: 2,
+                        })}
+                        <Typography
+                          as="span"
+                          variant="small"
+                          className="font-normal"
+                          color={isLastItem ? "red" : "inherit"}
+                        >
+                          {label}
+                        </Typography>
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </Menu>
+            ) : (
+              <>
+                <Button
+                  variant="text"
+                  size="sm"
+                  className="hidden lg:inline-block"
+                >
+                  <Link to="/signin">
+                    <span>Sign In</span>
+                  </Link>
+                </Button>
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  className="hidden lg:inline-block"
+                >
+                  <Link to="/signup">
+                    <span>Sign Up</span>
+                  </Link>
+                </Button>
+              </>
+            )}
+            <div className="relative">
+              <Link to="/cart">
+                <IconButton
+                  variant="text"
+                  className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent"
+                >
+                  <FiShoppingCart className="h-6 w-6" />
+                  {cartItems > 0 && (
+                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                      {cartItems}
+                    </span>
+                  )}
+                </IconButton>
+              </Link>
+            </div>
+            <IconButton
+              variant="text"
+              className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+              ripple={false}
+              onClick={() => setOpenNav(!openNav)}
+            >
+              {openNav ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  className="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              )}
+            </IconButton>
+          </div>
         </div>
-      </nav>
-      {openMenu && (
-        <div
-          onClick={menuHandler}
-          className="h-screen w-screen absolute top-0 left-0 z-10"
-        ></div>
-      )}
+        <Collapse open={openNav}>
+          <div className="relative flex w-full gap-2 mb-4">
+            <Input
+              type="search"
+              label="Type here..."
+              className="pr-20"
+              containerProps={{
+                className: "min-w-[288px]",
+              }}
+            />
+            <Button size="sm" className="!absolute right-1 top-1 rounded">
+              Search
+            </Button>
+          </div>
+          <div className=" lg:block">{navList}</div>
+          <div className="flex items-center gap-x-1">
+            {isAuthenticated ? (
+              profileMenuItems.map(({ label, icon }, key) => {
+                const isLastItem = key === profileMenuItems.length - 1;
+                return (
+                  <MenuItem
+                    key={label}
+                    onClick={isLastItem ? handleLogout : closeMenu}
+                    className={`flex items-center gap-2 rounded ${
+                      isLastItem ? "active:bg-red-500/10" : "text-black"
+                    }`}
+                  >
+                    {React.createElement(icon, {
+                      className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
+                      strokeWidth: 2,
+                    })}
+                    <Typography
+                      as="span"
+                      variant="small"
+                      className="font-normal"
+                      color={isLastItem ? "red" : "inherit"}
+                    >
+                      {label}
+                    </Typography>
+                  </MenuItem>
+                );
+              })
+            ) : (
+              <>
+                <Button fullWidth variant="text" size="sm" className="">
+                  <Link to="/signin">
+                    <span>Sign In</span>
+                  </Link>
+                </Button>
+                <Button fullWidth variant="gradient" size="sm" className="">
+                  <Link to="/signup">
+                    <span>Sign Up</span>
+                  </Link>
+                </Button>
+              </>
+            )}
+          </div>
+        </Collapse>
+      </Navbar>
     </div>
   );
 };

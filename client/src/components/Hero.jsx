@@ -2,20 +2,12 @@ import Button from "./Button";
 
 const Hero = () => {
   return (
-    <div className="relative bg-gradient-to-r h-screen text-white overflow-hidden">
-      <div className="absolute inset-0">
-        <img
-          src="https://nyscwhatsappgroup.com/wp-content/uploads/2024/02/NYSC-essential-items.jpg"
-          alt="Background Image"
-          className="object-cover object-center w-full h-full"
-        />
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-      </div>
+    <div className="relative bg-gradient-to-r h-screen bg-gray-100 text-white overflow-hidden">
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center z-10">
-        <h1 className="text-5xl font-bold leading-tight mb-4">
+        <h1 className="text-5xl text-black font-bold leading-tight mb-4">
           Welcome to Our Awesome Website
         </h1>
-        <p className="text-lg text-gray-300 mb-8">
+        <p className="text-lg text-gray-900 mb-8">
           Discover amazing features and services that await you.
         </p>
         <div className="inline-flex gap-3">
@@ -24,7 +16,7 @@ const Hero = () => {
             <Button text={"Call to Order Directly"} variant="secondary" />
           </a>
         </div>
-        <p className="mt-4">or</p>
+        <p className="mt-4 text-black">or</p>
         <div className="mt-4">
           <a
             href="https://api.whatsapp.com/send?phone=+2348114080865"

@@ -1,81 +1,170 @@
-import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Typography, Input, Button } from "@material-tailwind/react";
+import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import AnimationWrapper from "../common/AnimationWrapper";
-import Button from "./Button";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AuthContext } from "../../middleware/AuthContext";
 
-const Signup = () => {
+const Signin = () => {
+  const [passwordShown, setPasswordShown] = useState(false);
+  const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSignIn = async () => {
+    let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/; // regex for email
+    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
+
+    if (!email.length) {
+      return toast.error("Enter email address");
+    }
+    if (!emailRegex.test(email)) {
+      return toast.error("invalid email address");
+    }
+    if (!passwordRegex.test(password)) {
+      return toast.error(
+        "password should be 6 to 20 characters long with numeric, 1 lowercase and 1 uppercase letter"
+      );
+    }
+    try {
+      const response = await publicRequest.post("/auth/signin", {
+        email: email,
+        password: password,
+      });
+      const data = response.data;
+      // Store user token in localStorage and update auth state
+      login(data.token);
+      // Redirect user to dashboard or other page
+      navigate("/");
+      toast.success("Sign in successful");
+    } catch (error) {
+      toast.error("wrong credentials");
+      setError(error.response.data.error);
+    }
+  };
+
   return (
-    <AnimationWrapper>
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="flex items-center mb-6">
-            <Link to="/">
-              <img
-                className="h-24 object-cover rounded-full shadow-lg"
-                src="https://dailypost.ng/wp-content/uploads/2020/05/1_NBBsLhguP_B8dF6s02fY8g.jpeg"
-                alt="logo"
-              />
-            </Link>
-          </div>
-          <div className="px-14 bg-white rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:text-gray-800  dark:border-gray-700 shadow-lg">
-            <div className="p-6 space-y-8 md:space-y-8 w-full sm:p-8">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-green-500 md:text-2xl ">
-                Create an account
-              </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+    <>
+      <AnimationWrapper>
+        <ToastContainer />
+        <section className="grid text-center h-screen items-center p-8">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-[24rem] mx-auto">
+            <Typography variant="h3" color="blue-gray" className="mb-2">
+              Sign In
+            </Typography>
+            <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
+              Enter your email and password to sign in
+            </Typography>
+            <form action="#" className="mx-auto max-w-[24rem] text-left">
+              <div className="mb-6">
+                <label htmlFor="email">
+                  <Typography
+                    variant="small"
+                    className="mb-2 block font-medium text-gray-900"
                   >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="name@company.com"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+                    Your Email
+                  </Typography>
+                </label>
+                <Input
+                  id="email"
+                  color="gray"
+                  size="lg"
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@mail.com"
+                  className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
+                  labelProps={{
+                    className: "hidden",
+                  }}
+                />
+              </div>
+              <div className="mb-6">
+                <label htmlFor="password">
+                  <Typography
+                    variant="small"
+                    className="mb-2 block font-medium text-gray-900"
                   >
                     Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required=""
-                  />
-                </div>
-                <div className="flex items-center justify-center w-full">
-                  <Button
-                    text="Create an Account"
-                    variant="secondary"
-                    className="w-full"
-                  />
-                </div>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Dont have an account?{" "}
-                  <Link
-                    to="/signup"
-                    className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                  >
-                    Signup here
-                  </Link>
-                </p>
-              </form>
-            </div>
+                  </Typography>
+                </label>
+                <Input
+                  size="lg"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="********"
+                  labelProps={{
+                    className: "hidden",
+                  }}
+                  className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
+                  type={passwordShown ? "text" : "password"}
+                  icon={
+                    <i onClick={togglePasswordVisiblity}>
+                      {passwordShown ? (
+                        <EyeIcon className="h-5 w-5" />
+                      ) : (
+                        <EyeSlashIcon className="h-5 w-5" />
+                      )}
+                    </i>
+                  }
+                />
+              </div>
+              <Button
+                onClick={handleSignIn}
+                color="gray"
+                size="lg"
+                className="mt-6"
+                fullWidth
+              >
+                sign in
+              </Button>
+              <div className="!mt-4 flex justify-end">
+                <Typography
+                  as="a"
+                  href="#"
+                  color="blue-gray"
+                  variant="small"
+                  className="font-medium"
+                >
+                  Forgot password
+                </Typography>
+              </div>
+              <Button
+                variant="outlined"
+                size="lg"
+                className="mt-6 flex h-12 items-center justify-center gap-2"
+                fullWidth
+              >
+                <img
+                  src={`https://www.material-tailwind.com/logos/logo-google.png`}
+                  alt="google"
+                  className="h-6 w-6"
+                />{" "}
+                sign in with google
+              </Button>
+              <Typography
+                variant="small"
+                color="gray"
+                className="!mt-4 text-center font-normal"
+              >
+                Not registered?{" "}
+                <a href="/signup" className="font-medium text-gray-900">
+                  Create account
+                </a>
+              </Typography>
+            </form>
           </div>
-        </div>
-      </div>
-    </AnimationWrapper>
+        </section>
+      </AnimationWrapper>
+    </>
   );
 };
 
-export default Signup;
+export default Signin;
