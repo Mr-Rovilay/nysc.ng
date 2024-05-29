@@ -21,6 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { FiShoppingCart } from "react-icons/fi";
 import { AuthContext } from "../../middleware/AuthContext";
+import ContactPop from "./ContactPop";
 
 // Profile menu items
 const profileMenuItems = [
@@ -96,7 +97,7 @@ const CustomNavbar = () => {
         className="p-1 font-normal"
       >
         <Link to="#" className="flex items-center">
-          Contacts
+          About us
         </Link>
       </Typography>
       <Typography
@@ -105,9 +106,7 @@ const CustomNavbar = () => {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <Link to="#" className="flex items-center">
-          About us
-        </Link>
+        <ContactPop />
       </Typography>
     </ul>
   );

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../middleware/AuthContext";
+import { publicRequest } from "../../middleware/middleware";
 
 const Signin = () => {
   const [passwordShown, setPasswordShown] = useState(false);
@@ -18,8 +19,8 @@ const Signin = () => {
   const [error, setError] = useState("");
 
   const handleSignIn = async () => {
-    let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/; // regex for email
-    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
+    let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
     if (!email.length) {
       return toast.error("Enter email address");
@@ -38,9 +39,7 @@ const Signin = () => {
         password: password,
       });
       const data = response.data;
-      // Store user token in localStorage and update auth state
       login(data.token);
-      // Redirect user to dashboard or other page
       navigate("/");
       toast.success("Sign in successful");
     } catch (error) {

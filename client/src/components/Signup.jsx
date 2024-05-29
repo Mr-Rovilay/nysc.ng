@@ -19,8 +19,8 @@ const Signin = () => {
   const [error, setError] = useState("");
 
   const handleSignUp = async () => {
-    let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/; // regex for email
-    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
+    let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
     if (fullname) {
       if (fullname.length < 3) {
@@ -46,9 +46,7 @@ const Signin = () => {
         password: password,
       });
       const data = response.data;
-      // Store user token in localStorage
       localStorage.setItem("token", data.token);
-      // Redirect user to dashboard or other page
       navigate("/");
       toast.success("Sign up successful");
     } catch (error) {
