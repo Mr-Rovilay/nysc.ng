@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Product from "./Product";
 import Pagination from "./Pagination";
 import { publicRequest } from "../../middleware/middleware";
+import { useCart } from "../../middleware/useCart";
 
 const Products = ({ cat, filters, sort }) => {
   const [products, setProducts] = useState([]);
@@ -9,6 +10,7 @@ const Products = ({ cat, filters, sort }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const getProducts = async () => {
@@ -18,7 +20,7 @@ const Products = ({ cat, filters, sort }) => {
           params: {
             category: cat,
             page: currentPage,
-            limit: 10,
+            limit: 8,
             sort,
             new: filters ? "true" : "false",
           },
@@ -59,12 +61,10 @@ const Products = ({ cat, filters, sort }) => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {loading ? (
           <p>Loading...</p>
-        ) : cat ? (
-          filteredProducts.map((item) => <Product key={item._id} item={item} />)
         ) : (
-          products
-            .slice(0, 8)
-            .map((item) => <Product key={item._id} item={item} />)
+          filteredProducts.map((item) => (
+            <Product key={item._id} item={item} addToCart={addToCart} />
+          ))
         )}
       </div>
 

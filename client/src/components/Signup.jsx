@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { publicRequest } from "../../middleware/middleware";
 
-const Signin = () => {
+const Signup = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const navigate = useNavigate();
@@ -197,4 +197,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default Signup;

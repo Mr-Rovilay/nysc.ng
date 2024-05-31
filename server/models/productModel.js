@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 
+// Enum definitions for category and size
+const CategoryEnum = ["Male", "Female", "Male & Female"];
+const SizeEnum = ["S", "M", "L", "XL", "XXL", "Custom"];
+
+// Define the product schema
 const productSchema = new mongoose.Schema(
   {
     title: {
       type: String,
       required: true,
-      unique: true,
     },
     description: {
       type: String,
@@ -16,28 +20,35 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     categories: {
-      type: Array,
+      type: String,
+      enum: CategoryEnum,
+      required: true,
     },
     size: {
-      type: Array,
+      type: String,
+      enum: SizeEnum,
+      required: true,
     },
     stock: {
       type: Number,
       default: 0,
+      min: [0, "Stock cannot be negative"], // Added validation for stock
     },
     color: {
-      type: Array,
+      type: String,
     },
     price: {
       type: Number,
       required: true,
+      min: [0, "Price must be a positive number"], // Added validation for price
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically manage createdAt and updatedAt fields
   }
 );
 
+// Create the Product model from the schema
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;

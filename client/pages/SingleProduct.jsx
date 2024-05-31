@@ -1,14 +1,11 @@
-import { IoMdAdd } from "react-icons/io";
-import { FiShoppingCart } from "react-icons/fi";
-import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Footer from "../src/components/Footer";
 import Button from "../src/components/Button";
 import AnimationWrapper from "../src/common/AnimationWrapper";
-import CustomNavbar from "../src/components/CustomNavbar";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { publicRequest } from "../middleware/middleware";
-import { Select, Option } from "@material-tailwind/react";
+import { publicRequest, userRequest } from "../middleware/middleware";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -16,15 +13,19 @@ const SingleProduct = () => {
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [color, setColor] = useState("");
-  const [size, setSize] = useState("");
 
   useEffect(() => {
     const getProduct = async () => {
       try {
         const res = await publicRequest.get(`/products/${id}`);
         setProduct(res.data);
+        // Check if the product is already in the cart
+        const cartRes = await userRequest.get("/carts");
+        const cartItems = cartRes.data;
+        const isInCart = cartItems.some((item) => item.productId === id);
+        setInCart(isInCart);
       } catch (error) {
         setError("Failed to fetch product data");
       } finally {
@@ -34,35 +35,40 @@ const SingleProduct = () => {
     getProduct();
   }, [id]);
 
-  const handleQuantityChange = (type) => {
-    if (type === "increment") {
-      setQuantity(quantity + 1);
-    } else {
-      if (quantity > 1) {
-        setQuantity(quantity - 1);
+  const handleAddToCart = async () => {
+    try {
+      if (!inCart) {
+        const response = await userRequest.post("/carts", {
+          productId: id,
+          quantity: quantity,
+        });
+        console.log(response.data);
+        toast.success("Product added to cart successfully!");
+        setInCart(true);
+        updateCartCount();
+      } else {
+        toast.warning("Product is already in the cart!");
       }
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+      toast.error("Failed to add product to cart");
     }
   };
 
-  const handleColorChange = (value) => {
-    setColor(value);
+  const updateCartCount = async () => {
+    try {
+      const cartRes = await userRequest.get("/carts");
+      const cartItems = cartRes.data;
+      const cartCount = cartItems.length;
+      document.getElementById("cart-count").textContent = cartCount;
+    } catch (error) {
+      console.error("Error updating cart count:", error);
+    }
   };
-
-  const handleSizeChange = (value) => {
-    setSize(value);
-  };
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-  const handleClick = () => {};
 
   return (
     <AnimationWrapper>
+      <ToastContainer />
       <div className="max-h-screen bg-gray-100 dark:bg-gray-800 py-8">
         <div className="max-w-6xl flex justify-center items-center mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row -mx-4">
@@ -75,29 +81,12 @@ const SingleProduct = () => {
                 />
               </div>
               <div className="flex items-center justify-center mt-4">
-                <div className="w-1/2 px-2 mt-4">
+                <div className="px-2 mt-4" onClick={handleAddToCart}>
                   <Button
-                    text={"Add to Cart"}
+                    text={inCart ? "Product in Cart" : "Add to Cart"}
                     variant="secondary"
-                    onClick={handleClick}
+                    disabled={inCart}
                   />
-                </div>
-                <div className="flex items-center font-bold pt-3">
-                  <div
-                    className="text-2xl cursor-pointer"
-                    onClick={() => handleQuantityChange("decrement")}
-                  >
-                    <IoIosRemoveCircleOutline />
-                  </div>
-                  <span className="w-8 h-8 border border-teal-500 flex items-center justify-center mx-1 rounded-md">
-                    {quantity}
-                  </span>
-                  <div
-                    className="text-2xl cursor-pointer"
-                    onClick={() => handleQuantityChange("increment")}
-                  >
-                    <IoMdAdd />
-                  </div>
                 </div>
               </div>
             </div>
@@ -125,38 +114,15 @@ const SingleProduct = () => {
               </div>
               <div className="mb-4">
                 <span className="font-bold text-gray-700 dark:text-gray-300">
-                  Select Color:
+                  Select Color:{""}
                 </span>
-                <div className="">
-                  <Select
-                    onChange={(value) => handleColorChange(value)}
-                    name="color"
-                    label="Color"
-                    className="cursor-pointer"
-                  >
-                    {product.color?.map((color) => (
-                      <Option key={color} value={color}>
-                        {color}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
+                <div className="">{product.color}</div>
               </div>
               <div className="mb-4">
                 <span className="font-bold text-gray-700 dark:text-gray-300">
-                  Select Size:
+                  Select Size:{""}
                 </span>
-                <Select
-                  onChange={(value) => handleSizeChange(value)}
-                  name="size"
-                  className="cursor-pointer"
-                >
-                  {product.size?.map((size) => (
-                    <Option key={size} value={size}>
-                      {size}
-                    </Option>
-                  ))}
-                </Select>
+                {product.size}
               </div>
               <div>
                 <span className="font-bold text-gray-700 dark:text-gray-300">

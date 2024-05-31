@@ -18,7 +18,8 @@ body {
 }
 
 .D {
-  margin-top: 150px;
+  width: 80%;
+  margin: auto;
 }
 .mt {
   margin-top: 20px;

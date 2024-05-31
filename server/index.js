@@ -7,6 +7,7 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import upLoadImg from "./routes/uploadImage.js";
 import "dotenv/config";
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/carts", cartRoutes);
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
+app.use("/uploadImg", upLoadImg);
 
 app.get("/", (req, res) => {
   res.send("OK...my message");

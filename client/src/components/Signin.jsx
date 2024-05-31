@@ -1,18 +1,16 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Typography, Input, Button } from "@material-tailwind/react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import AnimationWrapper from "../common/AnimationWrapper";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthContext } from "../../middleware/AuthContext";
 import { publicRequest } from "../../middleware/middleware";
 
 const Signin = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +37,7 @@ const Signin = () => {
         password: password,
       });
       const data = response.data;
-      login(data.token);
+      localStorage.setItem("token", data.token);
       navigate("/");
       toast.success("Sign in successful");
     } catch (error) {
