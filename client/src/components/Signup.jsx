@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Typography, Input, Button } from "@material-tailwind/react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
-import CustomNavbar from "./CustomNavbar";
 import AnimationWrapper from "../common/AnimationWrapper";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { publicRequest } from "../../middleware/middleware";
+import { AuthContext } from "../../middleware/AuthContext";
 
 const Signup = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const navigate = useNavigate();
-
+  const { login } = useContext(AuthContext);
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,12 +41,13 @@ const Signup = () => {
     }
     try {
       const response = await publicRequest.post("/auth/signup", {
-        fullname: fullname,
-        email: email,
-        password: password,
+        fullname,
+        email,
+        password,
       });
-      const data = response.data;
-      localStorage.setItem("token", data.token);
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      login(token); // Pass the token to the login function
       navigate("/");
       toast.success("Sign up successful");
     } catch (error) {

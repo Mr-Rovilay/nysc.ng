@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Typography, Input, Button } from "@material-tailwind/react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import AnimationWrapper from "../common/AnimationWrapper";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import { publicRequest } from "../../middleware/middleware";
+import { AuthContext } from "../../middleware/AuthContext";
 
 const Signin = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,16 +36,17 @@ const Signin = () => {
     }
     try {
       const response = await publicRequest.post("/auth/signin", {
-        email: email,
-        password: password,
+        email,
+        password,
       });
-      const data = response.data;
-      localStorage.setItem("token", data.token);
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      login(token); // Pass the token to the login function
       navigate("/");
       toast.success("Sign in successful");
     } catch (error) {
-      toast.error("wrong credentials");
-      setError(error.response.data.error);
+      toast.error("User not found");
+      console.error(error);
     }
   };
 

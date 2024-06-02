@@ -1,124 +1,63 @@
-import React, { useEffect, useState } from "react";
-import { IoMdAdd } from "react-icons/io";
-import { IoIosRemoveCircleOutline } from "react-icons/io";
+// @refresh false
+import React, { useState } from "react";
+import { FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import AnimationWrapper from "../src/common/AnimationWrapper";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Card, Typography } from "@material-tailwind/react";
+import Pagination from "../src/components/Pagination";
+import Button from "../src/components/Button";
+import useCart from "../middleware/useCart";
 import { userRequest } from "../middleware/middleware";
 
 const CartPage = () => {
-  const [cart, setCart] = useState([]);
-  const [cartVisible, setCartVisible] = useState(false);
-  const [productItems, setProductItems] = useState([]);
+  const [cart, refetch] = useCart();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const response = await userRequest.get("/carts");
-        setCart(response.data.products);
-      } catch (error) {
-        toast.error("Error fetching cart:", error);
-      }
-    };
-
-    fetchCart();
-  }, []);
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      setCartVisible(true);
-    } else {
-      setCartVisible(false);
-    }
-  }, [cart]);
-
-  const handleIncrease = async (item) => {
+  const handleDelete = async () => {
     try {
-      const response = await userRequest.post(`/carts`, {
-        productId: item.productId,
-        quantity: 1,
-      });
-
-      if (response.status === 201) {
-        const updatedCart = cart.map((cartItem) => {
-          if (cartItem.productId === item.productId) {
-            return {
-              ...cartItem,
-              quantity: cartItem.quantity + 1,
-            };
-          }
-          return cartItem;
-        });
-        setCart(updatedCart);
-        toast.success("Quantity updated successfully");
-      } else {
-        toast.error("Failed to update quantity");
-      }
-    } catch (error) {
-      toast.error("Error updating quantity:", error);
-    }
-  };
-
-  const handleDecrease = async (item) => {
-    if (item.quantity > 1) {
-      try {
-        const response = await userRequest.post(`/carts`, {
-          productId: item.productId,
-          quantity: 1,
-        });
-
-        if (response.status === 201) {
-          const updatedCart = cart.map((cartItem) => {
-            if (cartItem.productId === item.productId) {
-              return {
-                ...cartItem,
-                quantity: cartItem.quantity - 1,
-              };
-            }
-            return cartItem;
-          });
-          setCart(updatedCart);
-          toast.success("Quantity reduced successfully");
-        } else {
-          toast.error("Failed to reduce quantity");
-        }
-      } catch (error) {
-        toast.error("Error reducing quantity:", error);
-      }
-    } else {
-      toast.error("Item quantity can't be zero");
-    }
-  };
-
-  const handleDelete = async (item) => {
-    try {
-      const response = await userRequest.delete(`/carts/${item.productId}`);
+      const response = await userRequest.delete("/carts");
       if (response.status === 204) {
-        setCart((prevCart) =>
-          prevCart.filter((cartItem) => cartItem.productId !== item.productId)
-        );
-        toast.success("Item deleted successfully");
+        refetch();
+        toast.success("Cart cleared successfully");
       } else {
-        toast.error("Failed to delete item");
+        toast.error("Failed to clear cart");
       }
     } catch (error) {
-      toast.error("Error deleting item:", error);
+      toast.error("An error occurred while clearing cart");
+      console.error("Error clearing cart:", error);
     }
   };
 
-  const calculateTotalPrice = (item) => item.price * item.quantity;
+  const removeFromCart = async (productId) => {
+    try {
+      const response = await userRequest.delete(`/carts/${productId}`);
+      if (response.status === 204) {
+        refetch();
+        toast.success("Item removed from cart successfully");
+      } else {
+        toast.error("Failed to remove item from cart");
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+      toast.error("An error occurred while removing item from cart");
+    }
+  };
 
-  const totalItems = cart.reduce(
-    (total, item) => total + calculateTotalPrice(item),
-    0
-  );
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   return (
-    <AnimationWrapper>
+    <div>
+      <ToastContainer />
       <div className="min-h-screen bg-gray-100">
         <div className="p-5 sm:p-2">
           <h1 className="text-3xl font-light text-center mb-8">YOUR CART</h1>
-          <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-white rounded-lg shadow-md mb-8">
+          <div className="relative flex flex-col sm:flex-row items-center justify-between p-5 bg-white rounded-lg shadow-md mb-8">
             <Link to={"/products"}>
               <button className="px-4 py-2 font-semibold border border-gray-300 rounded-lg bg-transparent hover:bg-gray-100 transition duration-300 mb-2 sm:mb-0">
                 CONTINUE SHOPPING
@@ -126,91 +65,201 @@ const CartPage = () => {
             </Link>
             <div className="flex flex-col sm:flex-row sm:items-center mb-2 sm:mb-0">
               <div className="underline cursor-pointer mx-2 mb-2 sm:mb-0">
-                Shopping Bag({cart.length})
+                Shopping Bag({cart.products?.length || 0})
               </div>
             </div>
             <button className="px-4 py-2 font-semibold text-white bg-black rounded-lg shadow-md hover:bg-gray-800 transition duration-300">
               CHECKOUT NOW
             </button>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between gap-5">
-            <div className="flex-3 bg-white rounded-lg shadow-md p-5">
-              {cart.map((item) => (
-                <div
-                  className="flex flex-col md:flex-row justify-between mb-5"
-                  key={item.productId}
-                >
-                  <div className="flex-1 space-y-8 border border-gray-300 rounded-lg p-5 bg-white shadow-md">
-                    <img
-                      className="w-52 rounded-lg"
-                      src={item.Image}
-                      alt="Product"
-                    />
-                    <div className="p-5 flex flex-col justify-around">
-                      <span className="font-semibold">
-                        Product: {item.title}
-                      </span>
-                      <span className="text-gray-600">
-                        ID: {item.productId}
-                      </span>
-                      <div className="w-5 h-5 rounded-full bg-black"></div>
-                      <span className="text-gray-600">
-                        Price: ${item.price}
-                      </span>
-                      <span className="text-gray-600">
-                        Total: {calculateTotalPrice(item).toFixed(2)}
-                      </span>
-                      <div className="flex-1 flex flex-col items-center justify-center">
-                        <div className="flex items-center mb-5">
-                          <div className="text-2xl cursor-pointer">
-                            <IoIosRemoveCircleOutline
-                              onClick={() => handleDecrease(item)}
-                            />
-                          </div>
-                          <div className="text-2xl mx-2">{item.quantity}</div>
-                          <div className="text-2xl cursor-pointer">
-                            <IoMdAdd onClick={() => handleIncrease(item)} />
-                          </div>
-                        </div>
-                        <div className="text-3xl font-light">${item.price}</div>
-                        <div
-                          className="text-red-500 cursor-pointer"
-                          onClick={() => handleDelete(item)}
-                        >
-                          Delete
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex-1 space-y-8 border border-gray-300 rounded-lg p-5 bg-white shadow-md">
-              <h1 className="text-2xl font-light mb-5">ORDER SUMMARY</h1>
-              <div className="flex justify-between my-5 text-base">
-                <span>Subtotal</span>
-                <span>${totalItems.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between my-5 text-base">
-                <span>Estimated Shipping</span>
-                <span>$ 10.00</span>
-              </div>
-              <div className="flex justify-between my-5 text-base">
-                <span>Shipping Discount</span>
-                <span>$ -10.00</span>
-              </div>
-              <div className="flex justify-between my-5 text-xl font-medium">
-                <span>Total</span>
-                <span>${totalItems.toFixed(2)}</span>
-              </div>
-              <button className="w-full px-4 py-2 text-white bg-black rounded-lg shadow-md font-semibold hover:bg-gray-800 transition duration-300">
-                CHECKOUT NOW
+            <div className="absolute top-0 right-0 mt-2 mr-2">
+              <button
+                className="px-4 py-2 font-semibold text-white bg-black rounded-lg shadow-md hover:bg-gray-800 transition duration-300"
+                onClick={handleDelete}
+              >
+                Clear cart
               </button>
             </div>
           </div>
+
+          <Card className="h-full w-full overflow-scroll mb-8">
+            <table className="w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      #
+                    </Typography>
+                  </th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      Image
+                    </Typography>
+                  </th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      Product Name
+                    </Typography>
+                  </th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      Quantity
+                    </Typography>
+                  </th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      Price
+                    </Typography>
+                  </th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      Action
+                    </Typography>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {cart.products?.map((item, index) => (
+                  <tr key={index}>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {index + 1}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <div className="rounded-full w-12 h-12 overflow-hidden">
+                        <img
+                          src={item.productId.image}
+                          alt={item.productId.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </td>
+
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal capitalize"
+                      >
+                        {item.productId.title}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal capitalize"
+                      >
+                        <button
+                          className="btn text-xl"
+                          onClick={() => handleDecreaseQuantity(item._id)}
+                        >
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          value={item.quantity}
+                          className="w-10 mx-2 text-center overflow-hidden appearance-none"
+                        />
+                        <button
+                          className="btn text-xl"
+                          onClick={() => handleIncreaseQuantity(item._id)}
+                        >
+                          +
+                        </button>
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {item.productId.price}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <button
+                        className="btn hover:bg-red-600"
+                        onClick={removeFromCart}
+                      >
+                        <FaTrashAlt className="text-red-500" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+          {/* customer details */}
+          <div className="flex flex-col md:flex-row justify-between items-start my-12 gap-8">
+            <div className="md:w-1/2 space-y-3">
+              <h3 className="text-lg font-semibold">Customer Details</h3>
+              <p className="capitalize">Name: name</p>
+              <p>Email: email</p>
+              <p>
+                User_id:<span className="text-xl bold"> id</span>
+              </p>
+            </div>
+            <div className="md:w-1/2 space-y-3">
+              <h3 className="text-lg font-semibold">Shopping Details</h3>
+              <p>Total Items: yuy</p>
+              <p>
+                Total Price: <span id="total-price">$total</span>
+              </p>
+              <Link to="/delivery-info">
+                <div className="mt-4">
+                  <Button variant="secondary" text={"proceed to checkout"} />
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Back to Menu Button */}
+          <div className="flex items-center justify-center mt-4">
+            <Link to="/product">
+              <Button variant="secondary" text={"back to menu"} />
+            </Link>
+          </div>
+
+          <div className="flex justify-center mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </div>
       </div>
-    </AnimationWrapper>
+    </div>
   );
 };
 

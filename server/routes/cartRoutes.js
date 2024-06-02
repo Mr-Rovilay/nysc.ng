@@ -10,9 +10,9 @@ import { verifyJWT } from "../middleware/verifyJWT.js";
 import { validateCart } from "../middleware/validate.js";
 const router = express();
 
-router.post("/", verifyJWT, createCart);
+router.post("/", verifyJWT, validateCart, createCart);
 router.delete("/:productId", verifyJWT, removeFromCart);
-router.put("/", verifyJWT, updateCart);
+router.put("/", verifyJWT, validateCart, updateCart);
 router.delete("/", verifyJWT, deleteCart);
 router.get("/", verifyJWT, getMyCart);
 

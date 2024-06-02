@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import Product from "./Product";
 import Pagination from "./Pagination";
 import { publicRequest } from "../../middleware/middleware";
-import { useCart } from "../../middleware/useCart";
 
 const Products = ({ cat, filters, sort }) => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const { addToCart } = useCart();
 
   useEffect(() => {
     const getProducts = async () => {
       setLoading(true);
+      setError(null);
       try {
         const res = await publicRequest.get("/products", {
           params: {
@@ -29,7 +29,7 @@ const Products = ({ cat, filters, sort }) => {
         setProducts(res.data.products);
         setTotalPages(res.data.pagination.totalPages);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        setError("Error fetching products");
       } finally {
         setLoading(false);
       }
@@ -58,23 +58,26 @@ const Products = ({ cat, filters, sort }) => {
 
   return (
     <div className="px-16 py-8 bg-gray-100 mb-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          filteredProducts.map((item) => (
-            <Product key={item._id} item={item} addToCart={addToCart} />
-          ))
-        )}
-      </div>
-
-      <div className="flex justify-center mt-6">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      </div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filteredProducts.map((item) => (
+              <Product key={item._id} item={item} />
+            ))}
+          </div>
+          <div className="flex justify-center mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

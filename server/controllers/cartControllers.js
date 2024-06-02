@@ -3,11 +3,10 @@ import Product from "../models/productModel.js";
 
 export const createCart = async (req, res) => {
   const { productId, quantity } = req.body;
+
   try {
     const userId = req.decoded.id;
-
     let cart = await Cart.findOne({ userId });
-
     const product = await Product.findById(productId);
 
     if (!product) {
@@ -15,31 +14,27 @@ export const createCart = async (req, res) => {
     }
 
     if (!cart) {
+      if (quantity > product.stock) {
+        return res.status(400).send("Quantity exceeds available stock");
+      }
       cart = new Cart({ userId, products: [{ productId, quantity }] });
+      await cart.save();
+      return res.status(201).json(cart);
     } else {
-      const itemIndex = cart.products.findIndex(
-        (item) => item.productId === productId
+      const itemIndex = cart.products.findIndex((item) =>
+        item.productId.equals(productId)
       );
       if (itemIndex > -1) {
-        // Check if adding quantity exceeds available stock
-        if (cart.products[itemIndex].quantity + quantity > product.stock) {
-          return res
-            .status(400)
-            .send("Adding quantity exceeds available stock");
-        }
-        cart.products[itemIndex].quantity += quantity;
-      } else {
-        // Check if adding quantity exceeds available stock
-        if (quantity > product.stock) {
-          return res
-            .status(400)
-            .send("Adding quantity exceeds available stock");
-        }
-        cart.products.push({ productId, quantity });
+        return res.status(400).send("Product already in cart");
       }
+
+      if (quantity > product.stock) {
+        return res.status(400).send("Quantity exceeds available stock");
+      }
+      cart.products.push({ productId, quantity });
+      await cart.save();
+      return res.status(201).json(cart);
     }
-    await cart.save();
-    res.status(201).json(cart);
   } catch (error) {
     console.error("Error adding to cart:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -139,6 +134,7 @@ export const updateCart = async (req, res) => {
   }
 };
 
+// deleteCart all cart
 export const deleteCart = async (req, res) => {
   const userId = req.decoded.id;
 
@@ -150,6 +146,23 @@ export const deleteCart = async (req, res) => {
     res.status(204).json();
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// DELETE endpoint to delete an item by ID
+const deleteCartItem = async (req, res) => {
+  try {
+    const { id } = req.params.id;
+    const carts = await Cart.deleteOne(id);
+
+    if (!carts) {
+      return res.status(404).send({ message: "Item not found" });
+    }
+    res.status(200).send({ message: "Item deleted successfully", carts });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Error deleting item", error: error.message });
   }
 };
 

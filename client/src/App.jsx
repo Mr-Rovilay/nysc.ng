@@ -14,7 +14,6 @@ import DashboardLayout from "../Layout/DashboardLayout";
 import DashBoard from "../pages/Admin/DashBoard";
 import ManageProduct from "../pages/Admin/ManageProduct";
 import Users from "../pages/Admin/Users";
-import { CartProvider } from "../middleware/useCart";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,7 +22,7 @@ const App = () => {
   const isAdminRoute = location.pathname.startsWith("/dashboard");
 
   return (
-    <CartProvider>
+    <>
       <ToastContainer />
       {!isAdminRoute && <CustomNavbar />}
       <Routes>
@@ -45,7 +44,7 @@ const App = () => {
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </CartProvider>
+    </>
   );
 };
 
