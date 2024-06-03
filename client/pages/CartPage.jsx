@@ -1,53 +1,56 @@
-// @refresh false
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Card, Typography } from "@material-tailwind/react";
 import Pagination from "../src/components/Pagination";
 import Button from "../src/components/Button";
 import useCart from "../middleware/useCart";
-import { userRequest } from "../middleware/middleware";
+import { AuthContext } from "../middleware/AuthContext";
 
 const CartPage = () => {
-  const [cart, refetch] = useCart();
+  const { user } = useContext(AuthContext);
+  console.log(user);
+  const [
+    cart,
+    refetch,
+    handleClearCart,
+    deleteCartItem,
+    updateCartItemQuantity,
+  ] = useCart();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  const handleDelete = async () => {
-    try {
-      const response = await userRequest.delete("/carts");
-      if (response.status === 204) {
-        refetch();
-        toast.success("Cart cleared successfully");
-      } else {
-        toast.error("Failed to clear cart");
-      }
-    } catch (error) {
-      toast.error("An error occurred while clearing cart");
-      console.error("Error clearing cart:", error);
-    }
-  };
-
-  const removeFromCart = async (productId) => {
-    try {
-      const response = await userRequest.delete(`/carts/${productId}`);
-      if (response.status === 204) {
-        refetch();
-        toast.success("Item removed from cart successfully");
-      } else {
-        toast.error("Failed to remove item from cart");
-      }
-    } catch (error) {
-      console.error("Error removing item from cart:", error);
-      toast.error("An error occurred while removing item from cart");
-    }
-  };
+  useEffect(() => {
+    const calculateTotalPrice = () => {
+      const total = cart.products?.reduce(
+        (acc, item) => acc + item.quantity * item.productId.price,
+        0
+      );
+      setTotalPrice(total || 0);
+    };
+    calculateTotalPrice();
+  }, [cart]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
+    }
+  };
+
+  const handleIncreaseQuantity = (itemId) => {
+    const item = cart.products.find((item) => item._id === itemId);
+    if (item) {
+      updateCartItemQuantity(itemId, item.quantity + 1);
+    }
+  };
+
+  const handleDecreaseQuantity = (itemId) => {
+    const item = cart.products.find((item) => item._id === itemId);
+    if (item && item.quantity > 1) {
+      updateCartItemQuantity(itemId, item.quantity - 1);
     }
   };
 
@@ -74,7 +77,7 @@ const CartPage = () => {
             <div className="absolute top-0 right-0 mt-2 mr-2">
               <button
                 className="px-4 py-2 font-semibold text-white bg-black rounded-lg shadow-md hover:bg-gray-800 transition duration-300"
-                onClick={handleDelete}
+                onClick={handleClearCart}
               >
                 Clear cart
               </button>
@@ -188,6 +191,7 @@ const CartPage = () => {
                           type="number"
                           value={item.quantity}
                           className="w-10 mx-2 text-center overflow-hidden appearance-none"
+                          readOnly
                         />
                         <button
                           className="btn text-xl"
@@ -209,7 +213,7 @@ const CartPage = () => {
                     <td className="p-4">
                       <button
                         className="btn hover:bg-red-600"
-                        onClick={removeFromCart}
+                        onClick={() => deleteCartItem(item.productId._id)}
                       >
                         <FaTrashAlt className="text-red-500" />
                       </button>
@@ -219,21 +223,15 @@ const CartPage = () => {
               </tbody>
             </table>
           </Card>
+
           {/* customer details */}
           <div className="flex flex-col md:flex-row justify-between items-start my-12 gap-8">
             <div className="md:w-1/2 space-y-3">
-              <h3 className="text-lg font-semibold">Customer Details</h3>
-              <p className="capitalize">Name: name</p>
-              <p>Email: email</p>
-              <p>
-                User_id:<span className="text-xl bold"> id</span>
-              </p>
-            </div>
-            <div className="md:w-1/2 space-y-3">
               <h3 className="text-lg font-semibold">Shopping Details</h3>
-              <p>Total Items: yuy</p>
+              <p>Total Items: {cart.products?.length || 0}</p>
               <p>
-                Total Price: <span id="total-price">$total</span>
+                Total Price:{" "}
+                <span id="total-price">${totalPrice.toFixed(2)}</span>
               </p>
               <Link to="/delivery-info">
                 <div className="mt-4">

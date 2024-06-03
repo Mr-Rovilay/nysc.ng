@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Product from "./Product";
 import Pagination from "./Pagination";
 import { publicRequest } from "../../middleware/middleware";
+import { Spinner } from "@material-tailwind/react";
 
 const Products = ({ cat, filters, sort }) => {
   const [products, setProducts] = useState([]);
@@ -59,7 +60,7 @@ const Products = ({ cat, filters, sort }) => {
   return (
     <div className="px-16 py-8 bg-gray-100 mb-6">
       {loading ? (
-        <p>Loading...</p>
+        <Spinner color="green" className="h-10 w-10" />
       ) : error ? (
         <p>{error}</p>
       ) : (

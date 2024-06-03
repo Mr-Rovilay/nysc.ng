@@ -42,95 +42,34 @@ export const createCart = async (req, res) => {
 };
 
 export const removeFromCart = async (req, res) => {
-  const { quantity } = req.body;
-  const { productId } = req.params;
   try {
-    const userId = req.decoded.id;
-
-    let cart = await Cart.findOne({ userId });
-
-    if (!cart) {
-      return res.status(404).send("Cart not found");
-    }
-
+    const cart = await Cart.findOne({ userId: req.decoded.id });
     const productIndex = cart.products.findIndex(
-      (item) => item.productId === productId
+      (p) => p.productId == req.params.productId
     );
 
-    if (productIndex === -1) {
-      return res.status(404).send("Product not found in cart");
-    }
-
-    // Remove the specified quantity from the product in the cart
-    cart.products[productIndex].quantity -= quantity;
-
-    // If the quantity becomes zero or negative, remove the product from the cart
-    if (cart.products[productIndex].quantity <= 0) {
+    if (productIndex >= 0) {
       cart.products.splice(productIndex, 1);
+      await cart.save();
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: "Product not found" });
     }
-
-    await cart.save();
-    res.status(200).json(cart);
   } catch (error) {
-    console.error("Error removing item from cart:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json(error);
   }
 };
 
 export const updateCart = async (req, res) => {
   try {
-    const userId = req.decoded.id;
-    const { products } = req.body;
-
-    // Find the cart by user ID
-    let cart = await Cart.findOne({ userId });
-
-    // If the cart doesn't exist, create a new one
-    if (!cart) {
-      cart = new Cart({ userId, products: [] });
-    }
-
-    // Check the stock for each product and update the cart accordingly
-    for (let item of products) {
-      const product = await Product.findById(item.productId);
-      if (!product) {
-        return res
-          .status(404)
-          .send(`Product with ID ${item.productId} not found`);
-      }
-
-      const productIndex = cart.products.findIndex(
-        (product) => product.productId.toString() === item.productId
-      );
-
-      if (productIndex > -1) {
-        // If the product already exists in the cart, update its quantity
-        const newQuantity =
-          cart.products[productIndex].quantity + item.quantity;
-        if (newQuantity > product.stock) {
-          return res
-            .status(400)
-            .send(`Not enough stock for product ${product.title}`);
-        }
-        cart.products[productIndex].quantity = newQuantity;
-      } else {
-        // If the product does not exist in the cart, add it
-        if (item.quantity > product.stock) {
-          return res
-            .status(400)
-            .send(`Not enough stock for product ${product.title}`);
-        }
-        cart.products.push(item);
-      }
-    }
-
-    // Save the updated cart
-    const updatedCart = await cart.save();
-
+    const updatedCart = await Cart.findOneAndUpdate(
+      { userId: req.decoded.id },
+      { $set: req.body },
+      { new: true }
+    );
     res.status(200).json(updatedCart);
   } catch (error) {
-    console.error("Error updating cart:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json(error);
   }
 };
 
@@ -150,19 +89,25 @@ export const deleteCart = async (req, res) => {
 };
 
 // DELETE endpoint to delete an item by ID
-const deleteCartItem = async (req, res) => {
-  try {
-    const { id } = req.params.id;
-    const carts = await Cart.deleteOne(id);
+export const deleteCartItem = async (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.decoded.id; // Assuming you have the user ID decoded from the JWT token
 
-    if (!carts) {
-      return res.status(404).send({ message: "Item not found" });
+  try {
+    const updatedCart = await Cart.findOneAndUpdate(
+      { userId },
+      { $pull: { products: { _id: itemId } } },
+      { new: true }
+    );
+
+    if (!updatedCart) {
+      return res.status(404).json({ message: "Cart not found" });
     }
-    res.status(200).send({ message: "Item deleted successfully", carts });
+
+    res.status(200).json({ message: "Item deleted successfully", updatedCart });
   } catch (error) {
-    res
-      .status(500)
-      .send({ message: "Error deleting item", error: error.message });
+    console.error("Error deleting item:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
