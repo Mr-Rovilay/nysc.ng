@@ -44,6 +44,7 @@ const useCart = () => {
       console.error("Error clearing cart:", error);
     }
   };
+
   const deleteCartItem = async (productId) => {
     try {
       const response = await userRequest.delete(`/carts/${productId}`);
@@ -59,20 +60,33 @@ const useCart = () => {
     }
   };
 
-  const updateCartItemQuantity = async (productId, newQuantity) => {
+  const increaseCartItemQuantity = async (productId) => {
     try {
-      const response = await userRequest.put(`/carts`, {
-        products: [{ productId, quantity: newQuantity }],
-      });
+      const response = await userRequest.post(`/carts/increase/${productId}`);
       if (response.status === 200) {
-        refetch();
-        toast.success("Item quantity updated successfully");
+        refetch(cart);
+        toast.success("Item quantity increased successfully");
       } else {
-        toast.error("Failed to update item quantity");
+        toast.error("Failed to increase item quantity");
       }
     } catch (error) {
-      console.error("Error updating item quantity:", error);
-      toast.error("An error occurred while updating item quantity");
+      console.error("Error increasing item quantity in cart:", error);
+      toast.error("An error occurred while increasing item quantity");
+    }
+  };
+
+  const decreaseCartItemQuantity = async (productId) => {
+    try {
+      const response = await userRequest.post(`/carts/decrease/${productId}`);
+      if (response.status === 200) {
+        refetch(cart);
+        toast.success("Item quantity decreased successfully");
+      } else {
+        toast.error("Failed to decrease item quantity");
+      }
+    } catch (error) {
+      console.error("Error decreasing item quantity in cart:", error);
+      toast.error("An error occurred while decreasing item quantity");
     }
   };
 
@@ -87,7 +101,8 @@ const useCart = () => {
     refetch,
     handleClearCart,
     deleteCartItem,
-    updateCartItemQuantity,
+    increaseCartItemQuantity,
+    decreaseCartItemQuantity,
   ];
 };
 

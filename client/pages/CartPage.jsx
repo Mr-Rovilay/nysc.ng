@@ -1,23 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Card, Typography } from "@material-tailwind/react";
 import Pagination from "../src/components/Pagination";
 import Button from "../src/components/Button";
 import useCart from "../middleware/useCart";
-import { AuthContext } from "../middleware/AuthContext";
 
 const CartPage = () => {
-  const { user } = useContext(AuthContext);
-  console.log(user);
   const [
     cart,
     refetch,
     handleClearCart,
     deleteCartItem,
-    updateCartItemQuantity,
+    increaseCartItemQuantity,
+    decreaseCartItemQuantity,
   ] = useCart();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -40,17 +38,23 @@ const CartPage = () => {
     }
   };
 
-  const handleIncreaseQuantity = (itemId) => {
-    const item = cart.products.find((item) => item._id === itemId);
-    if (item) {
-      updateCartItemQuantity(itemId, item.quantity + 1);
+  const handleIncreaseQuantity = async (productId) => {
+    try {
+      await increaseCartItemQuantity(productId);
+      refetch();
+    } catch (error) {
+      console.error("Error increasing item quantity in cart:", error);
+      toast.error("An error occurred while increasing item quantity");
     }
   };
 
-  const handleDecreaseQuantity = (itemId) => {
-    const item = cart.products.find((item) => item._id === itemId);
-    if (item && item.quantity > 1) {
-      updateCartItemQuantity(itemId, item.quantity - 1);
+  const handleDecreaseQuantity = async (productId) => {
+    try {
+      await decreaseCartItemQuantity(productId);
+      refetch();
+    } catch (error) {
+      console.error("Error decreasing item quantity in cart:", error);
+      toast.error("An error occurred while decreasing item quantity");
     }
   };
 
@@ -165,7 +169,6 @@ const CartPage = () => {
                         />
                       </div>
                     </td>
-
                     <td className="p-4">
                       <Typography
                         variant="small"
@@ -183,7 +186,9 @@ const CartPage = () => {
                       >
                         <button
                           className="btn text-xl"
-                          onClick={() => handleDecreaseQuantity(item._id)}
+                          onClick={() =>
+                            handleDecreaseQuantity(item.productId._id)
+                          }
                         >
                           -
                         </button>
@@ -195,7 +200,9 @@ const CartPage = () => {
                         />
                         <button
                           className="btn text-xl"
-                          onClick={() => handleIncreaseQuantity(item._id)}
+                          onClick={() =>
+                            handleIncreaseQuantity(item.productId._id)
+                          }
                         >
                           +
                         </button>
@@ -224,7 +231,6 @@ const CartPage = () => {
             </table>
           </Card>
 
-          {/* customer details */}
           <div className="flex flex-col md:flex-row justify-between items-start my-12 gap-8">
             <div className="md:w-1/2 space-y-3">
               <h3 className="text-lg font-semibold">Shopping Details</h3>
@@ -243,8 +249,8 @@ const CartPage = () => {
 
           {/* Back to Menu Button */}
           <div className="flex items-center justify-center mt-4">
-            <Link to="/product">
-              <Button variant="secondary" text={"back to menu"} />
+            <Link to="/products">
+              <Button variant="secondary" text={"back to products"} />
             </Link>
           </div>
 
