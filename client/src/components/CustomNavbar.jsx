@@ -34,7 +34,6 @@ const profileMenuItems = [
 const CustomNavbar = () => {
   const [openNav, setOpenNav] = useState(false);
   const { isAuthenticated, logout, token } = useContext(AuthContext);
-  console.log(token, isAuthenticated);
   const navigate = useNavigate();
   const [cart, refetch] = useCart();
 

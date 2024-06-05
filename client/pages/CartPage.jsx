@@ -7,6 +7,7 @@ import { Card, Typography } from "@material-tailwind/react";
 import Pagination from "../src/components/Pagination";
 import Button from "../src/components/Button";
 import useCart from "../middleware/useCart";
+import Loading from "../src/components/Loading";
 
 const CartPage = () => {
   const [
@@ -16,11 +17,12 @@ const CartPage = () => {
     deleteCartItem,
     increaseCartItemQuantity,
     decreaseCartItemQuantity,
+    isLoading,
+    isFetching,
   ] = useCart();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [cartVisible, setCartVisible] = useState(true);
 
   useEffect(() => {
     const calculateTotalPrice = () => {
@@ -42,7 +44,6 @@ const CartPage = () => {
   const handleIncreaseQuantity = async (productId) => {
     try {
       await increaseCartItemQuantity(productId);
-      refetch();
     } catch (error) {
       console.error("Error increasing item quantity in cart:", error);
       toast.error("An error occurred while increasing item quantity");
@@ -52,19 +53,22 @@ const CartPage = () => {
   const handleDecreaseQuantity = async (productId) => {
     try {
       await decreaseCartItemQuantity(productId);
-      refetch();
     } catch (error) {
       console.error("Error decreasing item quantity in cart:", error);
       toast.error("An error occurred while decreasing item quantity");
     }
   };
 
+  if (isLoading || isFetching) {
+    return <Loading />;
+  }
+
   return (
     <div>
       <ToastContainer />
       <div className="min-h-screen bg-gray-100">
         <div className="p-5 sm:p-2">
-          {cartVisible ? (
+          {cart.products?.length > 0 ? (
             <div>
               <h1 className="text-3xl font-light text-center mb-8">
                 YOUR CART
@@ -244,6 +248,10 @@ const CartPage = () => {
                   <h3 className="text-lg font-semibold">Shopping Details</h3>
                   <p>Total Items: {cart.products?.length || 0}</p>
                   <p>
+                    Delivery Price:{" "}
+                    <span id="total-price">${totalPrice === 0 ? 0 : 20}</span>
+                  </p>
+                  <p>
                     Total Price:{" "}
                     <span id="total-price">${totalPrice.toFixed(2)}</span>
                   </p>
@@ -251,7 +259,7 @@ const CartPage = () => {
                     <div className="mt-4">
                       <Button
                         variant="secondary"
-                        text={"proceed to checkout"}
+                        text={"proceed to delivery info"}
                       />
                     </div>
                   </Link>
@@ -274,8 +282,10 @@ const CartPage = () => {
               </div>
             </div>
           ) : (
-            <div className="text-center mt-20">
-              {cart.length > 0 && <p>Cart is empty. Please add products.</p>}
+            <div className="flex items-center justify-center h-full mt-10">
+              <p className="text-center">
+                Your cart is empty please add products to cart
+              </p>
             </div>
           )}
         </div>

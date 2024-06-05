@@ -17,7 +17,7 @@ router.put("/:orderId", verifyTokenAndAdmin, validateOrderStatus, updateOrder);
 //users can delete there orders
 router.delete("/:id", verifyJWT, deleteOrder);
 //admin can delete order
-router.delete("/admin/:id", verifyJWT, verifyTokenAndAdmin, adminDeleteOrder);
+router.delete("/admin/:id", verifyTokenAndAdmin, adminDeleteOrder);
 //admin get all orders
 router.get("/", verifyTokenAndAdmin, getAllOrders);
 router.get("/myorders", verifyJWT, getMyOrders);

@@ -104,7 +104,7 @@ const Product = ({ item }) => {
         <div className="">Stock {item.stock}</div>
 
         <button
-          className="flex items-center justify-center rounded-md px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 btn bg-black text-white hover:bg-dark-green cursor-pointer"
+          className="flex items-center justify-center rounded-md px-5 py-2.5 text-center text-sm font-medium btn bg-black text-white hover:bg-dark-green cursor-pointer"
           onClick={handleAddToCart}
           disabled={item.stock === 0 || inCart}
         >

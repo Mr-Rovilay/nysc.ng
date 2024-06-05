@@ -7,6 +7,7 @@ import CartPage from "../pages/CartPage";
 import Signin from "./components/Signin";
 import NotFoundPage from "../pages/NotFoundPage";
 import CheckoutPage from "../pages/CheckoutPage";
+import DeliveryInfoPage from "../pages/DeliveryInfoPage";
 import CustomNavbar from "./components/CustomNavbar";
 import UpdateProduct from "../pages/Admin/UpdateProduct";
 import CreateProduct from "../pages/Admin/CreateProduct";
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/products/:category" element={<ProductList />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/delivery-info" element={<DeliveryInfoPage />} />
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         {/* Admin Routes */}

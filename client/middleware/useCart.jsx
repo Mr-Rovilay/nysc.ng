@@ -13,6 +13,7 @@ const useCart = () => {
     data: cart = {},
     error,
     isError,
+    isLoading,
   } = useQuery({
     queryKey: ["carts", token],
     queryFn: async () => {
@@ -34,7 +35,7 @@ const useCart = () => {
     try {
       const response = await userRequest.delete("/carts");
       if (response.status === 204) {
-        refetch(cart);
+        await refetch(); // Removed the cart parameter
         toast.success("Cart cleared successfully");
       } else {
         toast.error("Failed to clear cart");
@@ -49,7 +50,7 @@ const useCart = () => {
     try {
       const response = await userRequest.delete(`/carts/${productId}`);
       if (response.status === 204) {
-        refetch(cart);
+        await refetch(); // Removed the cart parameter
         toast.success("Item removed from cart successfully");
       } else {
         toast.error("Failed to remove item from cart");
@@ -64,7 +65,7 @@ const useCart = () => {
     try {
       const response = await userRequest.post(`/carts/increase/${productId}`);
       if (response.status === 200) {
-        refetch(cart);
+        await refetch(); // Removed the cart parameter
         toast.success("Item quantity increased successfully");
       } else {
         toast.error("Failed to increase item quantity");
@@ -79,7 +80,7 @@ const useCart = () => {
     try {
       const response = await userRequest.post(`/carts/decrease/${productId}`);
       if (response.status === 200) {
-        refetch(cart);
+        await refetch(); // Removed the cart parameter
         toast.success("Item quantity decreased successfully");
       } else {
         toast.error("Failed to decrease item quantity");
@@ -103,6 +104,7 @@ const useCart = () => {
     deleteCartItem,
     increaseCartItemQuantity,
     decreaseCartItemQuantity,
+    isLoading, // Added loading state for UI purposes
   ];
 };
 

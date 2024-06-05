@@ -8,7 +8,6 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    console.log(storedToken);
     if (storedToken) {
       setIsAuthenticated(true);
       setToken(storedToken); // Set the token state if it exists
