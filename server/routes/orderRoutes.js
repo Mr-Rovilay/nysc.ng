@@ -12,7 +12,7 @@ import {
 } from "../controllers/orderControllers.js";
 const router = express.Router();
 
-router.post("/", verifyJWT, validateOrder, createOrder);
+router.post("/", verifyJWT, createOrder);
 router.put("/:orderId", verifyTokenAndAdmin, validateOrderStatus, updateOrder);
 //users can delete there orders
 router.delete("/:id", verifyJWT, deleteOrder);

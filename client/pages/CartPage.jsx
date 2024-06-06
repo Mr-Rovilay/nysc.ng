@@ -22,18 +22,24 @@ const CartPage = () => {
   ] = useCart();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [subTotal, setSubTotal] = useState(0);
+  const deliveryPrice = 20;
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    const calculateTotalPrice = () => {
+    const calculateSubTotal = () => {
       const total = cart.products?.reduce(
         (acc, item) => acc + item.quantity * item.productId.price,
         0
       );
-      setTotalPrice(total || 0);
+      setSubTotal(total || 0);
     };
-    calculateTotalPrice();
+    calculateSubTotal();
   }, [cart]);
+
+  useEffect(() => {
+    setTotalPrice(subTotal + (subTotal > 0 ? deliveryPrice : 0));
+  }, [subTotal]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -226,7 +232,7 @@ const CartPage = () => {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {item.productId.price}
+                            ${item.productId.price.toFixed(2)}
                           </Typography>
                         </td>
                         <td className="p-4">
@@ -248,8 +254,14 @@ const CartPage = () => {
                   <h3 className="text-lg font-semibold">Shopping Details</h3>
                   <p>Total Items: {cart.products?.length || 0}</p>
                   <p>
+                    Sub Total:{" "}
+                    <span id="sub-total-price">$ {subTotal.toFixed(2)}</span>
+                  </p>
+                  <p>
                     Delivery Price:{" "}
-                    <span id="total-price">${totalPrice === 0 ? 0 : 20}</span>
+                    <span id="delivery-price">
+                      ${subTotal === 0 ? 0 : deliveryPrice}
+                    </span>
                   </p>
                   <p>
                     Total Price:{" "}

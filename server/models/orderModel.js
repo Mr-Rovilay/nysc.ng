@@ -26,21 +26,22 @@ const orderSchema = mongoose.Schema(
         },
       },
     ],
-    totalAmount: {
+    amount: {
       type: Number,
       required: true,
     },
     address: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true },
+      type: Object,
+      required: true,
     },
     status: {
       type: String,
       enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
+    },
+    payment: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -48,6 +49,6 @@ const orderSchema = mongoose.Schema(
   }
 );
 
-const orderModel = mongoose.model("orders", orderSchema);
+const orderModel = mongoose.model("Order", orderSchema);
 
 export default orderModel;

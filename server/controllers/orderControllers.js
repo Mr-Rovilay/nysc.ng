@@ -1,68 +1,76 @@
-import Product from "../models/productModel.js";
+import express from "express";
+import stripe from "stripe";
 import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js";
+
+const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createOrder = async (req, res) => {
-  const userId = req.decoded.id;
-  const { products, address } = req.body;
-
+  const frontend_url = "http://localhost:5173";
   try {
-    // Initialize an array to collect products with insufficient stock
-    const insufficientStockProducts = [];
+    const { products, address } = req.body;
 
-    // Create an object to hold the product quantities for easy access
-    const productQuantities = products.reduce((acc, item) => {
-      acc[item.productId] = item.quantity;
-      return acc;
-    }, {});
+    // Validate the request
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ error: "Invalid products data" });
+    }
 
-    // Find all products in a single query
-    const productIds = products.map((item) => item.productId);
-    const productDocs = await Product.find({ _id: { $in: productIds } });
+    // Calculate total amount and create line items for Stripe checkout session
+    const lineItems = [];
+    let totalPrice = 0;
 
-    // Check stock for all products
-    productDocs.forEach((product) => {
-      const requiredQuantity = productQuantities[product._id.toString()];
-      if (product.stock < requiredQuantity) {
-        insufficientStockProducts.push(product.title); // Collect product titles with insufficient stock
+    for (const product of products) {
+      const { productId, quantity } = product;
+      const productDoc = await Product.findById(productId);
+
+      if (!productDoc) {
+        return res
+          .status(400)
+          .json({ error: `Product not found: ${productId}` });
       }
-    });
 
-    // If there are any products with insufficient stock, return an error message
-    if (insufficientStockProducts.length > 0) {
-      return res
-        .status(400)
-        .send(
-          `Not enough stock for product(s): ${insufficientStockProducts.join(
-            ", "
-          )}`
-        );
+      const price = productDoc.price;
+      totalPrice += price * quantity;
+
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: productDoc.title,
+          },
+          unit_amount: price * 100, // Convert to cents
+        },
+        quantity: quantity,
+      });
     }
 
-    // Create the order if all products have sufficient stock
-    const amount = productDocs.reduce((total, product) => {
-      const quantity = productQuantities[product._id.toString()];
-      return total + product.price * quantity;
-    }, 0);
+    // Add delivery charge to the total price
+    totalPrice += 20;
 
-    const newOrder = new Order({
-      userId,
-      products,
-      amount,
-      address,
+    // Save the order details in the database
+    const order = new Order({
+      userId: req.decoded.id, // Assuming you have user authentication and get the user ID from the request
+      products: products,
+      amount: totalPrice,
+      address: address,
+      payment: false, // Assuming payment is not completed yet
     });
 
-    const order = await newOrder.save();
+    // Create a session with line items for Stripe checkout
+    const session = await stripeClient.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: `${frontend_url}/verify?success=true&orderId=${order._id}`,
+      cancel_url: `${frontend_url}/verify?success=false&orderId=${order._id}`,
+    });
 
-    // Deduct stock for all products after creating the order
-    for (let product of productDocs) {
-      const quantity = productQuantities[product._id.toString()];
-      product.stock -= quantity;
-      await product.save();
-    }
+    await order.save();
 
-    res.status(201).json(order);
+    // Return the checkout session URL to the client
+    res.status(200).json({ success: true, session_url: session.url });
   } catch (error) {
-    console.error("Error inserting document into collection:", error);
+    console.error("Error creating order:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
