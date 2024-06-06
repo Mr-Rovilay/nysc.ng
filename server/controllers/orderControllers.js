@@ -15,10 +15,11 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ error: "Invalid products data" });
     }
 
-    // Calculate total amount and create line items for Stripe checkout session
-    const lineItems = [];
+    // Initialize variables for total price and line items
     let totalPrice = 0;
+    const lineItems = [];
 
+    // Loop through each product in the request
     for (const product of products) {
       const { productId, quantity } = product;
       const productDoc = await Product.findById(productId);
@@ -44,8 +45,9 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    // Add delivery charge to the total price
-    totalPrice += 20;
+    // Add delivery charges to the total price
+    const deliveryCharges = 20; // Example delivery charges
+    totalPrice += deliveryCharges;
 
     // Save the order details in the database
     const order = new Order({
@@ -59,7 +61,19 @@ export const createOrder = async (req, res) => {
     // Create a session with line items for Stripe checkout
     const session = await stripeClient.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: lineItems,
+      line_items: [
+        ...lineItems,
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Delivery Charges",
+            },
+            unit_amount: deliveryCharges * 100, // Convert to cents
+          },
+          quantity: 1,
+        },
+      ],
       mode: "payment",
       success_url: `${frontend_url}/verify?success=true&orderId=${order._id}`,
       cancel_url: `${frontend_url}/verify?success=false&orderId=${order._id}`,
@@ -72,6 +86,30 @@ export const createOrder = async (req, res) => {
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const verifyOrder = async (req, res) => {
+  const { orderId, success } = req.body;
+  try {
+    // Convert success string to boolean
+    const isSuccess = success === "true";
+
+    if (isSuccess) {
+      // Update order payment status to true
+      await Order.findByIdAndUpdate(orderId, { payment: true });
+      res.json({ success: true, message: "Payment successful" });
+    } else {
+      // Delete order if payment unsuccessful
+      await Order.findByIdAndDelete(orderId);
+      res.json({
+        success: false,
+        message: "Payment unsuccessful, order deleted",
+      });
+    }
+  } catch (error) {
+    console.error("Error verifying order:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
 };
 

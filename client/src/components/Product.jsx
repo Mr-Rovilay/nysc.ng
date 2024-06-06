@@ -1,10 +1,14 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { userRequest } from "../../middleware/middleware";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../middleware/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Product = ({ item }) => {
   const [inCart, setInCart] = useState(false);
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkCart = async () => {
@@ -28,6 +32,11 @@ const Product = ({ item }) => {
   }, [item._id]);
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      navigate("/signin");
+      return;
+    }
+
     try {
       const response = await userRequest.post("/carts", {
         productId: item._id,

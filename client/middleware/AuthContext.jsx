@@ -63,7 +63,6 @@ const AuthProvider = ({ children }) => {
     setToken(newToken);
     setUserInfo(getUserInfoFromToken(newToken));
   };
-  console.log(userInfo);
 
   return (
     <AuthContext.Provider

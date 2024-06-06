@@ -27,7 +27,7 @@ import useCart from "../../middleware/useCart";
 const profileMenuItems = [
   { label: "My Profile", icon: UserCircleIcon, to: "/profile" },
   { label: "Admin", icon: Cog6ToothIcon, to: "/admin" },
-  { label: "Order", icon: InboxArrowDownIcon, to: "/order" },
+  { label: "Orders", icon: InboxArrowDownIcon, to: "/myOrders" },
   { label: "Settings", icon: LifebuoyIcon, to: "/settings" },
 ];
 

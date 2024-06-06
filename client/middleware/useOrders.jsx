@@ -1,10 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { userRequest } from "./middleware";
 
 const useOrders = () => {
-  const { data, isLoading, isError, error } = useQuery("orders", {
-    queryFn: fetchOrders, // assuming fetchOrders is defined somewhere
-  });
+  // Delete order function
+  const deleteOrder = async (orderId) => {
+    try {
+      await userRequest.delete(`/orders/${orderId}`);
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      throw error;
+    }
+  };
+
+  // Fetch orders function
   const fetchOrders = async () => {
     try {
       const response = await userRequest.get("/orders/myorders");
@@ -14,47 +22,36 @@ const useOrders = () => {
       throw error;
     }
   };
-
-  const createOrder = async (products, address) => {
-    try {
-      const response = await userRequest.post("/orders", { products, address });
-      const newOrder = response.data;
-      return [...data, newOrder];
-    } catch (error) {
-      console.error("Error creating order:", error);
-      throw error;
-    }
-  };
-
-  const deleteOrder = async (orderId) => {
-    try {
-      await userRequest.delete(`/orders/${orderId}`);
-      return data.filter((order) => order.id !== orderId);
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      throw error;
-    }
-  };
-
+  // Cancel order function
   const cancelOrder = async (orderId) => {
     try {
       const response = await userRequest.put(`/orders/${orderId}/cancel`);
-      const updatedOrder = response.data;
-      return data.map((order) => (order.id === orderId ? updatedOrder : order));
+      return response.data;
     } catch (error) {
       console.error("Error canceling order:", error);
       throw error;
     }
   };
 
+  // Fetch orders query
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["orders"], // Change the queryKey to an array
+    queryFn: fetchOrders,
+  });
+
+  // Mutation for deleting an order
+  const deleteOrderMutation = useMutation(deleteOrder);
+
+  // Mutation for canceling an order
+  const cancelOrderMutation = useMutation(cancelOrder);
+
   return {
-    data,
+    orders: data,
     isLoading,
     isError,
     error,
-    createOrder,
-    deleteOrder,
-    cancelOrder,
+    deleteOrder: deleteOrderMutation.mutate,
+    cancelOrder: cancelOrderMutation.mutate,
   };
 };
 

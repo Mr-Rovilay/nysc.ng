@@ -17,6 +17,8 @@ import ManageProduct from "../pages/Admin/ManageProduct";
 import Users from "../pages/Admin/Users";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import VerifyPage from "../pages/VerifyPage";
+import OrdersPage from "../pages/OrderPage";
 
 const App = () => {
   const location = useLocation();
@@ -36,6 +38,8 @@ const App = () => {
         <Route path="/delivery-info" element={<DeliveryInfoPage />} />
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/myOrders" element={<OrdersPage />} />
         {/* Admin Routes */}
         <Route path="dashboard" element={<DashboardLayout />}>
           <Route path="create-product" element={<CreateProduct />} />

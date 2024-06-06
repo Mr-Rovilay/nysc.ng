@@ -12,7 +12,13 @@ import "dotenv/config";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // Allow requests from any origin
+    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
+  })
+);
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "50mb" }));
