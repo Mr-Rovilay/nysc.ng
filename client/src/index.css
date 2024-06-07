@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -8,19 +8,40 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Ubuntu, sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 body {
   min-height: 100vh;
   width: 80%;
   margin: auto;
+  background-color: #f9fafb;
+  color: #333;
+  line-height: 1.6;
 }
 
-.D {
-  width: 80%;
-  margin: auto;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
+
+a:hover {
+  text-decoration: underline;
+  color: green;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
 .mt {
   margin-top: 20px;
 }

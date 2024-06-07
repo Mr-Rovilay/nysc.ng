@@ -4,6 +4,7 @@ import { userRequest } from "../../middleware/middleware";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../middleware/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Buttons from "./Button";
 
 const Product = ({ item }) => {
   const [inCart, setInCart] = useState(false);
@@ -68,7 +69,7 @@ const Product = ({ item }) => {
       <div className="product-image-container relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
         <img
           className="product-image peer absolute top-0 right-0 h-full w-full object-cover"
-          src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60?a=b"
+          src="https://dailypost.ng/wp-content/uploads/2020/05/1_NBBsLhguP_B8dF6s02fY8g.jpeg"
           alt="product image"
         />
         <img
@@ -110,10 +111,14 @@ const Product = ({ item }) => {
         </div>
         <div className="">Categories: {item.categories}</div>
         <div className="">Color: {item.color}</div>
-        <div className="">Stock {item.stock}</div>
+        <div className="">
+          Available Stock: <span className="font-bold">{item.stock}</span>
+        </div>
 
-        <button
-          className="flex items-center justify-center rounded-md px-5 py-2.5 text-center text-sm font-medium btn bg-black text-white hover:bg-dark-green cursor-pointer"
+        <Buttons
+          className="flex items-center justify-center rounded-md px-5 py-2.5 text-center text-sm font-medium cursor-pointer mt-3"
+          variant="secondary"
+          text={" Add to cart"}
           onClick={handleAddToCart}
           disabled={item.stock === 0 || inCart}
         >
@@ -135,10 +140,9 @@ const Product = ({ item }) => {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              Add to cart
             </>
           )}
-        </button>
+        </Buttons>
       </div>
     </div>
   );

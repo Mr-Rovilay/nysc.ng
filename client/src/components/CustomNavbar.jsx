@@ -25,15 +25,14 @@ import { AuthContext } from "../../middleware/AuthContext";
 import useCart from "../../middleware/useCart";
 
 const profileMenuItems = [
-  { label: "My Profile", icon: UserCircleIcon, to: "/profile" },
-  { label: "Admin", icon: Cog6ToothIcon, to: "/admin" },
+  { label: "My Profile", icon: UserCircleIcon, to: "#" },
   { label: "Orders", icon: InboxArrowDownIcon, to: "/myOrders" },
-  { label: "Settings", icon: LifebuoyIcon, to: "/settings" },
+  { label: "Settings", icon: LifebuoyIcon, to: "#" },
 ];
 
 const CustomNavbar = () => {
   const [openNav, setOpenNav] = useState(false);
-  const { isAuthenticated, logout, token } = useContext(AuthContext);
+  const { isAuthenticated, logout, userInfo } = useContext(AuthContext);
   const navigate = useNavigate();
   const [cart, refetch] = useCart();
 
@@ -58,7 +57,7 @@ const CustomNavbar = () => {
           as="li"
           variant="small"
           color="blue-gray"
-          className="p-1 font-normal"
+          className="p-1 font-medium"
         >
           <Link
             to={
@@ -84,9 +83,9 @@ const CustomNavbar = () => {
   return (
     <div className="sticky top-0 w-full bg-transparent shadow-md z-50">
       <Navbar className="sticky bg-transparent top-0 z-10 h-max max-w-full rounded-md px-4 py-2 lg:px-8 lg:py-4">
-        <div className="flex items-center justify-between text-blue-gray-900">
+        <div className="flex items-center justify-between">
           <Link to={"/"}>
-            <Typography className="mr-4 cursor-pointer py-1.5 font-medium">
+            <Typography className="mr-4 cursor-pointer py-1.5 font-medium text-green-500">
               NYSCKIT.NG
             </Typography>
           </Link>
@@ -98,7 +97,10 @@ const CustomNavbar = () => {
                 className="pr-20"
                 containerProps={{ className: "min-w-[288px]" }}
               />
-              <Button size="sm" className="!absolute right-1 top-1 rounded">
+              <Button
+                size="sm"
+                className="!absolute right-1 top-1 rounded font-medium bg-green-500"
+              >
                 Search
               </Button>
             </div>
@@ -141,6 +143,26 @@ const CustomNavbar = () => {
                       </Link>
                     </MenuItem>
                   ))}
+                  {userInfo?.role === "admin" && (
+                    <MenuItem
+                      key="Admin"
+                      className="flex items-center gap-2 rounded hover:bg-gray-200"
+                    >
+                      {React.createElement(Cog6ToothIcon, {
+                        className: "h-4 w-4",
+                        strokeWidth: 2,
+                      })}
+                      <Link to="/dashboard" className="flex items-center">
+                        <Typography
+                          as="span"
+                          variant="small"
+                          className="font-normal"
+                        >
+                          Admin
+                        </Typography>
+                      </Link>
+                    </MenuItem>
+                  )}
                   <MenuItem
                     onClick={handleLogout}
                     className="flex items-center gap-2 rounded hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"

@@ -66,22 +66,24 @@ const CartPage = () => {
   };
 
   if (isLoading || isFetching) {
-    return <Loading />;
+    return (
+      <div className="mt-2">
+        <Loading />;
+      </div>
+    );
   }
 
   return (
     <div>
-      <ToastContainer />
       <div className="min-h-screen bg-gray-100">
+        <ToastContainer />
+        <h1 className="py-1.5 font-medium text-center mb-8">YOUR CART</h1>
         <div className="p-5 sm:p-2">
           {cart.products?.length > 0 ? (
             <div>
-              <h1 className="text-3xl font-light text-center mb-8">
-                YOUR CART
-              </h1>
               <div className="relative flex flex-col sm:flex-row items-center justify-between p-5 bg-white rounded-lg shadow-md mb-8">
                 <Link to={"/products"}>
-                  <button className="px-4 py-2 font-semibold border border-gray-300 rounded-lg bg-transparent hover:bg-gray-100 transition duration-300 mb-2 sm:mb-0">
+                  <button className="px-4 py-1.5 font-medium border border-gray-300 rounded-lg bg-transparent hover:bg-gray-100 transition duration-300 mb-2 sm:mb-0">
                     CONTINUE SHOPPING
                   </button>
                 </Link>
@@ -91,16 +93,17 @@ const CartPage = () => {
                     Shopping Bag({cart.products?.length || 0})
                   </div>
                 </div>
-                <button className="px-4 py-2 font-semibold text-white bg-black rounded-lg shadow-md hover:bg-gray-800 transition duration-300">
-                  CHECKOUT NOW
-                </button>
                 {cart.products?.length > 0 && (
                   <div className="absolute top-0 right-0 mt-2 mr-2">
                     <button
-                      className="px-4 py-2 font-semibold text-white bg-black rounded-lg shadow-md hover:bg-gray-800 transition duration-300"
+                      className="px-4 py-2 bg-red-500 font-semibold rounded-lg shadow-md transition duration-300 flex gap-2 items-center justify-center"
                       onClick={handleClearCart}
                     >
-                      Clear cart
+                      <span className="text-white"> Clear All</span>
+                      <span>
+                        {" "}
+                        <FaTrashAlt className="text-white" />{" "}
+                      </span>
                     </button>
                   </div>
                 )}
@@ -251,7 +254,7 @@ const CartPage = () => {
 
               <div className="flex flex-col md:flex-row justify-between items-start my-12 gap-8">
                 <div className="md:w-1/2 space-y-3">
-                  <h3 className="text-lg font-semibold">Shopping Details</h3>
+                  <h3 className="py-1.5 font-medium">Shopping Details</h3>
                   <p>Total Items: {cart.products?.length || 0}</p>
                   <p>
                     Sub Total:{" "}
@@ -295,7 +298,7 @@ const CartPage = () => {
             </div>
           ) : (
             <div className="flex items-center justify-center h-full mt-10">
-              <p className="text-center">
+              <p className="text-center py-1.5 font-medium">
                 Your cart is empty please add products to cart
               </p>
             </div>

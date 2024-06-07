@@ -9,8 +9,14 @@ const HomePage = () => {
     <div className="app">
       <AnimationWrapper>
         <Hero />
+      </AnimationWrapper>
+      <AnimationWrapper>
         <Categories />
+      </AnimationWrapper>
+      <AnimationWrapper>
         <Products />
+      </AnimationWrapper>
+      <AnimationWrapper>
         <Footer />
       </AnimationWrapper>
     </div>

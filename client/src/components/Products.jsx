@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Product from "./Product";
 import Pagination from "./Pagination";
 import { publicRequest } from "../../middleware/middleware";
 import Loading from "./Loading";
 
-const Products = ({ cat, filters, sort }) => {
+const Products = ({ category, filters, sort }) => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -19,7 +19,7 @@ const Products = ({ cat, filters, sort }) => {
       try {
         const res = await publicRequest.get("/products", {
           params: {
-            category: cat,
+            category: category,
             page: currentPage,
             limit: 8,
             sort,
@@ -37,7 +37,7 @@ const Products = ({ cat, filters, sort }) => {
     };
 
     getProducts();
-  }, [cat, currentPage, filters, sort]);
+  }, [category, currentPage, filters, sort]);
 
   useEffect(() => {
     if (filters) {
@@ -52,6 +52,18 @@ const Products = ({ cat, filters, sort }) => {
       setFilteredProducts(products);
     }
   }, [filters, products]);
+
+  useEffect(() => {
+    if (sort === "asc") {
+      setFilteredProducts(
+        [...filteredProducts].sort((a, b) => a.price - b.price)
+      );
+    } else if (sort === "desc") {
+      setFilteredProducts(
+        [...filteredProducts].sort((a, b) => b.price - a.price)
+      );
+    }
+  }, [sort, filteredProducts]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);

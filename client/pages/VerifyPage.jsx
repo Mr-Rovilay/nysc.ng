@@ -1,10 +1,12 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Loading from "../src/components/Loading";
 import { publicRequest } from "../middleware/middleware";
 import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loading from "../src/components/Loading";
 
 const VerifyPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const success = searchParams.get("success");
   const orderId = searchParams.get("orderId");
   const navigate = useNavigate();
@@ -19,10 +21,12 @@ const VerifyPage = () => {
       if (response.data.success) {
         navigate("/myOrders");
       } else {
+        toast.error("Order verification failed");
         navigate("/");
       }
     } catch (error) {
       console.error("Payment verification failed:", error);
+      toast.error("Payment verification failed");
       navigate("/");
     }
   };
@@ -33,6 +37,7 @@ const VerifyPage = () => {
 
   return (
     <div className="min-height-[60vh] grid">
+      <ToastContainer />
       <div className="mt-3">
         <Loading />
       </div>

@@ -2,9 +2,11 @@ import express from "express";
 import stripe from "stripe";
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
+import Cart from "../models/cartModel.js"; // Assuming you have a cart model
 
 const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 
+// Order creation endpoint
 export const createOrder = async (req, res) => {
   const frontend_url = "http://localhost:5173";
   try {
@@ -15,9 +17,26 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ error: "Invalid products data" });
     }
 
+    // Create an object to hold the product quantities for easy access
+    const productQuantities = products.reduce((acc, item) => {
+      acc[item.productId] = item.quantity;
+      return acc;
+    }, {});
+
     // Initialize variables for total price and line items
     let totalPrice = 0;
     const lineItems = [];
+    // Find all products in a single query
+    const productIds = products.map((item) => item.productId);
+    const productDocs = await Product.find({ _id: { $in: productIds } });
+
+    // Check stock for all products
+    productDocs.forEach((product) => {
+      const requiredQuantity = productQuantities[product._id.toString()];
+      if (product.stock < requiredQuantity) {
+        insufficientStockProducts.push(product.title); // Collect product titles with insufficient stock
+      }
+    });
 
     // Loop through each product in the request
     for (const product of products) {
@@ -45,6 +64,13 @@ export const createOrder = async (req, res) => {
       });
     }
 
+    // Deduct stock for all products after creating the order
+    for (let product of productDocs) {
+      const quantity = productQuantities[product._id.toString()];
+      product.stock -= quantity;
+      await product.save();
+    }
+
     // Add delivery charges to the total price
     const deliveryCharges = 20; // Example delivery charges
     totalPrice += deliveryCharges;
@@ -57,6 +83,12 @@ export const createOrder = async (req, res) => {
       address: address,
       payment: false, // Assuming payment is not completed yet
     });
+
+    // Create the order if all products have sufficient stock
+    const amount = productDocs.reduce((total, product) => {
+      const quantity = productQuantities[product._id.toString()];
+      return total + product.price * quantity;
+    }, 0);
 
     // Create a session with line items for Stripe checkout
     const session = await stripeClient.checkout.sessions.create({
@@ -89,6 +121,7 @@ export const createOrder = async (req, res) => {
   }
 };
 
+// Order verification endpoint
 export const verifyOrder = async (req, res) => {
   const { orderId, success } = req.body;
   try {
@@ -97,8 +130,15 @@ export const verifyOrder = async (req, res) => {
 
     if (isSuccess) {
       // Update order payment status to true
-      await Order.findByIdAndUpdate(orderId, { payment: true });
-      res.json({ success: true, message: "Payment successful" });
+      const order = await Order.findByIdAndUpdate(orderId, {
+        payment: true,
+        status: "Processing",
+      });
+
+      // Clear the user's cart
+      await Cart.findOneAndDelete({ userId: order.userId });
+
+      res.json({ success: true, message: "Payment successful, cart cleared" });
     } else {
       // Delete order if payment unsuccessful
       await Order.findByIdAndDelete(orderId);
@@ -211,7 +251,7 @@ export const getAllOrders = async (req, res) => {
 };
 
 export const cancelOrder = async (req, res) => {
-  const userId = req.decoded.id; // Assuming you use JWT and store the user ID in the token
+  const userId = req.decoded.id;
   const orderId = req.params.id;
 
   try {
@@ -239,11 +279,13 @@ export const cancelOrder = async (req, res) => {
     }
 
     // Restock the products in the order
-    for (let item of order.products) {
+    for (const item of order.products) {
       const product = await Product.findById(item.productId);
       if (product) {
         product.stock += item.quantity;
         await product.save();
+      } else {
+        console.warn(`Product with ID ${item.productId} not found`);
       }
     }
 

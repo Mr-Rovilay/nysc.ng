@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <div className="flex flex-col md:flex-row bg-gray-100 py-12 px-6 md:px-20">
       <div className="flex-1 start-0 md:mr-10">
-        <h1 className="mr-4 cursor-pointer py-1.5 text-xl font-semibold mb-4">
+        <h1 className="mr-4 cursor-pointer py-1.5 font-medium text-green-500 mb-4">
           NYSCKIT.NG
         </h1>
         <p className="mb-4">
@@ -30,7 +30,9 @@ const Footer = () => {
         </div>
       </div>
       <div className="flex-1 md:mr-10 mt-6 md:mt-0">
-        <h3 className="text-xl font-semibold mb-4">Useful Links</h3>
+        <h1 className="mr-4 py-1.5 font-medium text-green-500 mb-4">
+          Useful Links
+        </h1>
         <ul className="list-none">
           <li className="mb-2">
             <a href="/">Home</a>
@@ -62,10 +64,10 @@ const Footer = () => {
         </ul>
       </div>
       <div className="flex-1 mt-6 md:mt-0">
-        <h3 className="text-xl font-semibold mb-4">Contact</h3>
+        <h3 className="mr-4 py-1.5 font-medium text-green-500 mb-4">Contact</h3>
         <div className="flex items-center mb-4">
           <IoHomeOutline className="w-6 h-6 mr-2" />
-          <p>622 Dixie Path, South Tobinchester 98336</p>
+          <p className="capitalize">14 akinola osan street igando egan lagos</p>
         </div>
         <div className="flex items-center mb-4">
           <MdOutlinePhoneInTalk className="w-6 h-6 mr-2" />
@@ -73,7 +75,7 @@ const Footer = () => {
         </div>
         <div className="flex items-center mb-4">
           <CiMail className="w-6 h-6 mr-2" />
-          <p>contact@lama.dev</p>
+          <a href="maria@gmail.com">maria@gmail.com</a>
         </div>
         <img
           src="https://i.ibb.co/Qfvn4z6/payment.png"

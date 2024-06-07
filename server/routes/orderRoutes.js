@@ -24,6 +24,6 @@ router.delete("/admin/:id", verifyTokenAndAdmin, adminDeleteOrder);
 router.get("/", verifyTokenAndAdmin, getAllOrders);
 router.get("/myorders", verifyJWT, getMyOrders);
 //cancel order by user
-router.put("/:id/cancel", verifyJWT, cancelOrder);
+router.post("/:id/cancel", verifyJWT, cancelOrder);
 
 export default router;

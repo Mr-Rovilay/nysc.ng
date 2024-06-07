@@ -19,6 +19,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VerifyPage from "../pages/VerifyPage";
 import OrdersPage from "../pages/OrderPage";
+import ProtectedRoute from "../middleware/ProtectedRoute";
 
 const App = () => {
   const location = useLocation();
@@ -41,7 +42,14 @@ const App = () => {
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/myOrders" element={<OrdersPage />} />
         {/* Admin Routes */}
-        <Route path="dashboard" element={<DashboardLayout />}>
+        <Route
+          path="dashboard/*"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="create-product" element={<CreateProduct />} />
           <Route path="users" element={<Users />} />
           <Route path="products/:productId/edit" element={<UpdateProduct />} />

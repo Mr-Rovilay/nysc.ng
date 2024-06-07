@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import AnimationWrapper from "../src/common/AnimationWrapper";
 import Footer from "../src/components/Footer";
 import Products from "../src/components/Products";
@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 
 const ProductList = () => {
   const location = useLocation();
-  const cat = location.pathname.split("/")[2];
+  const category = location.pathname.split("/")[2] || ""; // Handle empty category
   const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState("newest");
+  const [sort, setSort] = useState(""); // Set default sort as null or ""
 
   const handleFilters = (value, filterType) => {
     setFilters({
@@ -20,23 +20,24 @@ const ProductList = () => {
 
   return (
     <AnimationWrapper>
-      <div className="pt-20 max-h-screen py-6 px-6">
+      <div className="pt-20 px-6">
         <h1 className="text-4xl font-bold p-5 ml-4 capitalize">
-          Dresses: {cat ? cat : "All"}
+          Dresses: {category ? category : "All"}
         </h1>
 
-        <div className="md:w-[92.2%] flex flex-col md:flex-row justify-between m-5">
-          <div className="m-5 flex flex-col gap-4 md:flex-row md:items-center md:w-auto">
+        <div className="md:w-full md:max-w-5xl mx-auto flex flex-col md:flex-row justify-between md:px-6 md:py-4 md:space-x-4">
+          <div className="flex flex-col gap-4 md:w-1/2">
             <span className="text-xl font-semibold mr-5 mb-2 md:mb-0">
               Filter Products:
             </span>
-            <div className="w-72 cursor-pointer hover:bg-gray-400 ">
+            <div className="w-full md:w-72 cursor-pointer hover:bg-gray-400">
               <Select
                 onChange={(value) => handleFilters(value, "color")}
                 name="color"
                 label="Color"
                 className="cursor-pointer"
               >
+                <Option value="">Default</Option>
                 <Option value="white">White</Option>
                 <Option value="black">Black</Option>
                 <Option value="red">Red</Option>
@@ -45,13 +46,14 @@ const ProductList = () => {
                 <Option value="green">Green</Option>
               </Select>
             </div>
-            <div className="w-72 cursor-pointer hover:bg-gray-400 ">
+            <div className="w-full md:w-72 cursor-pointer hover:bg-gray-400">
               <Select
                 onChange={(value) => handleFilters(value, "size")}
                 name="size"
                 label="Size"
                 className="cursor-pointer"
               >
+                <Option value="">Default</Option>
                 <Option value="XS">XS</Option>
                 <Option value="S">S</Option>
                 <Option value="M">M</Option>
@@ -60,25 +62,30 @@ const ProductList = () => {
               </Select>
             </div>
           </div>
-          <div className="m-5 flex flex-col gap-4 md:flex-row md:items-center md:w-auto">
+          <div className="flex flex-col gap-4 md:w-1/2">
             <span className="text-xl font-semibold mr-5 mb-2 md:mb-0">
-              Sort Products:
+              Sort:
             </span>
-            <div className="w-72">
+            <div className="w-full md:w-72">
               <Select
                 onChange={(value) => setSort(value)}
                 name="newest"
                 label="Newest"
                 className="cursor-pointer"
               >
-                <Option value="asc">Price (asc)</Option>
-                <Option value="desc">Price (desc)</Option>
+                <Option value="">Default</Option>
+                <Option value="asc">Price (lowest)</Option>
+                <Option value="desc">Price (highest)</Option>
               </Select>
             </div>
           </div>
         </div>
       </div>
-      <Products cat={cat} filters={filters} sort={sort} />
+      <Products
+        category={category}
+        filters={filters}
+        sort={sort || "newest"} // Handle default sort
+      />
       <Footer />
     </AnimationWrapper>
   );

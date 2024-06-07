@@ -24,7 +24,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     <div className="flex items-center gap-4">
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 bg-green-500"
         onClick={prev}
         disabled={currentPage === 1}
       >
@@ -32,14 +32,14 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       </Button>
       <div className="flex items-center gap-2">
         {Array.from({ length: totalPages }, (_, i) => (
-          <IconButton key={i} {...getItemProps(i + 1)}>
+          <IconButton className="bg-green-500" key={i} {...getItemProps(i + 1)}>
             {i + 1}
           </IconButton>
         ))}
       </div>
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 bg-green-500"
         onClick={next}
         disabled={currentPage === totalPages}
       >

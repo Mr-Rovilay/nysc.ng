@@ -18,12 +18,11 @@ const Hero = () => {
         </div>
         <p className="mt-4 text-black">or</p>
         <div className="mt-4">
-          <a
+          <Button
+            variant={"secondary"}
+            text={"Send Message on WhatsApp"}
             href="https://api.whatsapp.com/send?phone=+2348114080865"
-            className="bg-green-500 text-white hover:bg-green-400 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
-          >
-            Send Message on WhatsApp
-          </a>
+          ></Button>
         </div>
       </div>
     </div>

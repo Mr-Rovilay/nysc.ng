@@ -14,7 +14,7 @@ const ContactPop = () => {
   return (
     <Popover placement="bottom-end">
       <PopoverHandler>
-        <Button>Contact Us</Button>
+        <Button className="font-medium bg-green-500">Contact Us</Button>
       </PopoverHandler>
       <PopoverContent className="w-72">
         <div className="mb-4 flex items-center gap-4 border-b border-blue-gray-50 pb-4">
@@ -96,7 +96,7 @@ const ContactPop = () => {
                   />
                 </svg>
               </ListItemPrefix>
-              akinolaayodeji007@gmial.com
+              whatsapp me
             </ListItem>
           </a>
         </List>

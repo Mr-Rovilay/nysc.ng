@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import Button from "../src/components/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useCart from "../middleware/useCart";
@@ -42,11 +40,12 @@ const DeliveryInfoPage = () => {
   const onChangeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setData((data) => ({ ...data, [name]: value }));
+    setData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const placeOrder = async (e) => {
     e.preventDefault();
+
     const orderItems = cart.products?.map((item) => ({
       productId: item.productId._id,
       quantity: item.quantity,
@@ -59,11 +58,8 @@ const DeliveryInfoPage = () => {
       amount: totalPrice,
     };
 
-    console.log("Order Data: ", orderData); // Log for debugging
-
     try {
       const response = await userRequest.post("/orders", orderData);
-      console.log(response);
 
       if (response.data.success) {
         const { session_url } = response.data;
@@ -81,7 +77,7 @@ const DeliveryInfoPage = () => {
     <form className="flex flex-col gap-6" onSubmit={placeOrder}>
       <ToastContainer />
       <div className="w-full max-w-[min(30%,500px)]">
-        <p className="text-2xl font-medium mb-12 capitalize my-10">
+        <p className="text-xl py-1.5 font-medium capitalize my-10">
           Delivery Information
         </p>
         <div className="flex gap-2 mb-4">
@@ -175,30 +171,25 @@ const DeliveryInfoPage = () => {
       <div className="w-full max-w-[min(40%,500px)]">
         <div className="flex flex-end">
           <div className="md:w-1/2 space-y-3">
-            <h3 className="text-lg font-semibold">Shopping Details</h3>
+            <h3 className="py-1.5 font-medium">Shopping Details</h3>
             <p>Total Items: {cart.products?.length || 0}</p>
             <p>
-              Sub Total: <span id="total-price">$ {subTotal.toFixed(2)}</span>
+              Sub Total: <span>${subTotal.toFixed(2)}</span>
             </p>
             <p>
-              Delivery Price:{" "}
-              <span id="delivery-price">
-                ${subTotal === 0 ? 0 : deliveryPrice}
-              </span>
+              Delivery Price: <span>${subTotal === 0 ? 0 : deliveryPrice}</span>
             </p>
             <p>
-              Total Price:{" "}
-              <span id="total-price">
-                $ {(subTotal + deliveryPrice).toFixed(2)}
-              </span>
+              Total Price: <span>${totalPrice.toFixed(2)}</span>
             </p>
 
             <div className="mt-4">
-              <Button
-                variant="secondary"
-                text={"Proceed to Payment"}
-                type={"submit"}
-              />
+              <button
+                type="submit"
+                className="px-4 py-2 font-medium bg-green-500 text-white rounded"
+              >
+                Proceed to Payment
+              </button>
             </div>
           </div>
         </div>

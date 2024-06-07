@@ -14,11 +14,7 @@ const CategoryItem = ({ item }) => {
           <h1 className="text-white text-2xl md:text-3xl font-bold mb-5">
             {item.title}
           </h1>
-          <Button
-            text={"Shop Now"}
-            variant="primary"
-            className={"text-black bg-white hover:bg-gray-200"}
-          />
+          <Button text={"Shop Now"} variant="secondary" />
         </div>
       </Link>
     </div>

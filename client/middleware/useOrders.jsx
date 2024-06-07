@@ -1,11 +1,14 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { userRequest } from "./middleware";
 
 const useOrders = () => {
+  const queryClient = useQueryClient(); // Initialize the query client
+
   // Delete order function
   const deleteOrder = async (orderId) => {
     try {
       await userRequest.delete(`/orders/${orderId}`);
+      queryClient.invalidateQueries("orders"); // Invalidate orders query to refetch
     } catch (error) {
       console.error("Error deleting order:", error);
       throw error;
@@ -22,10 +25,13 @@ const useOrders = () => {
       throw error;
     }
   };
+
   // Cancel order function
   const cancelOrder = async (orderId) => {
     try {
-      const response = await userRequest.put(`/orders/${orderId}/cancel`);
+      const response = await userRequest.post(`/orders/${orderId}/cancel`);
+      console.log(response);
+      queryClient.invalidateQueries("orders"); // Invalidate orders query to refetch
       return response.data;
     } catch (error) {
       console.error("Error canceling order:", error);
@@ -34,24 +40,23 @@ const useOrders = () => {
   };
 
   // Fetch orders query
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["orders"], // Change the queryKey to an array
-    queryFn: fetchOrders,
-  });
-
-  // Mutation for deleting an order
-  const deleteOrderMutation = useMutation(deleteOrder);
-
-  // Mutation for canceling an order
-  const cancelOrderMutation = useMutation(cancelOrder);
-
-  return {
-    orders: data,
+  const {
+    data: orders,
     isLoading,
     isError,
     error,
-    deleteOrder: deleteOrderMutation.mutate,
-    cancelOrder: cancelOrderMutation.mutate,
+  } = useQuery({
+    queryKey: ["orders"], // Using an array as the queryKey
+    queryFn: fetchOrders,
+  });
+
+  return {
+    orders,
+    isLoading,
+    isError,
+    error,
+    deleteOrder,
+    cancelOrder,
   };
 };
 
