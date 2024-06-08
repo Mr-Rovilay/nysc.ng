@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { userRequest } from "../../middleware/middleware";
 import { uploadImage } from "../../src/common/aws";
+import Loading from "../../src/components/Loading";
 
 const CreateProduct = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -23,13 +24,12 @@ const CreateProduct = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    setLoading(true); // Set loading state to true
     try {
       if (data.image[0]) {
         const uploadedImageUrl = await uploadImage(data.image[0]);
         if (uploadedImageUrl) {
           data.imageUrl = uploadedImageUrl;
-          toast.success("image added successfully!");
-          reset(); // Reset form fields
         }
       } else {
         toast.error("Please select an image.");
@@ -39,8 +39,8 @@ const CreateProduct = () => {
         title: data.title,
         description: data.description,
         image: data.imageUrl,
-        categories: categories, // Ensure this is an array
-        size: size, // Ensure this is an array
+        categories, // Ensure this is an array
+        size, // Ensure this is an array
         stock: data.stock,
         color: data.color,
         price: parseFloat(data.price),
@@ -49,15 +49,14 @@ const CreateProduct = () => {
       console.log(productItem);
 
       const response = await userRequest.post("/products", productItem);
-      console.log(response.data);
       toast.success("Product added successfully!");
       reset();
-      navigate("/dashboard/manage-products");
+      navigate("/admin/dashboard/manageProducts");
     } catch (error) {
       console.error("Error adding product:", error);
       toast.error("Failed to add product.");
     } finally {
-      setLoading(false); // Set loading state to false regardless of success or failure
+      setLoading(false);
     }
   };
 
@@ -77,18 +76,22 @@ const CreateProduct = () => {
   const handleSizeChange = (value) => {
     setSize(value);
   };
+
   const handleCategoryChange = (value) => {
     setCategories(value);
   };
 
   return (
-    <div className="md:w-[870px] mx-auto ">
+    <div className="container mx-auto p-4">
       <ToastContainer />
-      <h2 className="text-2xl font-semibold my-4">
-        Upload A New <span className="text-green">Product</span>
+      <h2 className="text-2xl font-semibold my-4 text-center">
+        Upload A New <span className="text-green-500">Product</span>
       </h2>
-      <div className="flex items-center justify-center mt-11">
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
+      <div className="flex justify-center mt-11">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full max-w-lg space-y-6"
+        >
           <div className="w-full">
             <label className="label">
               <span className="label-text">Product Title*</span>
@@ -185,16 +188,23 @@ const CreateProduct = () => {
               className="file-input w-full max-w-xs bg-black"
             />
           </div>
+          {previewUrl && (
+            <div className="w-full my-4">
+              <img src={previewUrl} alt="Preview" className="w-50 h-50" />
+            </div>
+          )}
           <Button
-            className="btn bg-black text-white hover:bg-dark-green px-6"
+            className="btn bg-green-500 text-white px-6 mt-2"
             type="submit"
             disabled={loading}
           >
             {loading ? (
-              <Button loading={true}>Loading</Button>
+              <span>
+                <Loading />
+              </span>
             ) : (
               "Create Product"
-            )}{" "}
+            )}
           </Button>
         </form>
       </div>

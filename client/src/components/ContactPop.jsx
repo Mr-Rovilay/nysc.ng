@@ -16,7 +16,7 @@ const ContactPop = () => {
       <PopoverHandler>
         <Button className="font-medium bg-green-500">Contact Us</Button>
       </PopoverHandler>
-      <PopoverContent className="w-72">
+      <PopoverContent className="w-72 z-0">
         <div className="mb-4 flex items-center gap-4 border-b border-blue-gray-50 pb-4">
           <Avatar
             src="https://docs.material-tailwind.com/img/team-4.jpg"

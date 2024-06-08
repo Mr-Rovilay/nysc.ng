@@ -242,9 +242,22 @@ export const getMyOrders = async (req, res) => {
 };
 
 export const getAllOrders = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10; // Adjust limit as needed
+  const skip = (page - 1) * limit;
+
   try {
-    const orders = await Order.find();
-    res.status(200).json(orders);
+    const orders = await Order.find().skip(skip).limit(limit);
+    const totalOrders = await Order.countDocuments();
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    res.status(200).json({
+      orders,
+      pagination: {
+        currentPage: page,
+        totalPages,
+      },
+    });
   } catch (err) {
     res.status(500).json(err);
   }

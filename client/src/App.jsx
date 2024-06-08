@@ -1,4 +1,8 @@
 import { Route, Routes, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Import your components/pages here
 import HomePage from "../pages/HomePage";
 import Signup from "./components/Signup";
 import ProductList from "../pages/ProductList";
@@ -15,21 +19,22 @@ import DashboardLayout from "../Layout/DashboardLayout";
 import DashBoard from "../pages/Admin/DashBoard";
 import ManageProduct from "../pages/Admin/ManageProduct";
 import Users from "../pages/Admin/Users";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import VerifyPage from "../pages/VerifyPage";
 import OrdersPage from "../pages/OrderPage";
 import ProtectedRoute from "../middleware/ProtectedRoute";
+import ManageOrders from "../pages/Admin/ManageOrders";
 
 const App = () => {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/dashboard");
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <>
       <ToastContainer />
+      {/* Render the custom navbar if not an admin route */}
       {!isAdminRoute && <CustomNavbar />}
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
@@ -41,11 +46,12 @@ const App = () => {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/myOrders" element={<OrdersPage />} />
+
         {/* Admin Routes */}
         <Route
-          path="dashboard/*"
+          path="/admin/dashboard"
           element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requireAdmin={true}>
               <DashboardLayout />
             </ProtectedRoute>
           }
@@ -53,9 +59,12 @@ const App = () => {
           <Route path="create-product" element={<CreateProduct />} />
           <Route path="users" element={<Users />} />
           <Route path="products/:productId/edit" element={<UpdateProduct />} />
-          <Route path="manage-products" element={<ManageProduct />} />
+          <Route path="manageProducts" element={<ManageProduct />} />
+          <Route path="manageOrders" element={<ManageOrders />} />
           <Route path="" element={<DashBoard />} />
         </Route>
+
+        {/* Fallback Route for 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

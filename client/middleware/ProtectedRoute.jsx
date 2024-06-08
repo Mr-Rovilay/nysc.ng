@@ -2,11 +2,23 @@ import { Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
 
-const ProtectedRoute = ({ children, requiredRole }) => {
+const ProtectedRoute = ({
+  children,
+  requireAdmin = false,
+  redirectPath = "/",
+}) => {
   const { isAuthenticated, userInfo } = useContext(AuthContext);
 
-  if (!isAuthenticated || (requiredRole && userInfo?.role !== requiredRole)) {
-    return <Navigate to="/signin" />;
+  // Check if the user is authenticated
+  if (!isAuthenticated) {
+    console.error("ProtectedRoute: User is not authenticated.");
+    return <Navigate to={redirectPath} />;
+  }
+
+  // Check if the user is an admin if required
+  if (requireAdmin && !userInfo?.isAdmin) {
+    console.warn("ProtectedRoute: User does not have admin access.");
+    return <Navigate to={redirectPath} />;
   }
 
   return children;

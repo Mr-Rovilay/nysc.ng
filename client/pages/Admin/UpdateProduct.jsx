@@ -1,23 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  Input,
-  Textarea,
-  Button,
-  Select,
-  Option,
-} from "@material-tailwind/react";
+import { Input, Textarea, Button, Select } from "@material-tailwind/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { userRequest } from "../../middleware/middleware";
 import { uploadImage } from "../../src/common/aws";
+import Loading from "../../src/components/Loading";
 
 const UpdateProduct = () => {
   const [product, setProduct] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [categories, setCategories] = useState("");
-  const [size, setSize] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [size, setSize] = useState([]);
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, reset, watch } = useForm();
   const navigate = useNavigate();
@@ -25,24 +20,30 @@ const UpdateProduct = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setLoading(true);
       try {
         const response = await userRequest.get(`/products/${productId}`);
         setProduct(response.data);
+        setCategories(response.data.categories);
+        setSize(response.data.size);
+        reset(response.data);
       } catch (error) {
         console.error("There was an error fetching the product!", error);
+        toast.error("Failed to fetch product details.");
+      } finally {
+        setLoading(false);
       }
     };
     fetchProduct();
-  }, [productId]);
+  }, [productId, reset]);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       if (data.image[0]) {
         const uploadedImageUrl = await uploadImage(data.image[0]);
         if (uploadedImageUrl) {
           data.imageUrl = uploadedImageUrl;
-          toast.success("Product updated successfully!");
-          reset(); // Reset form fields
         }
       } else {
         toast.error("Please select an image.");
@@ -52,26 +53,23 @@ const UpdateProduct = () => {
         title: data.title,
         description: data.description,
         image: data.imageUrl,
-        categories: categories, // Ensure this is an array
-        size: size, // Ensure this is an array
+        categories: categories.map((cat) => cat.value), // Ensure this is an array of values
+        size: size.map((sz) => sz.value), // Ensure this is an array of values
         stock: data.stock,
         color: data.color,
         price: parseFloat(data.price),
       };
 
-      console.log(productItem);
-
       const response = await userRequest.put(
-        `products/${product._id}`,
+        `/products/${productId}`,
         productItem
       );
-      console.log(response.data);
       toast.success("Product updated successfully!");
       reset();
-      navigate("/dashboard/manage-products");
+      navigate("/admin/dashboard/manageProducts");
     } catch (error) {
-      console.error("Error adding product:", error);
-      toast.error("Failed to add product.");
+      console.error("Error updating product:", error);
+      toast.error("Failed to update product.");
     } finally {
       setLoading(false);
     }
@@ -90,14 +88,30 @@ const UpdateProduct = () => {
     }
   }, [imageFile]);
 
-  const handleSizeChange = (value) => {
-    setSize(value);
-  };
-  const handleCategoryChange = (value) => {
-    setCategories(value);
+  const handleSizeChange = (selectedOptions) => {
+    setSize(selectedOptions);
   };
 
-  if (!product) return <div>Loading...</div>;
+  const handleCategoryChange = (selectedOptions) => {
+    setCategories(selectedOptions);
+  };
+
+  const categoryOptions = [
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" },
+    { value: "Male & Female", label: "Male & Female" },
+  ];
+
+  const sizeOptions = [
+    { value: "M", label: "M" },
+    { value: "S", label: "S" },
+    { value: "XL", label: "XL" },
+    { value: "L", label: "L" },
+    { value: "XXL", label: "XXL" },
+    { value: "Custom", label: "Custom" },
+  ];
+
+  if (loading && !product) return <Loading />;
 
   return (
     <div className="md:w-[870px] mx-auto">
@@ -115,7 +129,6 @@ const UpdateProduct = () => {
               label="Product title"
               {...register("title", { required: true })}
               className="w-full capitalize"
-              defaultValue={product.title}
             />
           </div>
           <div className="w-full">
@@ -123,15 +136,12 @@ const UpdateProduct = () => {
               <span className="label-text">Categories*</span>
             </label>
             <Select
-              label="Categories"
+              isMulti
+              options={categoryOptions}
               value={categories}
-              onChange={(value) => handleCategoryChange(value)}
+              onChange={handleCategoryChange}
               className="w-full capitalize"
-            >
-              <Option value="Male">Male</Option>
-              <Option value="Female">Female</Option>
-              <Option value="Male & Female">Male & Female</Option>
-            </Select>
+            />
           </div>
           <div className="w-full">
             <label className="label">
@@ -142,7 +152,6 @@ const UpdateProduct = () => {
               type="number"
               {...register("stock", { required: true })}
               className="w-full"
-              defaultValue={product.stock}
             />
           </div>
           <div className="w-full">
@@ -154,7 +163,6 @@ const UpdateProduct = () => {
               type="text"
               {...register("color", { required: true })}
               className="w-full"
-              defaultValue={product.color}
             />
           </div>
           <div className="w-full">
@@ -162,18 +170,12 @@ const UpdateProduct = () => {
               <span className="label-text">Size*</span>
             </label>
             <Select
-              label="Size"
+              isMulti
+              options={sizeOptions}
               value={size}
-              onChange={(value) => handleSizeChange(value)}
+              onChange={handleSizeChange}
               className="w-full capitalize"
-            >
-              <Option value="M">M</Option>
-              <Option value="S">S</Option>
-              <Option value="XL">XL</Option>
-              <Option value="L">L</Option>
-              <Option value="XXL">XXL</Option>
-              <Option value="Custom">Custom</Option>
-            </Select>
+            />
           </div>
           <div className="w-full">
             <label className="label">
@@ -184,7 +186,6 @@ const UpdateProduct = () => {
               type="number"
               {...register("price", { required: true })}
               className="w-full"
-              defaultValue={product.price}
             />
           </div>
           <div className="w-full">
@@ -197,23 +198,33 @@ const UpdateProduct = () => {
               rows={4}
               {...register("description", { required: true })}
               className="w-full"
-              defaultValue={product.description}
             />
           </div>
           <div className="w-full my-6">
             <Input
               label="Upload Image"
               type="file"
-              {...register("image", { required: true })}
+              {...register("image")}
               className="file-input w-full max-w-xs bg-black"
             />
+            {previewUrl && (
+              <div className="mt-4">
+                <img src={previewUrl} alt="Preview" className="h-48" />
+              </div>
+            )}
           </div>
           <Button
             className="btn bg-black text-white hover:bg-dark-green px-6"
             type="submit"
             disabled={loading}
           >
-            {loading ? "Loading..." : "Update Product"}{" "}
+            {loading ? (
+              <span>
+                <Loading />
+              </span>
+            ) : (
+              "Update Product"
+            )}
           </Button>
         </form>
       </div>

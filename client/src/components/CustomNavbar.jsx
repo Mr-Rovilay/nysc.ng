@@ -143,7 +143,7 @@ const CustomNavbar = () => {
                       </Link>
                     </MenuItem>
                   ))}
-                  {userInfo?.role === "admin" && (
+                  {userInfo?.isAdmin === true && (
                     <MenuItem
                       key="Admin"
                       className="flex items-center gap-2 rounded hover:bg-gray-200"
@@ -152,7 +152,7 @@ const CustomNavbar = () => {
                         className: "h-4 w-4",
                         strokeWidth: 2,
                       })}
-                      <Link to="/dashboard" className="flex items-center">
+                      <Link to="/admin/dashboard" className="flex items-center">
                         <Typography
                           as="span"
                           variant="small"

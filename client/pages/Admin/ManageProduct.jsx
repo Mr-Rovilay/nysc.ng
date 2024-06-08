@@ -51,15 +51,21 @@ const ManageProduct = () => {
     }
   };
 
+  if (!isAuthenticated) {
+    return <div>Please login to access this page.</div>;
+  }
+
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <ToastContainer />
-      <div className="flex items-center justify-between m-4">
-        <h5>All Products</h5>
-        <h5>Total Products: {products.length}</h5>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+        <h5 className="text-lg font-semibold">All Products</h5>
+        <h5 className="text-lg font-semibold">
+          Total Products: {products.length}
+        </h5>
       </div>
 
-      <Card className="h-full w-full overflow-scroll">
+      <Card className="overflow-x-auto">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
@@ -155,8 +161,12 @@ const ManageProduct = () => {
                     color="blue-gray"
                     className="font-normal capitalize"
                   >
-                    <div className="mask mask-squircle w-12 h-12">
-                      <img src={product.image} alt={product.name} />
+                    <div className="w-12 h-12 overflow-hidden rounded-full">
+                      <img
+                        src={product.image}
+                        alt={product.title}
+                        className="object-cover w-full h-full"
+                      />
                     </div>
                   </Typography>
                 </td>
@@ -209,7 +219,7 @@ const ManageProduct = () => {
                 </td>
                 <td className="p-4">
                   <button
-                    className="btn hover:bg-red-600"
+                    className="hover:bg-red-600"
                     onClick={() => deleteProduct(product._id)}
                     disabled={loadingProduct === product._id}
                   >

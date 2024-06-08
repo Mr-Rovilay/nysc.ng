@@ -6,10 +6,12 @@ import { AuthContext } from "../../middleware/AuthContext";
 import { userRequest } from "../../middleware/middleware";
 import { Card, Typography } from "@material-tailwind/react";
 import Pagination from "../../src/components/Pagination";
+import Loading from "../../src/components/Loading";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loadingUser, setLoadingUser] = useState(null);
+  const [loading, setLoading] = useState(false); // New loading state
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { isAuthenticated } = useContext(AuthContext);
@@ -21,6 +23,7 @@ const Users = () => {
   }, [isAuthenticated, currentPage]);
 
   const fetchUsers = async (page) => {
+    setLoading(true);
     try {
       const response = await userRequest.get(`/users?page=${page}`);
       setUsers(response.data.users);
@@ -28,6 +31,8 @@ const Users = () => {
       setTotalPages(response.data.pagination.totalPages);
     } catch (error) {
       toast.error("Failed to fetch users");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,130 +69,136 @@ const Users = () => {
   };
 
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <ToastContainer />
-      <div className="flex items-center justify-between m-4">
-        <h5>All Users</h5>
-        <h5>Total Users: {users.length}</h5>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+        <h5 className="text-lg font-semibold">All Users</h5>
+        <h5 className="text-lg font-semibold">Total Users: {users.length}</h5>
       </div>
 
-      <Card className="h-full w-full overflow-scroll">
-        <table className="w-full min-w-max table-auto text-left">
-          <thead>
-            <tr>
-              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  #
-                </Typography>
-              </th>
-              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  Name
-                </Typography>
-              </th>
-              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  Email
-                </Typography>
-              </th>
-              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  isAdmin
-                </Typography>
-              </th>
-              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  Action
-                </Typography>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <tr
-                key={user._id}
-                className={index % 2 === 0 ? "bg-blue-gray-50/50" : ""}
-              >
-                <td className="p-4">
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loading />
+        </div>
+      ) : (
+        <Card className="overflow-x-auto">
+          <table className="w-full min-w-max table-auto text-left">
+            <thead>
+              <tr>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal"
+                    className="font-normal leading-none opacity-70"
                   >
-                    {index + 1}
+                    #
                   </Typography>
-                </td>
-                <td className="p-4">
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal capitalize"
+                    className="font-normal leading-none opacity-70"
                   >
-                    {user.fullname}
+                    Name
                   </Typography>
-                </td>
-                <td className="p-4">
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal"
+                    className="font-normal leading-none opacity-70"
                   >
-                    {user.email}
+                    Email
                   </Typography>
-                </td>
-                <td className="p-4">
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal capitalize"
+                    className="font-normal leading-none opacity-70"
                   >
-                    {user.isAdmin ? (
-                      "true"
-                    ) : (
-                      <button
-                        onClick={() => handleMakeAdmin(user)}
-                        className="btn btn-circle bg-twitter hover:bg-twitter "
-                        disabled={loadingUser === user._id}
-                      >
-                        <FaUsers />
-                      </button>
-                    )}
+                    isAdmin
                   </Typography>
-                </td>
-                <td className="p-4">
-                  <button
-                    className="btn bg-red hover:bg-red"
-                    onClick={() => handleDeleteUser(user._id)}
-                    disabled={loadingUser === user._id}
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
                   >
-                    <FaTrashAlt className="text-red-500" />
-                  </button>
-                </td>
+                    Action
+                  </Typography>
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+            </thead>
+            <tbody>
+              {users.map((user, index) => (
+                <tr
+                  key={user._id}
+                  className={index % 2 === 0 ? "bg-blue-gray-50/50" : ""}
+                >
+                  <td className="p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {index + 1}
+                    </Typography>
+                  </td>
+                  <td className="p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal capitalize"
+                    >
+                      {user.fullname}
+                    </Typography>
+                  </td>
+                  <td className="p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {user.email}
+                    </Typography>
+                  </td>
+                  <td className="p-4">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal capitalize"
+                    >
+                      {user.isAdmin ? (
+                        "true"
+                      ) : (
+                        <button
+                          onClick={() => handleMakeAdmin(user)}
+                          className="btn btn-circle bg-twitter hover:bg-twitter "
+                          disabled={loadingUser === user._id}
+                        >
+                          <FaUsers />
+                        </button>
+                      )}
+                    </Typography>
+                  </td>
+                  <td className="p-4">
+                    <button
+                      className="btn bg-red hover:bg-red"
+                      onClick={() => handleDeleteUser(user._id)}
+                      disabled={loadingUser === user._id}
+                    >
+                      <FaTrashAlt className="text-red-500" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      )}
 
       <div className="flex justify-center mt-6">
         <Pagination
