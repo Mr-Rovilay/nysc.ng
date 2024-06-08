@@ -7,6 +7,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button, Card, Typography } from "@material-tailwind/react";
 import Pagination from "../../src/components/Pagination";
+import Loading from "../../src/components/Loading";
+import { Link } from "react-router-dom";
 
 const ManageProduct = () => {
   const [products, setProducts] = useState([]);
@@ -207,15 +209,15 @@ const ManageProduct = () => {
                   </Typography>
                 </td>
                 <td className="p-4">
-                  <Typography
-                    as="a"
-                    href={`products/${product._id}/edit`}
-                    variant="small"
-                    color="blue-gray"
-                    className="font-medium text-green-900"
-                  >
-                    <AiOutlineEdit className="text-2xl bg:text-green-300" />
-                  </Typography>
+                  <Link to={`/admin/dashboard/products/${product._id}/edit`}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-medium text-green-900"
+                    >
+                      <AiOutlineEdit className="text-2xl bg:text-green-300" />
+                    </Typography>
+                  </Link>
                 </td>
                 <td className="p-4">
                   <button
@@ -224,9 +226,7 @@ const ManageProduct = () => {
                     disabled={loadingProduct === product._id}
                   >
                     {loadingProduct === product._id ? (
-                      <Button loading={true} color="red">
-                        Loading
-                      </Button>
+                      <Loading />
                     ) : (
                       <FaTrashAlt className="text-red-500" />
                     )}

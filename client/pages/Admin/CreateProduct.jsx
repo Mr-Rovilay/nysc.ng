@@ -189,7 +189,7 @@ const CreateProduct = () => {
             />
           </div>
           {previewUrl && (
-            <div className="w-full my-4">
+            <div className=" my-4">
               <img src={previewUrl} alt="Preview" className="w-50 h-50" />
             </div>
           )}
