@@ -27,7 +27,7 @@ const AuthProvider = ({ children }) => {
         }
       };
 
-      const interval = setInterval(checkTokenExpiration, 1000 * 60); // Check every minute
+      const interval = setInterval(checkTokenExpiration, 1000 * 60);
       return () => clearInterval(interval);
     }
   }, [token]);

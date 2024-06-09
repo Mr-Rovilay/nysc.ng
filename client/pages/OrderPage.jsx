@@ -102,10 +102,19 @@ const OrdersPage = () => {
                       Status:
                     </Typography>
                     <Typography variant="small" className="font-bold">
-                      <span className="text-red-500">&#x25cf; </span>
+                      {status === "Delivered" ? (
+                        <span className="text-green-500">&#x2714; </span>
+                      ) : status === "Processing" ? (
+                        <span className="text-yellow-500">&#x25cf; </span>
+                      ) : status === "Shipped" ? (
+                        <span className="text-blue-500">&#x25cf; </span>
+                      ) : (
+                        <span className="text-red-500">&#x25cf; </span>
+                      )}
                       {status}
                     </Typography>
                   </div>
+
                   <div>
                     <Typography variant="small" className="font-semibold">
                       Products:

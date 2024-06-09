@@ -32,10 +32,11 @@ const DashboardLayout = () => {
             <RiDashboardHorizontalFill />
           </div>
         </Button>
-
-        <Button className="font-medium bg-green-500 text-white sm:hidden">
-          <Link to={"/"}>Home</Link>
-        </Button>
+        <Link to={"/"}>
+          <Button className="font-medium bg-green-500 text-white sm:hidden">
+            Home
+          </Button>
+        </Link>
       </div>
       <Outlet />
       <Drawer open={open} onClose={closeDrawer} className="bg-gray-100">

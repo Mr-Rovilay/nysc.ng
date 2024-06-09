@@ -59,8 +59,6 @@ const UpdateProduct = () => {
         price: parseFloat(data.price),
       };
 
-      console.log(productItem);
-
       const response = await userRequest.put(
         `products/${product._id}`,
         productItem

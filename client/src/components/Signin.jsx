@@ -138,9 +138,8 @@ const Signin = () => {
                 </Typography>
               </div>
               <Button
-                variant="outlined"
                 size="lg"
-                className="mt-6 flex h-12 items-center justify-center gap-2"
+                className="mt-6 flex h-12 items-center justify-center gap-2 bg-green-500"
                 fullWidth
               >
                 <img

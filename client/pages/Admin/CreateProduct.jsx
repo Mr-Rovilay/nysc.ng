@@ -24,7 +24,7 @@ const CreateProduct = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    setLoading(true); // Set loading state to true
+    setLoading(true);
     try {
       if (data.image[0]) {
         const uploadedImageUrl = await uploadImage(data.image[0]);
@@ -39,14 +39,12 @@ const CreateProduct = () => {
         title: data.title,
         description: data.description,
         image: data.imageUrl,
-        categories, // Ensure this is an array
-        size, // Ensure this is an array
+        categories,
+        size,
         stock: data.stock,
         color: data.color,
         price: parseFloat(data.price),
       };
-
-      console.log(productItem);
 
       const response = await userRequest.post("/products", productItem);
       toast.success("Product added successfully!");

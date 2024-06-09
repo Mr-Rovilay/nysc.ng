@@ -2,11 +2,9 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Import your components/pages here
 import HomePage from "../pages/HomePage";
 import Signup from "./components/Signup";
 import ProductList from "../pages/ProductList";
-import SingleProduct from "../pages/SingleProduct";
 import CartPage from "../pages/CartPage";
 import Signin from "./components/Signin";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -23,6 +21,8 @@ import VerifyPage from "../pages/VerifyPage";
 import OrdersPage from "../pages/OrderPage";
 import ProtectedRoute from "../middleware/ProtectedRoute";
 import ManageOrders from "../pages/Admin/ManageOrders";
+import SearchResults from "../pages/SerachResults";
+import SingleProduct from "../pages/SingleProduct";
 
 const App = () => {
   const location = useLocation();
@@ -31,23 +31,22 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      {/* Render the custom navbar if not an admin route */}
+
       {!isAdminRoute && <CustomNavbar />}
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/products/:category" element={<ProductList />} />
         <Route path="/products" element={<ProductList />} />
+        <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/delivery-info" element={<DeliveryInfoPage />} />
-        <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/search" element={<SearchResults />} />
         <Route path="/myOrders" element={<OrdersPage />} />
 
-        {/* Admin Routes */}
         <Route
           path="/admin/dashboard"
           element={
@@ -64,7 +63,6 @@ const App = () => {
           <Route path="" element={<DashBoard />} />
         </Route>
 
-        {/* Fallback Route for 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

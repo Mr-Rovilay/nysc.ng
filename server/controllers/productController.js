@@ -52,6 +52,7 @@ export const getProduct = async (req, res) => {
 export const getAllProduct = async (req, res) => {
   const isNew = req.query.new === "true";
   const category = req.query.category;
+  const searchQuery = req.query.search;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
@@ -66,6 +67,10 @@ export const getAllProduct = async (req, res) => {
           $in: [category],
         },
       };
+    }
+
+    if (searchQuery) {
+      query.title = { $regex: searchQuery, $options: "i" };
     }
 
     const totalProducts = await Product.countDocuments(query);

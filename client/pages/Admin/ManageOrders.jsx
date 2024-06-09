@@ -30,7 +30,10 @@ const ManageOrders = () => {
     try {
       const response = await userRequest.get(`/orders?page=${page}`);
       if (response.data.orders) {
-        setOrders(response.data.orders);
+        const sortedOrders = response.data.orders.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setOrders(sortedOrders);
         setCurrentPage(response.data.pagination.currentPage);
         setTotalPages(response.data.pagination.totalPages);
       } else {
@@ -170,7 +173,11 @@ const ManageOrders = () => {
                       className="font-normal"
                     >
                       {order.address.street}, {order.address.city},{" "}
-                      {order.address.state}, {order.address.country}
+                      {order.address.state}, {order.address.country},{""}
+                      <p>
+                        PhoneNumber:{" "}
+                        <span className="font-bold">{order.address.phone}</span>
+                      </p>
                     </Typography>
                   </td>
                   <td className="p-4">
@@ -193,7 +200,7 @@ const ManageOrders = () => {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      ₦{order.amount}
+                      ₦ <span className="font-bold">{order.amount}</span>
                     </Typography>
                   </td>
                   <td className="p-4">

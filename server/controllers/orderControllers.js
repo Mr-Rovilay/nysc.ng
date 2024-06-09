@@ -230,7 +230,7 @@ export const getMyOrders = async (req, res) => {
   const userId = req.decoded.id;
 
   try {
-    const orders = await Order.find({ userId });
+    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
     if (!orders || orders.length === 0) {
       return res.status(404).json({ message: "No orders found for this user" });
     }
@@ -247,7 +247,10 @@ export const getAllOrders = async (req, res) => {
   const skip = (page - 1) * limit;
 
   try {
-    const orders = await Order.find().skip(skip).limit(limit);
+    const orders = await Order.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
     const totalOrders = await Order.countDocuments();
     const totalPages = Math.ceil(totalOrders / limit);
 

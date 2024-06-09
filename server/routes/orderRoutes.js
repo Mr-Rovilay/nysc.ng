@@ -13,7 +13,7 @@ import {
 } from "../controllers/orderControllers.js";
 const router = express.Router();
 
-router.post("/", validateOrder, verifyJWT, createOrder);
+router.post("/", verifyJWT, createOrder);
 router.post("/verify", verifyOrder);
 router.patch(
   "/:orderId",

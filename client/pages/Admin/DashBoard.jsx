@@ -5,6 +5,28 @@ import { userRequest } from "../../middleware/middleware";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../../src/components/Loading";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+// Register the necessary Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
   const [summary, setSummary] = useState({
@@ -12,47 +34,51 @@ const Dashboard = () => {
     totalProducts: 0,
     totalOrders: 0,
     totalSales: 0,
+    deliveredOrders: 0,
+    completedOrders: 0,
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const [usersRes, productsRes, ordersRes] = await Promise.all([
-          userRequest.get("/users"),
-          userRequest.get("/products"),
-          userRequest.get("/orders"),
-        ]);
+        const [usersRes, productsRes, ordersRes, deliveredRes, completedRes] =
+          await Promise.all([
+            userRequest.get("/users"),
+            userRequest.get("/products"),
+            userRequest.get("/orders"),
+            userRequest.get("/orders?status=delivered"),
+            userRequest.get("/orders?status=completed"),
+          ]);
 
-        // Logging the response data to understand its structure
-        console.log("Users Response:", usersRes);
-        console.log("Products Response:", productsRes);
-        console.log("Orders Response:", ordersRes);
-
-        // Extracting the arrays from the response data
-        const usersArray = usersRes.data;
-        const productsArray = productsRes.data.products;
-        const ordersArray = ordersRes.data.orders;
+        // Extracting the necessary data from the response objects
+        const usersCount = usersRes.data.count || 0; // Assuming there's a count property for the total users
+        const productsArray = productsRes.data.products || [];
+        const ordersArray = ordersRes.data.orders || [];
+        const deliveredArray = deliveredRes.data.orders || [];
+        const completedArray = completedRes.data.orders || [];
 
         if (
-          Array.isArray(usersArray) &&
+          typeof usersCount === "number" &&
           Array.isArray(productsArray) &&
-          Array.isArray(ordersArray)
+          Array.isArray(ordersArray) &&
+          Array.isArray(deliveredArray) &&
+          Array.isArray(completedArray)
         ) {
-          const totalSales = ordersArray((acc, order) => acc + order.amount, 0);
+          const totalSales = ordersArray.reduce(
+            (acc, order) => acc + order.amount,
+            0
+          );
 
           setSummary({
-            totalUsers: usersArray.length,
+            totalUsers: usersCount,
             totalProducts: productsArray.length,
             totalOrders: ordersArray.length,
             totalSales,
+            deliveredOrders: deliveredArray.length,
+            completedOrders: completedArray.length,
           });
         } else {
-          console.error("Unexpected response structure", {
-            usersRes,
-            productsRes,
-            ordersRes,
-          });
           toast.error(
             "Unexpected response structure. Please check the console for details."
           );
@@ -74,8 +100,33 @@ const Dashboard = () => {
       <div className="mt-3">
         <Loading />
       </div>
-    ); // Loading state UI
+    );
   }
+
+  const orderStatusData = {
+    labels: ["Total Orders", "Delivered Orders", "Completed Orders"],
+    datasets: [
+      {
+        label: "Order Status",
+        data: [
+          summary.totalOrders,
+          summary.deliveredOrders,
+          summary.completedOrders,
+        ],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(75, 192, 192, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
 
   return (
     <div className="p-4">
@@ -114,6 +165,25 @@ const Dashboard = () => {
             ${summary.totalSales.toFixed(2)}
           </Typography>
         </Card>
+        <Card>
+          <Typography className="p-4" variant="h5">
+            Delivered Orders
+          </Typography>
+          <Typography className="p-4" variant="h2">
+            {summary.deliveredOrders}
+          </Typography>
+        </Card>
+        <Card>
+          <Typography className="p-4" variant="h5">
+            Completed Orders
+          </Typography>
+          <Typography className="p-4" variant="h2">
+            {summary.completedOrders}
+          </Typography>
+        </Card>
+      </div>
+      <div className="my-10">
+        <Line data={orderStatusData} />
       </div>
       <div className="my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Link to={"/admin/dashboard/manageProducts"}>

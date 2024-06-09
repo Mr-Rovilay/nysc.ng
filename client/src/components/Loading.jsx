@@ -1,9 +1,10 @@
 import { Spinner } from "@material-tailwind/react";
 
-const Loading = () => {
+const Loading = ({ text }) => {
   return (
     <div>
       <Spinner color="green" className="h-6 w-6" />
+      <p>{text}</p>
     </div>
   );
 };

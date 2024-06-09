@@ -35,10 +35,22 @@ const CustomNavbar = () => {
   const { isAuthenticated, logout, userInfo } = useContext(AuthContext);
   const navigate = useNavigate();
   const [cart, refetch] = useCart();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogout = () => {
     logout();
     navigate("/signin");
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${searchQuery}`);
+    }
   };
 
   useEffect(() => {
@@ -90,20 +102,26 @@ const CustomNavbar = () => {
             </Typography>
           </Link>
           <div className="hidden lg:flex items-center gap-4">
-            <div className="relative flex w-full gap-2 md:w-max">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative flex w-full gap-2 md:w-max"
+            >
               <Input
                 type="search"
                 label="Type here..."
                 className="pr-20"
+                value={searchQuery}
+                onChange={handleSearchChange}
                 containerProps={{ className: "min-w-[288px]" }}
               />
               <Button
                 size="sm"
+                type="submit"
                 className="!absolute right-1 top-1 rounded font-medium bg-green-500"
               >
                 Search
               </Button>
-            </div>
+            </form>
             {navList}
           </div>
           <div className="flex items-center gap-4">
@@ -236,15 +254,26 @@ const CustomNavbar = () => {
         </div>
         <Collapse open={openNav}>
           <div className="relative flex w-full gap-2 md:w-max p-4 lg:hidden">
-            <Input
-              type="search"
-              label="Type here..."
-              className="pr-20"
-              containerProps={{ className: "min-w-[288px]" }}
-            />
-            <Button size="sm" className=" right-1 top-1 rounded">
-              Search
-            </Button>
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative flex w-full gap-2 md:w-max"
+            >
+              <Input
+                type="search"
+                label="Type here..."
+                className="pr-20"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                containerProps={{ className: "min-w-[288px]" }}
+              />
+              <Button
+                size="sm"
+                type="submit"
+                className=" right-1 top-1 rounded"
+              >
+                Search
+              </Button>
+            </form>
           </div>
           {navList}
           {!isAuthenticated && (

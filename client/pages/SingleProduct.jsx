@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { publicRequest, userRequest } from "../middleware/middleware";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "../src/components/Loading";
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -21,11 +22,6 @@ const SingleProduct = () => {
       try {
         const res = await publicRequest.get(`/products/${id}`);
         setProduct(res.data);
-        // Check if the product is already in the cart
-        const cartRes = await userRequest.get("/carts");
-        const cartItems = cartRes.data;
-        const isInCart = cartItems.some((item) => item.productId === id);
-        setInCart(isInCart);
       } catch (error) {
         setError("Failed to fetch product data");
       } finally {
@@ -45,7 +41,6 @@ const SingleProduct = () => {
         console.log(response.data);
         toast.success("Product added to cart successfully!");
         setInCart(true);
-        updateCartCount();
       } else {
         toast.warning("Product is already in the cart!");
       }
@@ -55,21 +50,22 @@ const SingleProduct = () => {
     }
   };
 
-  const updateCartCount = async () => {
-    try {
-      const cartRes = await userRequest.get("/carts");
-      const cartItems = cartRes.data;
-      const cartCount = cartItems.length;
-      document.getElementById("cart-count").textContent = cartCount;
-    } catch (error) {
-      console.error("Error updating cart count:", error);
-    }
-  };
+  if (loading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <AnimationWrapper>
       <ToastContainer />
-      <div className="max-h-screen bg-gray-100 dark:bg-gray-800 py-8">
+      <div className="max-h-screen bg-gray-100 py-12">
         <div className="max-w-6xl flex justify-center items-center mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row -mx-4">
             <div className="md:flex-1 px-4">
@@ -114,13 +110,13 @@ const SingleProduct = () => {
               </div>
               <div className="mb-4">
                 <span className="font-bold text-gray-700 dark:text-gray-300">
-                  Select Color:{""}
+                  Select Color:
                 </span>
                 <div className="">{product.color}</div>
               </div>
               <div className="mb-4">
                 <span className="font-bold text-gray-700 dark:text-gray-300">
-                  Select Size:{""}
+                  Select Size:
                 </span>
                 {product.size}
               </div>
@@ -136,7 +132,6 @@ const SingleProduct = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </AnimationWrapper>
   );
 };

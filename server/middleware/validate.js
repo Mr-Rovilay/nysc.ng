@@ -37,17 +37,7 @@ export const validateUpdateUser = [
 ];
 
 export const validateProduct = [
-  check("title")
-    .not()
-    .isEmpty()
-    .withMessage("Title is required")
-    .bail()
-    .custom(async (title) => {
-      if (!title) {
-        throw new Error("Title is unique");
-      }
-      return true;
-    }),
+  check("title").not().isEmpty().withMessage("Title is required"),
   check("price")
     .isFloat({ gt: 0 })
     .withMessage("Price must be a positive number"),
