@@ -2,7 +2,7 @@ const Button = ({ text, variant, onClick }) => {
   return (
     <button
       className={`text-white font-semibold py-2 px-4 rounded ${
-        variant === "primary" ? "bg-blue-500" : "bg-gray-500"
+        variant === "primary" ? "bg-white" : "bg-green-500"
       }`}
       onClick={onClick}
     >
@@ -13,7 +13,7 @@ const Button = ({ text, variant, onClick }) => {
 
 const Hero = () => {
   const openWhatsApp = () => {
-    window.open("https://api.whatsapp.com/send?text=text&phone=+2348140570029");
+    window.open("https://api.whatsapp.com/send?text=text&phone=+2348114080865");
   };
 
   return (
@@ -26,7 +26,11 @@ const Hero = () => {
           Discover amazing features and services that await you.
         </p>
         <div className="inline-flex gap-3">
-          <Button text={"shop now"} variant="primary" className={"bg-white"} />
+          <Button
+            text={"shop now"}
+            variant="primary"
+            className={"bg-white text-black"}
+          />
           <a href="tel:+2348114080865">
             <Button text={"Call to Order Directly"} variant="secondary" />
           </a>
