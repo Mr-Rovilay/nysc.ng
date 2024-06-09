@@ -21,7 +21,7 @@ const Hero = () => {
           <Button
             variant={"secondary"}
             text={"Send Message on WhatsApp"}
-            href="https://api.whatsapp.com/send?phone=+2348114080865"
+            href="https://api.whatsapp.com/send?text=text&phone=+2348140570029"
           ></Button>
         </div>
       </div>
