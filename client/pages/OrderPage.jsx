@@ -14,7 +14,6 @@ const OrdersPage = () => {
   useEffect(() => {
     if (isError) {
       console.error("Error fetching orders:", error);
-      toast.error("An error occurred while fetching orders");
     }
   }, [isError, error]);
 
