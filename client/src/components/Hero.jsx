@@ -32,13 +32,13 @@ const Hero = () => {
             className={"bg-white text-black"}
           />
           <a href="tel:+2348114080865">
-            <Button text={"Call to Order Directly"} variant="secondary" />
+            <Button text={"Call to Order Directly"} variant="primary" />
           </a>
         </div>
         <p className="mt-4 text-black">or</p>
         <div className="mt-4">
           <Button
-            variant={"secondary"}
+            variant={"primary"}
             text={"Send Message on WhatsApp"}
             onClick={openWhatsApp}
           />
