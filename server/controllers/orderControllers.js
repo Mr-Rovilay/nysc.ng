@@ -8,7 +8,7 @@ const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 
 // Order creation endpoint
 export const createOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5173";
+  const frontend_url = "https://nysckit-ng-1.onrender.com";
   try {
     const { products, address } = req.body;
 
