@@ -2,13 +2,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { userRequest } from "./middleware";
 
 const useOrders = () => {
-  const queryClient = useQueryClient(); // Initialize the query client
+  const queryClient = useQueryClient();
 
   // Delete order function
   const deleteOrder = async (orderId) => {
     try {
       await userRequest.delete(`/orders/${orderId}`);
-      queryClient.invalidateQueries("orders"); // Invalidate orders query to refetch
+      queryClient.invalidateQueries("orders");
     } catch (error) {
       console.error("Error deleting order:", error);
       throw error;
@@ -31,7 +31,7 @@ const useOrders = () => {
     try {
       const response = await userRequest.post(`/orders/${orderId}/cancel`);
       console.log(response);
-      queryClient.invalidateQueries("orders"); // Invalidate orders query to refetch
+      queryClient.invalidateQueries("orders");
       return response.data;
     } catch (error) {
       console.error("Error canceling order:", error);
@@ -46,7 +46,7 @@ const useOrders = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["orders"], // Using an array as the queryKey
+    queryKey: ["orders"],
     queryFn: fetchOrders,
   });
 

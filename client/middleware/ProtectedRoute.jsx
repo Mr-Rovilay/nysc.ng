@@ -15,7 +15,6 @@ const ProtectedRoute = ({
     return <Navigate to={redirectPath} />;
   }
 
-  // Check if the user is an admin if required
   if (requireAdmin && !userInfo?.isAdmin) {
     console.warn("ProtectedRoute: User does not have admin access.");
     return <Navigate to={redirectPath} />;

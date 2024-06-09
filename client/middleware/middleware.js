@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:4000";
+const baseURL = "https://nysckit-ng.onrender.com";
 
 export const publicRequest = axios.create({
   baseURL,
