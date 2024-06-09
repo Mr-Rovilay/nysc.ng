@@ -125,14 +125,14 @@ const CustomNavbar = () => {
             {navList}
           </div>
           <div className="flex items-center gap-4">
-            <a href="/cart">
+            <Link to={"/cart"}>
               <IconButton variant="text" color="blue-gray" className="relative">
                 <FiShoppingCart size={24} />
                 <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-white">
                   {cart.products ? cart.products.length : 0}
                 </span>
               </IconButton>
-            </a>
+            </Link>
             {isAuthenticated ? (
               <Menu>
                 <MenuHandler>
