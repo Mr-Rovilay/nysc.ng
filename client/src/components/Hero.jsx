@@ -2,7 +2,7 @@ const Button = ({ text, variant, onClick }) => {
   return (
     <button
       className={`text-white font-semibold py-2 px-4 rounded ${
-        variant === "primary" ? "bg-white" : "bg-green-500"
+        variant === "primary" ? "bg-green-500" : "bg-green-500"
       }`}
       onClick={onClick}
     >
