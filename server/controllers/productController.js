@@ -1,6 +1,6 @@
 import Product from "../models/productModel.js";
 
-export const createPost = async (req, res) => {
+export const createProduct = async (req, res) => {
   const { title, description, image, categories, size, stock, color, price } =
     req.body;
   try {
@@ -52,7 +52,8 @@ export const getProduct = async (req, res) => {
 export const getAllProduct = async (req, res) => {
   const isNew = req.query.new === "true";
   const category = req.query.category;
-  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+  const searchQuery = req.query.search;
+  const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
   try {
@@ -66,6 +67,10 @@ export const getAllProduct = async (req, res) => {
           $in: [category],
         },
       };
+    }
+
+    if (searchQuery) {
+      query.title = { $regex: searchQuery, $options: "i" };
     }
 
     const totalProducts = await Product.countDocuments(query);

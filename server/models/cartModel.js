@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const cartSchema = mongoose.Schema(
   {
@@ -8,8 +9,11 @@ const cartSchema = mongoose.Schema(
     },
     products: [
       {
-        productId: { type: String },
-
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
         quantity: { type: Number, default: 1 },
       },
     ],

@@ -1,4 +1,8 @@
 import { check, validationResult } from "express-validator";
+import Product from "../models/productModel.js";
+
+const CategoryEnum = ["Male", "Female", "Male & Female"];
+const SizeEnum = ["S", "M", "L", "XL", "XXL", "Custom"];
 
 export const validateUser = [
   check("email").notEmpty().withMessage("Email is required"),
@@ -39,24 +43,34 @@ export const validateProduct = [
     .withMessage("Price must be a positive number"),
   check("description").not().isEmpty().withMessage("Description is required"),
   check("categories")
-    .isArray()
-    .withMessage("Categories must be an array")
+    .not()
+    .isEmpty()
+    .withMessage("Category is required")
+    .bail()
     .custom((categories) => {
-      const allowedCategories = ["male", "female"];
-      const isValid = categories.some((category) =>
-        allowedCategories.includes(category)
-      );
-      if (!isValid) {
+      if (!CategoryEnum.includes(categories)) {
         throw new Error(
-          "Categories must include at least one of 'male' or 'female'"
+          "Invalid category. Must be one of: 'Male', 'Female', 'Male & Female'"
         );
       }
       return true;
     }),
-  check("size").not().isEmpty().withMessage("Size is required"),
+  check("size")
+    .not()
+    .isEmpty()
+    .withMessage("Size is required")
+    .bail()
+    .custom((size) => {
+      if (!SizeEnum.includes(size)) {
+        throw new Error(
+          "Invalid size. Must be one of: 'S', 'M', 'L', 'XL', 'XXL', 'Custom'"
+        );
+      }
+      return true;
+    }),
   check("color").optional().not().isEmpty().withMessage("Color is required"),
   check("stock")
-    .isInt({ gt: 0 })
+    .isInt({ min: 0 })
     .withMessage("Stock must be a non-negative integer"),
   check("image").isURL().withMessage("Image must be a valid URL"),
 

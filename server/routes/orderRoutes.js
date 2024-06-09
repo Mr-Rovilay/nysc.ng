@@ -9,19 +9,26 @@ import {
   getAllOrders,
   getMyOrders,
   updateOrder,
+  verifyOrder,
 } from "../controllers/orderControllers.js";
 const router = express.Router();
 
-router.post("/", verifyJWT, validateOrder, createOrder);
-router.put("/:orderId", verifyTokenAndAdmin, validateOrderStatus, updateOrder);
+router.post("/", verifyJWT, createOrder);
+router.post("/verify", verifyOrder);
+router.patch(
+  "/:orderId",
+  verifyTokenAndAdmin,
+  validateOrderStatus,
+  updateOrder
+);
 //users can delete there orders
 router.delete("/:id", verifyJWT, deleteOrder);
 //admin can delete order
-router.delete("/admin/:id", verifyJWT, verifyTokenAndAdmin, adminDeleteOrder);
+router.delete("/admin/:id", verifyTokenAndAdmin, adminDeleteOrder);
 //admin get all orders
 router.get("/", verifyTokenAndAdmin, getAllOrders);
 router.get("/myorders", verifyJWT, getMyOrders);
 //cancel order by user
-router.put("/:id/cancel", verifyJWT, cancelOrder);
+router.post("/:id/cancel", verifyJWT, cancelOrder);
 
 export default router;

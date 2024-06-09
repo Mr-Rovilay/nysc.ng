@@ -121,8 +121,6 @@ export const makeUserAnAdmin = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
-    // Update the user's role to admin by setting isAdmin to true
     user.isAdmin = true;
     await user.save();
 

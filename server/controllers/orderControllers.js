@@ -1,13 +1,21 @@
-import Product from "../models/productModel.js";
+import express from "express";
+import stripe from "stripe";
 import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js";
+import Cart from "../models/cartModel.js"; // Assuming you have a cart model
 
+const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
+
+// Order creation endpoint
 export const createOrder = async (req, res) => {
-  const userId = req.decoded.id;
-  const { products, address } = req.body;
-
+  const frontend_url = "http://localhost:5173";
   try {
-    // Initialize an array to collect products with insufficient stock
-    const insufficientStockProducts = [];
+    const { products, address } = req.body;
+
+    // Validate the request
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ error: "Invalid products data" });
+    }
 
     // Create an object to hold the product quantities for easy access
     const productQuantities = products.reduce((acc, item) => {
@@ -15,6 +23,9 @@ export const createOrder = async (req, res) => {
       return acc;
     }, {});
 
+    // Initialize variables for total price and line items
+    let totalPrice = 0;
+    const lineItems = [];
     // Find all products in a single query
     const productIds = products.map((item) => item.productId);
     const productDocs = await Product.find({ _id: { $in: productIds } });
@@ -27,31 +38,31 @@ export const createOrder = async (req, res) => {
       }
     });
 
-    // If there are any products with insufficient stock, return an error message
-    if (insufficientStockProducts.length > 0) {
-      return res
-        .status(400)
-        .send(
-          `Not enough stock for product(s): ${insufficientStockProducts.join(
-            ", "
-          )}`
-        );
+    // Loop through each product in the request
+    for (const product of products) {
+      const { productId, quantity } = product;
+      const productDoc = await Product.findById(productId);
+
+      if (!productDoc) {
+        return res
+          .status(400)
+          .json({ error: `Product not found: ${productId}` });
+      }
+
+      const price = productDoc.price;
+      totalPrice += price * quantity;
+
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: productDoc.title,
+          },
+          unit_amount: price * 100, // Convert to cents
+        },
+        quantity: quantity,
+      });
     }
-
-    // Create the order if all products have sufficient stock
-    const amount = productDocs.reduce((total, product) => {
-      const quantity = productQuantities[product._id.toString()];
-      return total + product.price * quantity;
-    }, 0);
-
-    const newOrder = new Order({
-      userId,
-      products,
-      amount,
-      address,
-    });
-
-    const order = await newOrder.save();
 
     // Deduct stock for all products after creating the order
     for (let product of productDocs) {
@@ -60,10 +71,85 @@ export const createOrder = async (req, res) => {
       await product.save();
     }
 
-    res.status(201).json(order);
+    // Add delivery charges to the total price
+    const deliveryCharges = 20; // Example delivery charges
+    totalPrice += deliveryCharges;
+
+    // Save the order details in the database
+    const order = new Order({
+      userId: req.decoded.id, // Assuming you have user authentication and get the user ID from the request
+      products: products,
+      amount: totalPrice,
+      address: address,
+      payment: false, // Assuming payment is not completed yet
+    });
+
+    // Create the order if all products have sufficient stock
+    const amount = productDocs.reduce((total, product) => {
+      const quantity = productQuantities[product._id.toString()];
+      return total + product.price * quantity;
+    }, 0);
+
+    // Create a session with line items for Stripe checkout
+    const session = await stripeClient.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        ...lineItems,
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Delivery Charges",
+            },
+            unit_amount: deliveryCharges * 100, // Convert to cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${frontend_url}/verify?success=true&orderId=${order._id}`,
+      cancel_url: `${frontend_url}/verify?success=false&orderId=${order._id}`,
+    });
+
+    await order.save();
+
+    // Return the checkout session URL to the client
+    res.status(200).json({ success: true, session_url: session.url });
   } catch (error) {
-    console.error("Error inserting document into collection:", error);
+    console.error("Error creating order:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Order verification endpoint
+export const verifyOrder = async (req, res) => {
+  const { orderId, success } = req.body;
+  try {
+    // Convert success string to boolean
+    const isSuccess = success === "true";
+
+    if (isSuccess) {
+      // Update order payment status to true
+      const order = await Order.findByIdAndUpdate(orderId, {
+        payment: true,
+        status: "Processing",
+      });
+
+      // Clear the user's cart
+      await Cart.findOneAndDelete({ userId: order.userId });
+
+      res.json({ success: true, message: "Payment successful, cart cleared" });
+    } else {
+      // Delete order if payment unsuccessful
+      await Order.findByIdAndDelete(orderId);
+      res.json({
+        success: false,
+        message: "Payment unsuccessful, order deleted",
+      });
+    }
+  } catch (error) {
+    console.error("Error verifying order:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
 };
 
@@ -144,7 +230,7 @@ export const getMyOrders = async (req, res) => {
   const userId = req.decoded.id;
 
   try {
-    const orders = await Order.find({ userId });
+    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
     if (!orders || orders.length === 0) {
       return res.status(404).json({ message: "No orders found for this user" });
     }
@@ -156,16 +242,32 @@ export const getMyOrders = async (req, res) => {
 };
 
 export const getAllOrders = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10; // Adjust limit as needed
+  const skip = (page - 1) * limit;
+
   try {
-    const orders = await Order.find();
-    res.status(200).json(orders);
+    const orders = await Order.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+    const totalOrders = await Order.countDocuments();
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    res.status(200).json({
+      orders,
+      pagination: {
+        currentPage: page,
+        totalPages,
+      },
+    });
   } catch (err) {
     res.status(500).json(err);
   }
 };
 
 export const cancelOrder = async (req, res) => {
-  const userId = req.decoded.id; // Assuming you use JWT and store the user ID in the token
+  const userId = req.decoded.id;
   const orderId = req.params.id;
 
   try {
@@ -193,11 +295,13 @@ export const cancelOrder = async (req, res) => {
     }
 
     // Restock the products in the order
-    for (let item of order.products) {
+    for (const item of order.products) {
       const product = await Product.findById(item.productId);
       if (product) {
         product.stock += item.quantity;
         await product.save();
+      } else {
+        console.warn(`Product with ID ${item.productId} not found`);
       }
     }
 
