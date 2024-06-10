@@ -48,7 +48,6 @@ const DeliveryInfoPage = () => {
 
   const placeOrder = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
 
     const orderItems = cart.products?.map((item) => ({
       productId: item.productId._id,
@@ -62,12 +61,9 @@ const DeliveryInfoPage = () => {
       amount: totalPrice,
     };
 
-    console.log("Order Data: ", orderData); // Log for debugging
-
     try {
-      setLoading(true); // Set loading to true when submitting the form
+      setLoading(true);
       const response = await userRequest.post("/orders", orderData);
-      console.log(response);
 
       if (response.data.success) {
         const { session_url } = response.data;
@@ -76,10 +72,11 @@ const DeliveryInfoPage = () => {
         toast.error("Error occurred while placing order");
       }
     } catch (error) {
-      console.error("Error placing order:", error);
-      toast.error("An error occurred while placing order");
+      toast.error(
+        "An error occurred while placing order or some product might be out of stock"
+      );
     } finally {
-      setLoading(false); // Reset loading state after form submission
+      setLoading(false);
     }
   };
 
