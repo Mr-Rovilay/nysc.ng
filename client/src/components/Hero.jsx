@@ -27,9 +27,9 @@ const Hero = () => {
         </p>
         <div className="inline-flex gap-3">
           <Button
-            text={"shop now"}
+            text={"Shop Now"}
             variant="primary"
-            className={"bg-white text-black capitalize"}
+            className={"bg-white text-black"}
           />
           <a href="tel:+2348114080865">
             <Button text={"Call to Order Directly"} variant="primary" />
