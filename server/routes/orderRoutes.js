@@ -14,7 +14,7 @@ import {
 const router = express.Router();
 
 router.post("/", verifyJWT, createOrder);
-router.post("/verify", verifyOrder);
+router.post("/verify", verifyJWT, verifyOrder);
 router.patch(
   "/:orderId",
   verifyTokenAndAdmin,
