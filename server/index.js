@@ -14,7 +14,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://nysckit-ng-1.onrender.com", // Allow requests from any origin
+    origin: "*", // Allow requests from any origin
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Specify allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
   })

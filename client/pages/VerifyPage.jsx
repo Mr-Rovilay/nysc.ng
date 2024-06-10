@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { userRequest } from "../middleware/middleware";
+import { publicRequest } from "../middleware/middleware";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,7 +13,7 @@ const VerifyPage = () => {
 
   const verifyPayment = async () => {
     try {
-      const response = await userRequest.post("/orders/verify", {
+      const response = await publicRequest.post("/orders/verify", {
         success,
         orderId,
       });
