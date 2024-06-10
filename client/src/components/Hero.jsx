@@ -29,7 +29,7 @@ const Hero = () => {
           <Button
             text={"shop now"}
             variant="primary"
-            className={"bg-white text-black"}
+            className={"bg-white text-black capitalize"}
           />
           <a href="tel:+2348114080865">
             <Button text={"Call to Order Directly"} variant="primary" />
