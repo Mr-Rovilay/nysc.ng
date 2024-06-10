@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Typography, Input, Button } from "@material-tailwind/react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import AnimationWrapper from "../common/AnimationWrapper";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { publicRequest } from "../../middleware/middleware";
@@ -164,7 +164,7 @@ const Signup = () => {
                   variant="small"
                   className="font-medium"
                 >
-                  Forgot password
+                  Forgot password ?
                 </Typography>
               </div>
               <Button
@@ -185,9 +185,9 @@ const Signup = () => {
                 className="!mt-4 text-center font-normal"
               >
                 registered?{" "}
-                <a href="/signin" className="font-medium text-gray-900">
+                <Link to="/signin" className="font-medium text-gray-900">
                   Login to account
-                </a>
+                </Link>
               </Typography>
             </form>
           </div>
