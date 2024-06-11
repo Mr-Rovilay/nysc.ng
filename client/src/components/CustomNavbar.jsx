@@ -264,7 +264,6 @@ const CustomNavbar = () => {
                 className="pr-20"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                containerProps={{ className: "min-w-[288px]" }}
               />
               <Button
                 size="sm"
