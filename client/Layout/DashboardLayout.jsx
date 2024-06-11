@@ -23,7 +23,7 @@ const DashboardLayout = () => {
 
   return (
     <React.Fragment>
-      <div className="flex items-center justify-between max-w-7xl mx-auto px-4 py-2 lg:px-8 lg:py-4">
+      <div className="container flex items-center justify-between max-w-7xl mx-auto px-4 py-2 lg:px-8 lg:py-4">
         <Button
           onClick={openDrawer}
           className="font-medium bg-green-500 text-white"
