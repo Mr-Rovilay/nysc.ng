@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../src/components/Loading";
 import { AuthContext } from "../middleware/AuthContext";
+import useCart from "../middleware/useCart";
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -17,6 +18,7 @@ const SingleProduct = () => {
   const [error, setError] = useState(null);
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [cart, refetch] = useCart();
   const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const SingleProduct = () => {
       return;
     }
 
-    setLoading(true); // Set loading to true when adding to cart
+    setLoading(true);
 
     try {
       const response = await userRequest.post("/carts", {
@@ -49,6 +51,7 @@ const SingleProduct = () => {
 
       if (response.status === 201) {
         setInCart(true);
+        refetch(cart);
         toast.success("Product added to cart successfully!");
       } else {
         toast.error("Failed to add product to cart.");
@@ -92,9 +95,7 @@ const SingleProduct = () => {
                   disabled={product.stock === 0 || inCart}
                 >
                   {loading ? (
-                    <span>
-                      <Loading />
-                    </span>
+                    <Loading />
                   ) : inCart ? (
                     "In Cart"
                   ) : (

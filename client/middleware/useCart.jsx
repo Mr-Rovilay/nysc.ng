@@ -8,10 +8,9 @@ import "react-toastify/dist/ReactToastify.css";
 const useCart = () => {
   const { token } = useContext(AuthContext);
 
-  // Fetch cart data using react-query
   const {
     refetch,
-    data: cart = {},
+    data: cart = [],
     error,
     isError,
     isLoading,
@@ -97,7 +96,6 @@ const useCart = () => {
     }
   };
 
-  // Handle errors if fetching cart fails
   useEffect(() => {
     if (isError) {
       console.error("Error fetching cart:", error);

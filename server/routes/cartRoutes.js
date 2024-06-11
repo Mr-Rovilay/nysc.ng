@@ -16,10 +16,15 @@ router.delete("/:productId", verifyJWT, removeFromCart);
 router.post(
   "/decrease/:productId",
   verifyJWT,
-
+  validateCart,
   decreaseCartItemQuantity
 );
-router.patch("/increase/:productId", verifyJWT, increaseCartItemQuantity);
+router.patch(
+  "/increase/:productId",
+  validateCart,
+  verifyJWT,
+  increaseCartItemQuantity
+);
 //router.post("/increase/:productId", verifyJWT, increaseCartItemQuantity);
 router.delete("/", verifyJWT, deleteCart);
 router.get("/", verifyJWT, getMyCart);
