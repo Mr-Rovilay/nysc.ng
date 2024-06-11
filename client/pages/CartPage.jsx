@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  Card,
-  Typography,
-  Button as MaterialButton,
-} from "@material-tailwind/react";
-import Pagination from "../src/components/Pagination";
+import { Card, Button as MaterialButton } from "@material-tailwind/react";
 import Button from "../src/components/Button";
 import useCart from "../middleware/useCart";
 import Loading from "../src/components/Loading";
@@ -24,8 +19,6 @@ const CartPage = () => {
     isLoading,
     isFetching,
   ] = useCart();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [subTotal, setSubTotal] = useState(0);
   const deliveryPrice = 20;
   const [totalPrice, setTotalPrice] = useState(0);
@@ -44,12 +37,6 @@ const CartPage = () => {
   useEffect(() => {
     setTotalPrice(subTotal + (subTotal > 0 ? deliveryPrice : 0));
   }, [subTotal]);
-
-  const handlePageChange = (newPage) => {
-    if (newPage > 0 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
 
   const handleIncreaseQuantity = async (productId) => {
     try {
@@ -92,7 +79,7 @@ const CartPage = () => {
           <div>
             <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-lg shadow-md mb-6">
               <Link to="/products">
-                <MaterialButton className="mb-2 sm:mb-0">
+                <MaterialButton className="mb-2 sm:mb-0 bg-green-500">
                   CONTINUE SHOPPING
                 </MaterialButton>
               </Link>
@@ -183,7 +170,7 @@ const CartPage = () => {
                 <p>Delivery Price: ${subTotal === 0 ? 0 : deliveryPrice}</p>
                 <p>Total Price: ${totalPrice.toFixed(2)}</p>
                 <Link to="/delivery-info">
-                  <MaterialButton className="mt-4">
+                  <MaterialButton className="mt-4 bg-green-500">
                     Proceed to Delivery Info
                   </MaterialButton>
                 </Link>
@@ -194,14 +181,6 @@ const CartPage = () => {
               <Link to="/products">
                 <Button variant="secondary" text="Back to Products" />
               </Link>
-            </div>
-
-            <div className="flex justify-center mt-6">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
             </div>
           </div>
         ) : (
