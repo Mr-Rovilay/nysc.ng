@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { userRequest } from "../../middleware/middleware";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import Loading from "./Loading";
 import { Button } from "@material-tailwind/react";
+import useCart from "../../middleware/useCart";
 
 const Product = ({ item }) => {
   const [inCart, setInCart] = useState(false);
@@ -14,6 +15,7 @@ const Product = ({ item }) => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [cart, refetch] = useCart();
 
   useEffect(() => {
     const checkCart = async () => {
@@ -52,6 +54,8 @@ const Product = ({ item }) => {
 
       if (response.status === 201) {
         setInCart(true);
+        refetch(cart);
+        toast.success("Product added to cart successfully!");
       } else {
         toast.error("Failed to add product to cart.");
       }

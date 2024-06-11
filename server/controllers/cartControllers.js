@@ -62,6 +62,7 @@ export const removeFromCart = async (req, res) => {
 
 export const decreaseCartItemQuantity = async (req, res) => {
   const { productId } = req.params;
+  const { quantity } = req.body;
   const userId = req.decoded.id;
 
   try {
@@ -79,7 +80,8 @@ export const decreaseCartItemQuantity = async (req, res) => {
       return res.status(404).json({ message: "Product not found in cart" });
     }
 
-    cart.products[productIndex].quantity -= 1;
+    // Update quantity based on the request body
+    cart.products[productIndex].quantity -= quantity;
     if (cart.products[productIndex].quantity < 1) {
       cart.products.splice(productIndex, 1);
     }
@@ -94,6 +96,7 @@ export const decreaseCartItemQuantity = async (req, res) => {
 
 export const increaseCartItemQuantity = async (req, res) => {
   const { productId } = req.params;
+  const { quantity } = req.body;
   const userId = req.decoded.id;
 
   try {
@@ -111,7 +114,8 @@ export const increaseCartItemQuantity = async (req, res) => {
       return res.status(404).json({ message: "Product not found in cart" });
     }
 
-    product.quantity += 1;
+    // Update quantity based on the request body
+    product.quantity += quantity;
     await cart.save();
 
     res.status(200).json(cart);

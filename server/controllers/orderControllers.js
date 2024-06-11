@@ -186,21 +186,15 @@ export const deleteOrder = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    const orderCreationTime = new Date(order.createdAt).getTime();
-    const currentTime = new Date().getTime();
-    const timeDifference = currentTime - orderCreationTime;
-
-    const timeLimit = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-    if (timeDifference > timeLimit) {
-      return res
-        .status(403)
-        .json({ message: "Order deletion time window has expired" });
+    // Check if the order is marked as delivered
+    if (order.status === "delivered") {
+      await Order.deleteOne({ _id: orderId });
+      return res.status(204).json();
     }
 
-    await Order.deleteOne({ _id: orderId });
-
-    res.status(204).json();
+    return res
+      .status(403)
+      .json({ message: "Order has not been delivered yet" });
   } catch (error) {
     console.error("Error deleting order:", error);
     res.status(500).json({ error: "Internal server error" });

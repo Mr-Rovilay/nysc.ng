@@ -87,7 +87,7 @@ export const validateCart = [
   check("products.*.productId")
     .isMongoId()
     .withMessage("Product ID must be a valid Mongo ID"),
-  check("products.*.quantity")
+  check("quantity")
     .isInt({ gt: 0 })
     .withMessage("Quantity must be a positive integer"),
 
