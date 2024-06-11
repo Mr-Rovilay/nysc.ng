@@ -207,7 +207,7 @@ const ManageOrders = () => {
                       >
                         {order.products.map((product, i) => (
                           <div key={i}>
-                            {product.quantity} x {product.productId.title} (₦
+                            {product.quantity} x {product.productId} (₦
                             {product.price})
                           </div>
                         ))}
