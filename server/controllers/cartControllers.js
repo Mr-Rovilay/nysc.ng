@@ -80,9 +80,26 @@ export const decreaseCartItemQuantity = async (req, res) => {
       return res.status(404).json({ message: "Product not found in cart" });
     }
 
+    const product = cart.products[productIndex];
+
+    // Fetch the product from the database to check the stock
+    const productData = await Product.findById(productId);
+
+    if (!productData) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Check if the updated quantity exceeds the available stock
+    const newQuantity = product.quantity - quantity;
+    if (newQuantity < 0) {
+      return res
+        .status(400)
+        .json({ message: "Quantity cannot be less than zero" });
+    }
+
     // Update quantity based on the request body
-    cart.products[productIndex].quantity -= quantity;
-    if (cart.products[productIndex].quantity < 1) {
+    product.quantity = newQuantity;
+    if (product.quantity < 1) {
       cart.products.splice(productIndex, 1);
     }
     await cart.save();
@@ -114,8 +131,23 @@ export const increaseCartItemQuantity = async (req, res) => {
       return res.status(404).json({ message: "Product not found in cart" });
     }
 
+    // Fetch the product from the database to check the stock
+    const productData = await Product.findById(productId);
+
+    if (!productData) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Check if the updated quantity exceeds the available stock
+    const newQuantity = product.quantity + quantity;
+    if (newQuantity > productData.stock) {
+      return res
+        .status(400)
+        .json({ message: "Quantity exceeds available stock" });
+    }
+
     // Update quantity based on the request body
-    product.quantity += quantity;
+    product.quantity = newQuantity;
     await cart.save();
 
     res.status(200).json(cart);

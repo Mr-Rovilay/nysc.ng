@@ -25,7 +25,6 @@ router.patch(
   verifyJWT,
   increaseCartItemQuantity
 );
-//router.post("/increase/:productId", verifyJWT, increaseCartItemQuantity);
 router.delete("/", verifyJWT, deleteCart);
 router.get("/", verifyJWT, getMyCart);
 
