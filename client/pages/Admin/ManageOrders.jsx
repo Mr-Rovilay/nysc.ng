@@ -136,6 +136,15 @@ const ManageOrders = () => {
                   color="blue-gray"
                   className="font-normal leading-none opacity-70"
                 >
+                  Date
+                </Typography>
+              </th>
+              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-normal leading-none opacity-70"
+                >
                   Action
                 </Typography>
               </th>
@@ -143,102 +152,128 @@ const ManageOrders = () => {
           </thead>
           <tbody>
             {orders.length > 0 ? (
-              orders.map((order, index) => (
-                <tr
-                  key={order._id}
-                  className={index % 2 === 0 ? "bg-blue-gray-50/50" : ""}
-                >
-                  <td className="p-4">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {index + 1}
-                    </Typography>
-                  </td>
-                  <td className="p-4">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal capitalize"
-                    >
-                      {order.address.firstName} {order.address.lastName}
-                    </Typography>
-                  </td>
-                  <td className="p-4">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {order.address.street}, {order.address.city},{" "}
-                      {order.address.state}, {order.address.country},{""}
-                      <p>
-                        PhoneNumber:{" "}
-                        <span className="font-bold">{order.address.phone}</span>
-                      </p>
-                    </Typography>
-                  </td>
-                  <td className="p-4">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {order.products.map((product, i) => (
-                        <div key={i}>
-                          {product.quantity} x {product.productId} (₦
-                          {product.price})
-                        </div>
-                      ))}
-                    </Typography>
-                  </td>
-                  <td className="p-4">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      ₦ <span className="font-bold">{order.amount}</span>
-                    </Typography>
-                  </td>
-                  <td className="p-4">
-                    <Select
-                      label="Status"
-                      value={order.status}
-                      onChange={(value) => handleStatusChange(order._id, value)}
-                      disabled={loadingOrder === order._id}
-                      className="w-full"
-                    >
-                      <Option value="Pending">Pending</Option>
-                      <Option value="Processing">Processing</Option>
-                      <Option value="Shipped">Shipped</Option>
-                      <Option value="Delivered">Delivered</Option>
-                      <Option value="Cancelled">Cancelled</Option>
-                    </Select>
-                  </td>
-                  <td className="p-4">
-                    <Button
-                      className="bg-green hover:bg-dark-green"
-                      onClick={() => handleStatusChange(order._id, "Delivered")}
-                      disabled={loadingOrder === order._id}
-                    >
-                      <FaCheck className="text-green-500" />
-                    </Button>
-                    <Button
-                      className="bg-red hover:bg-dark-red ml-2"
-                      onClick={() => handleStatusChange(order._id, "Cancelled")}
-                      disabled={loadingOrder === order._id}
-                    >
-                      <FaTrashAlt className="text-red-500" />
-                    </Button>
-                  </td>
-                </tr>
-              ))
+              orders.map((order, index) => {
+                const formattedDate = new Date(
+                  order.createdAt
+                ).toLocaleDateString();
+                const formattedTime = new Date(
+                  order.createdAt
+                ).toLocaleTimeString();
+
+                return (
+                  <tr
+                    key={order._id}
+                    className={index % 2 === 0 ? "bg-blue-gray-50/50" : ""}
+                  >
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {index + 1}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal capitalize"
+                      >
+                        {order.address.firstName} {order.address.lastName}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {order.address.street}, {order.address.city},{" "}
+                        {order.address.state}, {order.address.country},{""}
+                        <p>
+                          PhoneNumber:{" "}
+                          <span className="font-bold">
+                            {order.address.phone}
+                          </span>
+                        </p>
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {order.products.map((product, i) => (
+                          <div key={i}>
+                            {product.quantity} x {product.productId} (₦
+                            {product.price})
+                          </div>
+                        ))}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        ₦ <span className="font-bold">{order.amount}</span>
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Select
+                        label="Status"
+                        value={order.status}
+                        onChange={(value) =>
+                          handleStatusChange(order._id, value)
+                        }
+                        disabled={loadingOrder === order._id}
+                        className="w-full"
+                      >
+                        <Option value="Pending">Pending</Option>
+                        <Option value="Processing">Processing</Option>
+                        <Option value="Shipped">Shipped</Option>
+                        <Option value="Delivered">Delivered</Option>
+                        <Option value="Cancelled">Cancelled</Option>
+                      </Select>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {formattedDate} at {formattedTime}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Button
+                        className="bg-green hover:bg-dark-green"
+                        onClick={() =>
+                          handleStatusChange(order._id, "Delivered")
+                        }
+                        disabled={loadingOrder === order._id}
+                      >
+                        <FaCheck className="text-green-500" />
+                      </Button>
+                      <Button
+                        className="bg-red hover:bg-dark-red ml-2"
+                        onClick={() =>
+                          handleStatusChange(order._id, "Cancelled")
+                        }
+                        disabled={loadingOrder === order._id}
+                      >
+                        <FaTrashAlt className="text-red-500" />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan="7" className="text-center p-4">
+                <td colSpan="8" className="text-center p-4">
                   <Typography
                     variant="small"
                     color="blue-gray"
