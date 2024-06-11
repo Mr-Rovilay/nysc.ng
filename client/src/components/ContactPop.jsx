@@ -9,10 +9,14 @@ import {
   ListItem,
   ListItemPrefix,
 } from "@material-tailwind/react";
+import Buttons from "./Button";
 
 const ContactPop = () => {
+  const openWhatsApp = () => {
+    window.open("https://api.whatsapp.com/send?text=text&phone=+2348114080865");
+  };
   return (
-    <Popover placement="bottom-end">
+    <Popover placement="container bottom-end">
       <PopoverHandler>
         <Button className="font-medium bg-green-500">Contact Us</Button>
       </PopoverHandler>
@@ -73,7 +77,7 @@ const ContactPop = () => {
                   />
                 </svg>
               </ListItemPrefix>
-              08140520029
+              <a href="tel:+2348114080865">tel:+2348114080865</a>
             </ListItem>
           </a>
           <a href="#" className="text-initial font-medium text-blue-gray-500">
@@ -96,7 +100,11 @@ const ContactPop = () => {
                   />
                 </svg>
               </ListItemPrefix>
-              whatsapp me
+              <Buttons
+                className="bg-green-500 text-white w-full"
+                text={"whatsApp me"}
+                onClick={openWhatsApp}
+              />
             </ListItem>
           </a>
         </List>

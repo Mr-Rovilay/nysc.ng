@@ -73,7 +73,7 @@ const Product = ({ item }) => {
   };
 
   return (
-    <div className="my-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
+    <div className="container my-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
       <div className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl group">
         <img
           className="absolute top-0 right-0 h-full w-full object-cover transition-all duration-1000 group-hover:right-0"
@@ -110,11 +110,8 @@ const Product = ({ item }) => {
         <h1 className="capitalize">Product Name: {item.title}</h1>
         <div className="mt-2 mb-5 flex items-center justify-between">
           <p>
-            <span className="text-3xl font-bold text-slate-900">
-              {item.price}
-            </span>
-            <span className="text-sm text-slate-900 line-through">
-              {item.price}
+            <span className="text-xl font-semibold text-slate-900">
+              Price: ${item.price}
             </span>
           </p>
         </div>

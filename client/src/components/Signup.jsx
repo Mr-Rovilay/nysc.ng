@@ -60,7 +60,7 @@ const Signup = () => {
     <>
       <AnimationWrapper>
         <ToastContainer />
-        <section className="grid text-center h-screen items-center p-8">
+        <section className="container grid text-center h-screen items-center p-8">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-[24rem] mx-auto">
             <Typography variant="h3" color="blue-gray" className="mb-2">
               Sign Up

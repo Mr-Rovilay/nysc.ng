@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 const useCart = () => {
   const { token } = useContext(AuthContext);
 
+  // Fetch cart data using react-query
   const {
     refetch,
     data: cart = {},
@@ -31,6 +32,7 @@ const useCart = () => {
     enabled: !!token,
   });
 
+  // Handle clearing the cart
   const handleClearCart = async () => {
     try {
       const response = await userRequest.delete("/carts");
@@ -46,11 +48,11 @@ const useCart = () => {
     }
   };
 
+  // Handle deleting a cart item
   const deleteCartItem = async (productId) => {
     try {
       const response = await userRequest.delete(`/carts/${productId}`);
       if (response.status === 204) {
-        toast.success("Item removed from cart successfully");
         await refetch();
       } else {
         toast.error("Failed to remove item from cart");
@@ -61,12 +63,12 @@ const useCart = () => {
     }
   };
 
+  // Handle increasing item quantity
   const increaseCartItemQuantity = async (productId) => {
     try {
-      const response = await userRequest.post(`/carts/increase/${productId}`);
+      const response = await userRequest.patch(`/carts/increase/${productId}`);
       if (response.status === 200) {
         await refetch();
-        toast.success("Item quantity increased successfully");
       } else {
         toast.error("Failed to increase item quantity");
       }
@@ -76,12 +78,16 @@ const useCart = () => {
     }
   };
 
-  const decreaseCartItemQuantity = async (productId) => {
+  // Handle decreasing item quantity with check for minimum quantity
+  const decreaseCartItemQuantity = async (productId, currentQuantity) => {
+    if (currentQuantity <= 1) {
+      toast.error("Quantity can't be less than 1");
+      return;
+    }
     try {
       const response = await userRequest.post(`/carts/decrease/${productId}`);
       if (response.status === 200) {
         await refetch();
-        toast.success("Item quantity decreased successfully");
       } else {
         toast.error("Failed to decrease item quantity");
       }
@@ -91,6 +97,7 @@ const useCart = () => {
     }
   };
 
+  // Handle errors if fetching cart fails
   useEffect(() => {
     if (isError) {
       console.error("Error fetching cart:", error);

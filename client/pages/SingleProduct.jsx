@@ -1,12 +1,13 @@
 import Footer from "../src/components/Footer";
 import Button from "../src/components/Button";
 import AnimationWrapper from "../src/common/AnimationWrapper";
-import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { publicRequest, userRequest } from "../middleware/middleware";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../src/components/Loading";
+import { AuthContext } from "../middleware/AuthContext";
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -16,6 +17,7 @@ const SingleProduct = () => {
   const [error, setError] = useState(null);
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -32,40 +34,45 @@ const SingleProduct = () => {
   }, [id]);
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      Navigate("/signin");
+      return;
+    }
+
+    setLoading(true); // Set loading to true when adding to cart
+
     try {
-      if (!inCart) {
-        const response = await userRequest.post("/carts", {
-          productId: id,
-          quantity: quantity,
-        });
-        console.log(response.data);
-        toast.success("Product added to cart successfully!");
+      const response = await userRequest.post("/carts", {
+        productId: id,
+        quantity: quantity,
+      });
+
+      if (response.status === 201) {
         setInCart(true);
+        toast.success("Product added to cart successfully!");
       } else {
-        toast.warning("Product is already in the cart!");
+        toast.error("Failed to add product to cart.");
       }
     } catch (error) {
-      console.error("Error adding item to cart:", error);
-      toast.error("Failed to add product to cart");
+      console.error("Error adding to cart:", error);
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data === "Product already in cart"
+      ) {
+        toast.info("Product is already in the cart.");
+      } else {
+        toast.error("An error occurred while adding to cart.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
-
-  if (loading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <AnimationWrapper>
       <ToastContainer />
-      <div className="max-h-screen bg-gray-100 py-12">
+      <div className="container max-h-screen bg-gray-100 py-12">
         <div className="max-w-6xl flex justify-center items-center mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row -mx-4">
             <div className="md:flex-1 px-4">
@@ -77,13 +84,36 @@ const SingleProduct = () => {
                 />
               </div>
               <div className="flex items-center justify-center mt-4">
-                <div className="px-2 mt-4" onClick={handleAddToCart}>
-                  <Button
-                    text={inCart ? "Product in Cart" : "Add to Cart"}
-                    variant="secondary"
-                    disabled={inCart}
-                  />
-                </div>
+                <Button
+                  className="flex items-center justify-center bg-green-500 rounded-md px-5 py-2.5 text-center text-sm font-medium cursor-pointer mt-3"
+                  variant="secondary"
+                  text="Add to cart"
+                  onClick={handleAddToCart}
+                  disabled={product.stock === 0 || inCart}
+                >
+                  {loading ? (
+                    <span>
+                      <Loading />
+                    </span>
+                  ) : inCart ? (
+                    "In Cart"
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mr-2 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                  )}
+                </Button>
               </div>
             </div>
             <div className="md:flex-1 px-4 mt-6 md:mt-0">

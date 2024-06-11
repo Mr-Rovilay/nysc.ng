@@ -43,7 +43,7 @@ const SearchResults = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>Search Results for "{searchQuery}"</h1>
       {loading ? (
         <p>

@@ -21,7 +21,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="container flex items-center gap-4">
       <Button
         variant="text"
         className="flex items-center gap-2 bg-green-500"

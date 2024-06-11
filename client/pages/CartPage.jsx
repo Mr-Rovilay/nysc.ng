@@ -3,7 +3,11 @@ import { FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Card, Typography } from "@material-tailwind/react";
+import {
+  Card,
+  Typography,
+  Button as MaterialButton,
+} from "@material-tailwind/react";
 import Pagination from "../src/components/Pagination";
 import Button from "../src/components/Button";
 import useCart from "../middleware/useCart";
@@ -56,7 +60,11 @@ const CartPage = () => {
     }
   };
 
-  const handleDecreaseQuantity = async (productId) => {
+  const handleDecreaseQuantity = async (productId, currentQuantity) => {
+    if (currentQuantity <= 1) {
+      toast.error("Quantity can't be less than 1");
+      return;
+    }
     try {
       await decreaseCartItemQuantity(productId);
     } catch (error) {
@@ -68,242 +76,141 @@ const CartPage = () => {
   if (isLoading || isFetching) {
     return (
       <div className="mt-2">
-        <Loading />;
+        <Loading />
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="min-h-screen bg-gray-100">
-        <ToastContainer />
-        <h1 className="py-1.5 font-medium text-center mb-8">YOUR CART</h1>
-        <div className="p-5 sm:p-2">
-          {cart.products?.length > 0 ? (
-            <div>
-              <div className="relative flex flex-col sm:flex-row items-center justify-between p-5 bg-white rounded-lg shadow-md mb-8">
-                <Link to={"/products"}>
-                  <button className="px-4 py-1.5 font-medium border border-gray-300 rounded-lg bg-transparent hover:bg-gray-100 transition duration-300 mb-2 sm:mb-0">
-                    CONTINUE SHOPPING
-                  </button>
-                </Link>
-
-                <div className="flex flex-col sm:flex-row sm:items-center mb-2 sm:mb-0">
-                  <div className="underline cursor-pointer mx-2 mb-2 sm:mb-0">
-                    Shopping Bag({cart.products?.length || 0})
-                  </div>
-                </div>
-                {cart.products?.length > 0 && (
-                  <div className="absolute top-0 right-0 mt-2 mr-2">
-                    <button
-                      className="px-4 py-2 bg-red-500 font-semibold rounded-lg shadow-md transition duration-300 flex gap-2 items-center justify-center"
-                      onClick={handleClearCart}
-                    >
-                      <span className="text-white"> Clear All</span>
-                      <span>
-                        {" "}
-                        <FaTrashAlt className="text-white" />{" "}
-                      </span>
-                    </button>
-                  </div>
-                )}
+    <div className="container min-h-screen bg-gray-100">
+      <ToastContainer />
+      <h1 className="text-2xl font-semibold text-center mt-8 mb-6">
+        YOUR CART
+      </h1>
+      <div className="mx-auto p-4">
+        {cart.products?.length > 0 ? (
+          <div>
+            <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-lg shadow-md mb-6">
+              <Link to="/products">
+                <MaterialButton className="mb-2 sm:mb-0">
+                  CONTINUE SHOPPING
+                </MaterialButton>
+              </Link>
+              <div className="flex flex-col sm:flex-row items-center">
+                <span className="underline cursor-pointer mx-2 mb-2 sm:mb-0">
+                  Shopping Bag ({cart.products?.length || 0})
+                </span>
               </div>
+            </div>
 
-              <Card className="h-full w-full overflow-scroll mb-8">
-                <table className="w-full min-w-max table-auto text-left">
-                  <thead>
-                    <tr>
-                      <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          #
-                        </Typography>
-                      </th>
-                      <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          Image
-                        </Typography>
-                      </th>
-                      <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          Product Name
-                        </Typography>
-                      </th>
-                      <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          Quantity
-                        </Typography>
-                      </th>
-                      <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          Price
-                        </Typography>
-                      </th>
-                      <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          Action
-                        </Typography>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cart.products?.map((item, index) => (
-                      <tr key={index}>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {index + 1}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <div className="rounded-full w-12 h-12 overflow-hidden">
-                            <img
-                              src={item.productId.image}
-                              alt={item.productId.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal capitalize"
-                          >
-                            {item.productId.title}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal capitalize"
-                          >
-                            <button
-                              className="btn text-xl"
-                              onClick={() =>
-                                handleDecreaseQuantity(item.productId._id)
-                              }
-                            >
-                              -
-                            </button>
-                            <input
-                              type="number"
-                              value={item.quantity}
-                              className="w-10 mx-2 text-center overflow-hidden appearance-none"
-                              readOnly
-                            />
-                            <button
-                              className="btn text-xl"
-                              onClick={() =>
-                                handleIncreaseQuantity(item.productId._id)
-                              }
-                            >
-                              +
-                            </button>
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            ${item.productId.price.toFixed(2)}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
+            <Card className="overflow-scroll mb-6">
+              <table className="w-full min-w-max table-auto text-left">
+                <thead>
+                  <tr>
+                    <th className="p-4">#</th>
+                    <th className="p-4">Image</th>
+                    <th className="p-4">Product Name</th>
+                    <th className="p-4">Quantity</th>
+                    <th className="p-4">Price</th>
+                    <th className="p-4">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cart.products?.map((item, index) => (
+                    <tr key={index}>
+                      <td className="p-4">{index + 1}</td>
+                      <td className="p-4">
+                        <div className="w-12 h-12 overflow-hidden rounded-full">
+                          <img
+                            src={item.productId.image}
+                            alt={item.productId.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </td>
+                      <td className="p-4 capitalize">{item.productId.title}</td>
+                      <td className="p-4">
+                        <div className="flex items-center">
                           <button
-                            className="btn hover:bg-red-600"
-                            onClick={() => deleteCartItem(item.productId._id)}
+                            className="text-xl"
+                            onClick={() =>
+                              handleDecreaseQuantity(
+                                item.productId._id,
+                                item.quantity
+                              )
+                            }
                           >
-                            <FaTrashAlt className="text-red-500" />
+                            -
                           </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </Card>
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            className="w-10 mx-2 text-center"
+                            readOnly
+                          />
+                          <button
+                            className="text-xl px-2"
+                            onClick={() =>
+                              handleIncreaseQuantity(item.productId._id)
+                            }
+                          >
+                            +
+                          </button>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        ${item.productId.price.toFixed(2)}
+                      </td>
+                      <td className="p-4">
+                        <button
+                          className="text-red-500 hover:text-red-600"
+                          onClick={() => deleteCartItem(item.productId._id)}
+                        >
+                          <FaTrashAlt />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
 
-              <div className="flex flex-col md:flex-row justify-between items-start my-12 gap-8">
-                <div className="md:w-1/2 space-y-3">
-                  <h3 className="py-1.5 font-medium">Shopping Details</h3>
-                  <p>Total Items: {cart.products?.length || 0}</p>
-                  <p>
-                    Sub Total:{" "}
-                    <span id="sub-total-price">$ {subTotal.toFixed(2)}</span>
-                  </p>
-                  <p>
-                    Delivery Price:{" "}
-                    <span id="delivery-price">
-                      ${subTotal === 0 ? 0 : deliveryPrice}
-                    </span>
-                  </p>
-                  <p>
-                    Total Price:{" "}
-                    <span id="total-price">${totalPrice.toFixed(2)}</span>
-                  </p>
-                  <Link to="/delivery-info">
-                    <div className="mt-4">
-                      <Button
-                        variant="secondary"
-                        text={"proceed to delivery info"}
-                      />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Back to Menu Button */}
-              <div className="flex items-center justify-center mt-4">
-                <Link to="/products">
-                  <Button variant="secondary" text={"back to products"} />
+            <div className="flex flex-col md:flex-row justify-between items-start my-8 gap-8 bg-white p-4 rounded-lg shadow-md">
+              <div className="md:w-1/2">
+                <h3 className="text-lg font-medium mb-2">Shopping Details</h3>
+                <p>Total Items: {cart.products?.length || 0}</p>
+                <p>Sub Total: ${subTotal.toFixed(2)}</p>
+                <p>Delivery Price: ${subTotal === 0 ? 0 : deliveryPrice}</p>
+                <p>Total Price: ${totalPrice.toFixed(2)}</p>
+                <Link to="/delivery-info">
+                  <MaterialButton className="mt-4">
+                    Proceed to Delivery Info
+                  </MaterialButton>
                 </Link>
               </div>
+            </div>
 
-              <div className="flex justify-center mt-6">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+            <div className="flex justify-center mt-4">
+              <Link to="/products">
+                <Button variant="secondary" text="Back to Products" />
+              </Link>
             </div>
-          ) : (
-            <div className="flex items-center justify-center h-full mt-10">
-              <p className="text-center py-1.5 font-medium">
-                Your cart is empty please add products to cart
-              </p>
+
+            <div className="flex justify-center mt-6">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full mt-10">
+            <p className="text-center text-lg">
+              Your cart is empty, please add products to the cart.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -93,7 +93,7 @@ const CustomNavbar = () => {
   );
 
   return (
-    <div className="sticky top-0 w-full bg-transparent shadow-md z-50">
+    <div className="container sticky top-0 w-full bg-transparent shadow-md z-50">
       <Navbar className="sticky bg-transparent top-0 z-10 h-max max-w-full rounded-md px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between">
           <Link to={"/"}>

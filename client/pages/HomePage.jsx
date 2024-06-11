@@ -6,7 +6,7 @@ import Products from "../src/components/Products";
 
 const HomePage = () => {
   return (
-    <div className="app">
+    <div className="app container">
       <AnimationWrapper>
         <Hero />
       </AnimationWrapper>
