@@ -67,7 +67,7 @@ const ManageOrders = () => {
   return (
     <div>
       <ToastContainer />
-      <div className="flex items-center justify-between m-4">
+      <div className="container flex items-center justify-between m-4">
         <h5>All Orders</h5>
         <h5>Total Orders: {orders.length}</h5>
       </div>

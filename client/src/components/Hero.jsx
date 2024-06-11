@@ -12,10 +12,6 @@ const Button = ({ text, variant, onClick }) => {
 };
 
 const Hero = () => {
-  const openWhatsApp = () => {
-    window.open("https://api.whatsapp.com/send?text=text&phone=+2348114080865");
-  };
-
   return (
     <div className="relative bg-gradient-to-r h-screen bg-gray-100 text-white overflow-hidden">
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
@@ -25,24 +21,6 @@ const Hero = () => {
         <p className="text-lg text-gray-900 mb-8">
           Discover amazing features and services that await you.
         </p>
-        <div className="inline-flex gap-3">
-          <Button
-            text={"Shop Now"}
-            variant="primary"
-            className={"bg-white text-black"}
-          />
-          <a href="tel:+2348114080865">
-            <Button text={"Call to Order Directly"} variant="primary" />
-          </a>
-        </div>
-        <p className="mt-4 text-black">or</p>
-        <div className="mt-4">
-          <Button
-            variant={"primary"}
-            text={"Send Message on WhatsApp"}
-            onClick={openWhatsApp}
-          />
-        </div>
       </div>
     </div>
   );

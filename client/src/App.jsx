@@ -8,7 +8,6 @@ import ProductList from "../pages/ProductList";
 import CartPage from "../pages/CartPage";
 import Signin from "./components/Signin";
 import NotFoundPage from "../pages/NotFoundPage";
-import CheckoutPage from "../pages/CheckoutPage";
 import DeliveryInfoPage from "../pages/DeliveryInfoPage";
 import CustomNavbar from "./components/CustomNavbar";
 import UpdateProduct from "../pages/Admin/UpdateProduct";
@@ -42,7 +41,6 @@ const App = () => {
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/delivery-info" element={<DeliveryInfoPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/myOrders" element={<OrdersPage />} />

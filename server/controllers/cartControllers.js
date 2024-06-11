@@ -60,11 +60,6 @@ export const removeFromCart = async (req, res) => {
   }
 };
 
-// Update the quantity of a specific item in the cart
-// controllers/cartControllers.js
-
-// controllers/cartControllers.js
-
 export const decreaseCartItemQuantity = async (req, res) => {
   const { productId } = req.params;
   const userId = req.decoded.id;
@@ -144,7 +139,7 @@ export const deleteCart = async (req, res) => {
 // DELETE endpoint to delete an item by ID
 export const deleteCartItem = async (req, res) => {
   const { itemId } = req.params;
-  const userId = req.decoded.id; // Assuming you have the user ID decoded from the JWT token
+  const userId = req.decoded.id;
 
   try {
     const updatedCart = await Cart.findOneAndUpdate(

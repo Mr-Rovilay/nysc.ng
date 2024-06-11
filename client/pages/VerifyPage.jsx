@@ -35,7 +35,7 @@ const VerifyPage = () => {
   }, []);
 
   return (
-    <div className="min-height-[60vh] grid">
+    <div className="container min-height-[60vh] grid">
       <ToastContainer />
       <div className="mt-3">
         <Loading />

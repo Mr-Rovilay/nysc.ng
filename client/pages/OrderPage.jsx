@@ -49,7 +49,7 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="container min-h-screen bg-gray-100">
       <AnimationWrapper />
       <ToastContainer />
       <div className="p-5 sm:p-2">
@@ -61,7 +61,8 @@ const OrdersPage = () => {
             </div>
           ) : (
             orders.map((order) => {
-              const { _id, address, status, products, amount } = order;
+              const { _id, address, status, products, amount, createdAt } =
+                order;
               const {
                 firstName,
                 lastName,
@@ -72,6 +73,10 @@ const OrdersPage = () => {
                 country,
               } = address;
 
+              // Format the date and time
+              const formattedDate = new Date(createdAt).toLocaleDateString();
+              const formattedTime = new Date(createdAt).toLocaleTimeString();
+
               return (
                 <Card
                   key={_id}
@@ -80,6 +85,14 @@ const OrdersPage = () => {
                   <Typography variant="h6" className="font-bold mb-4">
                     Order ID: {_id}
                   </Typography>
+                  <div className="mb-4">
+                    <Typography variant="small" className="font-semibold">
+                      Date:
+                    </Typography>
+                    <Typography variant="small">
+                      {formattedDate} at {formattedTime}
+                    </Typography>
+                  </div>
                   <div className="mb-4">
                     <Typography variant="small" className="font-semibold">
                       Address:

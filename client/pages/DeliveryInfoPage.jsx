@@ -81,7 +81,7 @@ const DeliveryInfoPage = () => {
   };
 
   return (
-    <form className="flex flex-col gap-6" onSubmit={placeOrder}>
+    <form className="container flex flex-col gap-6" onSubmit={placeOrder}>
       <ToastContainer />
       <div className="w-full max-w-[min(30%,500px)]">
         <p className="text-xl py-1.5 font-medium capitalize my-10">

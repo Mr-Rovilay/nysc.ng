@@ -20,8 +20,8 @@ const ProductList = () => {
 
   return (
     <AnimationWrapper>
-      <div className="pt-20 px-6">
-        <h1 className="text-4xl font-bold p-5 ml-4 capitalize">
+      <div className="container pt-20 px-6">
+        <h1 className="text-xl font-bold capitalize">
           Dresses: {category ? category : "All"}
         </h1>
 
