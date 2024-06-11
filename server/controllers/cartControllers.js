@@ -79,7 +79,6 @@ export const decreaseCartItemQuantity = async (req, res) => {
     if (productIndex === -1) {
       return res.status(404).json({ message: "Product not found in cart" });
     }
-
     const product = cart.products[productIndex];
 
     // Fetch the product from the database to check the stock
