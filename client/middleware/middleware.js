@@ -9,7 +9,6 @@ export const publicRequest = axios.create({
 export const userRequest = axios.create({
   baseURL,
 });
-console.log(baseURL);
 
 userRequest.interceptors.request.use(
   (config) => {
