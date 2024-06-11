@@ -119,7 +119,7 @@ const CartPage = () => {
                       <td className="p-4">
                         <div className="flex items-center">
                           <button
-                            className="text-xl"
+                            className="text-xl px-2 bg-gray-300"
                             onClick={() =>
                               handleDecreaseQuantity(
                                 item.productId._id,
@@ -136,7 +136,7 @@ const CartPage = () => {
                             readOnly
                           />
                           <button
-                            className="text-xl px-2"
+                            className="text-xl px-2 bg-gray-300"
                             onClick={() =>
                               handleIncreaseQuantity(item.productId._id)
                             }
