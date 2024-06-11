@@ -51,8 +51,8 @@ const Product = ({ item }) => {
       });
 
       if (response.status === 201) {
-        toast.success("Product added to cart successfully!");
         setInCart(true);
+        toast.success("Product added to cart successfully!");
       } else {
         toast.error("Failed to add product to cart.");
       }
@@ -68,7 +68,7 @@ const Product = ({ item }) => {
         toast.error("An error occurred while adding to cart.");
       }
     } finally {
-      setLoading(false); // Set loading to false after adding to cart
+      setLoading(false);
     }
   };
 

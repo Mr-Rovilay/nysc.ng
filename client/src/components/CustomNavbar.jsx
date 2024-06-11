@@ -269,7 +269,7 @@ const CustomNavbar = () => {
               <Button
                 size="sm"
                 type="submit"
-                className=" right-1 top-1 rounded"
+                className="bg-green-500 right-1 top-1 rounded"
               >
                 Search
               </Button>

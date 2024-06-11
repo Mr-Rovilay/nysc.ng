@@ -19,7 +19,8 @@ router.post(
 
   decreaseCartItemQuantity
 );
-router.post("/increase/:productId", verifyJWT, increaseCartItemQuantity);
+router.patch("/increase/:productId", verifyJWT, increaseCartItemQuantity);
+//router.post("/increase/:productId", verifyJWT, increaseCartItemQuantity);
 router.delete("/", verifyJWT, deleteCart);
 router.get("/", verifyJWT, getMyCart);
 
