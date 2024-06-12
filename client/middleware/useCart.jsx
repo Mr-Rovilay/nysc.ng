@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 const useCart = () => {
   const { token } = useContext(AuthContext);
-  ddbddfdbdfbddbddf;
   const {
     refetch,
     data: cart = [],
