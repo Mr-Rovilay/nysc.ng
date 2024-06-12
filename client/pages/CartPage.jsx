@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FaTrashAlt, FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,11 +14,12 @@ const CartPage = () => {
     refetch,
     handleClearCart,
     deleteCartItem,
-    increaseCartItemQuantity,
-    decreaseCartItemQuantity,
+    debouncedIncreaseCartItemQuantity,
+    debouncedDecreaseCartItemQuantity,
     isLoading,
     isFetching,
   ] = useCart();
+
   const [subTotal, setSubTotal] = useState(0);
   const deliveryPrice = 20;
   const [totalPrice, setTotalPrice] = useState(0);
@@ -38,22 +39,28 @@ const CartPage = () => {
     setTotalPrice(subTotal + (subTotal > 0 ? deliveryPrice : 0));
   }, [subTotal]);
 
-  const handleIncreaseQuantity = async (productId) => {
-    await increaseCartItemQuantity(productId, 1);
-  };
+  const handleIncreaseQuantity = useCallback(
+    async (productId) => {
+      await debouncedIncreaseCartItemQuantity(productId, 1);
+    },
+    [debouncedIncreaseCartItemQuantity]
+  );
 
-  const handleDecreaseQuantity = async (productId, quantity) => {
-    if (quantity <= 1) {
-      toast.error("Quantity can't be less than 1");
-      return;
-    }
-    try {
-      await decreaseCartItemQuantity(productId, 1);
-    } catch (error) {
-      console.error("Error decreasing item quantity in cart:", error);
-      toast.error("An error occurred while decreasing item quantity");
-    }
-  };
+  const handleDecreaseQuantity = useCallback(
+    async (productId, quantity) => {
+      if (quantity <= 1) {
+        toast.error("Quantity can't be less than 1");
+        return;
+      }
+      try {
+        await debouncedDecreaseCartItemQuantity(productId, 1);
+      } catch (error) {
+        console.error("Error decreasing item quantity in cart:", error);
+        toast.error("An error occurred while decreasing item quantity");
+      }
+    },
+    [debouncedDecreaseCartItemQuantity]
+  );
 
   if (isLoading || isFetching) {
     return (
@@ -62,6 +69,65 @@ const CartPage = () => {
       </div>
     );
   }
+
+  const renderCartItem = (item, index) => (
+    <tr key={index}>
+      <td className="p-4">{index + 1}</td>
+      <td className="p-4">
+        <div className="w-12 h-12 overflow-hidden rounded-full">
+          <img
+            src={item.productId.image}
+            alt={item.productId.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </td>
+      <td className="p-4 capitalize">{item.productId.title}</td>
+      <td className="p-4">
+        <div className="flex items-center">
+          <button
+            className={`text-xl px-2 ${
+              item.quantity <= 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-300 hover:bg-gray-400"
+            }`}
+            onClick={() =>
+              handleDecreaseQuantity(item.productId._id, item.quantity)
+            }
+            disabled={item.quantity <= 1}
+          >
+            <FaMinusCircle />
+          </button>
+          <input
+            type="number"
+            value={item.quantity}
+            className="w-10 mx-2 text-center"
+            readOnly
+          />
+          <button
+            className={`text-xl px-2 ${
+              item.quantity >= item.productId.stock
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-300 hover:bg-gray-400"
+            }`}
+            onClick={() => handleIncreaseQuantity(item.productId._id)}
+            disabled={item.quantity >= item.productId.stock}
+          >
+            <FaPlusCircle />
+          </button>
+        </div>
+      </td>
+      <td className="p-4">${item.productId.price.toFixed(2)}</td>
+      <td className="p-4">
+        <button
+          className="text-red-500 hover:text-red-600"
+          onClick={() => deleteCartItem(item.productId._id)}
+        >
+          <FaTrashAlt />
+        </button>
+      </td>
+    </tr>
+  );
 
   return (
     <div className="container min-h-screen bg-gray-100">
@@ -97,77 +163,7 @@ const CartPage = () => {
                     <th className="p-4">Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {cart.products?.map((item, index) => (
-                    <tr key={index}>
-                      <td className="p-4">{index + 1}</td>
-                      <td className="p-4">
-                        <div className="w-12 h-12 overflow-hidden rounded-full">
-                          <img
-                            src={item.productId.image}
-                            alt={item.productId.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </td>
-                      <td className="p-4 capitalize">{item.productId.title}</td>
-                      <td className="p-4">
-                        <div className="flex items-center">
-                          <button
-                            className="text-xl px-2 bg-gray-300"
-                            onClick={() =>
-                              handleDecreaseQuantity(
-                                item.productId._id,
-                                item.quantity
-                              )
-                            }
-                            disabled={item.quantity <= 1}
-                          >
-                            {item.quantity <= 1 ? (
-                              <div className="text-xl py-1 bg-gray-300">
-                                <FaMinusCircle className="text-gray-500" />
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </button>
-                          <input
-                            type="number"
-                            value={item.quantity}
-                            className="w-10 mx-2 text-center"
-                            readOnly
-                          />
-                          <button
-                            className="text-xl px-2 bg-gray-300"
-                            onClick={() =>
-                              handleIncreaseQuantity(item.productId._id)
-                            }
-                            disabled={item.quantity >= item.productId.stock}
-                          >
-                            {item.quantity >= item.productId.stock ? (
-                              <div className="text-xl py-1 bg-gray-300">
-                                <FaPlusCircle className="text-gray-500" />
-                              </div>
-                            ) : (
-                              "+"
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        ${item.productId.price.toFixed(2)}
-                      </td>
-                      <td className="p-4">
-                        <button
-                          className="text-red-500 hover:text-red-600"
-                          onClick={() => deleteCartItem(item.productId._id)}
-                        >
-                          <FaTrashAlt />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                <tbody>{cart.products?.map(renderCartItem)}</tbody>
               </table>
             </Card>
 
