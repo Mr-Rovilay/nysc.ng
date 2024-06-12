@@ -186,15 +186,15 @@ export const deleteOrder = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Check if the order is marked as delivered
-    if (order.status === "delivered") {
+    // Check if the order is marked as delivered or cancelled
+    if (order.status === "delivered" || order.status === "cancelled") {
       await Order.deleteOne({ _id: orderId });
       return res.status(204).json();
     }
 
     return res
       .status(403)
-      .json({ message: "Order has not been delivered yet" });
+      .json({ message: "Order has not been delivered or cancelled yet" });
   } catch (error) {
     console.error("Error deleting order:", error);
     res.status(500).json({ error: "Internal server error" });

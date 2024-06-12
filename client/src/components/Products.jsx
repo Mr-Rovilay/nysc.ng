@@ -84,7 +84,7 @@ const Products = ({ category, filters, sort }) => {
               <Product key={item._id} item={item} />
             ))}
           </div>
-          <div className="flex justify-center mt-6">
+          <div className="container flex justify-center mt-6">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
