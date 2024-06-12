@@ -13,6 +13,7 @@ const OrdersPage = () => {
 
   useEffect(() => {
     if (isError) {
+      toast.error("Error fetching orders");
       console.error("Error fetching orders:", error);
     }
   }, [isError, error]);
@@ -40,9 +41,45 @@ const OrdersPage = () => {
     }
   };
 
+  const renderOrderStatus = (status) => {
+    const statusStyles = {
+      Delivered: "text-green-500",
+      Processing: "text-yellow-500",
+      Shipped: "text-blue-500",
+      Cancelled: "text-red-500",
+    };
+    return (
+      <Typography
+        variant="small"
+        className={`font-bold ${statusStyles[status] || "text-gray-500"}`}
+      >
+        {status === "Delivered" ? "✔" : "•"} {status}
+      </Typography>
+    );
+  };
+
+  const renderOrderProducts = (products) => {
+    if (!products.length) {
+      return <Typography variant="small">No products</Typography>;
+    }
+    return products.map((product) => (
+      <div
+        key={product.productId}
+        className="flex justify-between items-center mb-2"
+      >
+        <Typography variant="small" className="font-normal">
+          {product.title} (x{product.quantity})
+        </Typography>
+        <Typography variant="small" className="font-normal">
+          Price: ${product.price}
+        </Typography>
+      </div>
+    ));
+  };
+
   if (isLoading) {
     return (
-      <div className="mt-2">
+      <div className="container mt-2">
         <Loading />
       </div>
     );
@@ -73,7 +110,6 @@ const OrdersPage = () => {
                 country,
               } = address;
 
-              // Format the date and time
               const formattedDate = new Date(createdAt).toLocaleDateString();
               const formattedTime = new Date(createdAt).toLocaleTimeString();
 
@@ -113,41 +149,13 @@ const OrdersPage = () => {
                     <Typography variant="small" className="font-semibold">
                       Status:
                     </Typography>
-                    <Typography variant="small" className="font-bold">
-                      {status === "Delivered" ? (
-                        <span className="text-green-500">&#x2714; </span>
-                      ) : status === "Processing" ? (
-                        <span className="text-yellow-500">&#x25cf; </span>
-                      ) : status === "Shipped" ? (
-                        <span className="text-blue-500">&#x25cf; </span>
-                      ) : (
-                        <span className="text-red-500">&#x25cf; </span>
-                      )}
-                      {status}
-                    </Typography>
+                    {renderOrderStatus(status)}
                   </div>
-
                   <div>
                     <Typography variant="small" className="font-semibold">
                       Products:
                     </Typography>
-                    {products.length === 0 ? (
-                      <Typography variant="small">No products</Typography>
-                    ) : (
-                      products.map((product) => (
-                        <div
-                          key={product.productId}
-                          className="flex justify-between items-center mb-2"
-                        >
-                          <Typography variant="small" className="font-normal">
-                            {product.title} (x{product.quantity})
-                          </Typography>
-                          <Typography variant="small" className="font-normal">
-                            Price: ${product.price}
-                          </Typography>
-                        </div>
-                      ))
-                    )}
+                    {renderOrderProducts(products)}
                   </div>
                   <div>
                     <Typography variant="small" className="font-semibold">
@@ -167,7 +175,7 @@ const OrdersPage = () => {
                         <div className="flex items-center gap-2">
                           <Loading small /> Canceling...
                         </div>
-                      ) : status == "Cancelled" ? (
+                      ) : status === "Cancelled" ? (
                         "Cancelled"
                       ) : (
                         "Cancel Order"

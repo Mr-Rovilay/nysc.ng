@@ -1,19 +1,10 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userRequest } from "./middleware";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useOrders = () => {
   const queryClient = useQueryClient();
-
-  // Delete order function
-  const deleteOrder = async (orderId) => {
-    try {
-      await userRequest.delete(`/orders/${orderId}`);
-      queryClient.invalidateQueries("orders");
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      throw error;
-    }
-  };
 
   // Fetch orders function
   const fetchOrders = async () => {
@@ -22,19 +13,6 @@ const useOrders = () => {
       return response.data;
     } catch (error) {
       console.error("Error fetching orders:", error);
-      throw error;
-    }
-  };
-
-  // Cancel order function
-  const cancelOrder = async (orderId) => {
-    try {
-      const response = await userRequest.post(`/orders/${orderId}/cancel`);
-      console.log(response);
-      queryClient.invalidateQueries("orders");
-      return response.data;
-    } catch (error) {
-      console.error("Error canceling order:", error);
       throw error;
     }
   };
@@ -50,13 +28,44 @@ const useOrders = () => {
     queryFn: fetchOrders,
   });
 
+  // Delete order mutation
+  const deleteOrderMutation = useMutation({
+    mutationFn: async (orderId) => {
+      await userRequest.delete(`/orders/${orderId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("orders");
+      toast.success("Order deleted successfully");
+    },
+    onError: (error) => {
+      console.error("Error deleting order:", error);
+      toast.error("Error deleting order");
+    },
+  });
+
+  // Cancel order mutation
+  const cancelOrderMutation = useMutation({
+    mutationFn: async (orderId) => {
+      const response = await userRequest.post(`/orders/${orderId}/cancel`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("orders");
+      toast.success("Order canceled successfully");
+    },
+    onError: (error) => {
+      console.error("Error canceling order:", error);
+      toast.error("Error canceling order");
+    },
+  });
+
   return {
     orders,
     isLoading,
     isError,
     error,
-    deleteOrder,
-    cancelOrder,
+    deleteOrder: deleteOrderMutation.mutate,
+    cancelOrder: cancelOrderMutation.mutate,
   };
 };
 

@@ -14,9 +14,9 @@ const app = express();
 
 app.use(
   cors({
-    origin: "*", // Allow requests from any origin
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Specify allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(bodyParser.json());
@@ -35,7 +35,8 @@ app.get("/", (req, res) => {
 });
 
 connectDB().then(() => {
-  app.listen(process.env.PORT, () => {
-    console.log("Server listening on port " + process.env.PORT);
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
   });
 });
