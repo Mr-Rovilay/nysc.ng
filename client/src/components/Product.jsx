@@ -55,7 +55,6 @@ const Product = ({ item }) => {
       if (response.status === 201) {
         setInCart(true);
         refetch(cart);
-        toast.success("Product added to cart successfully!");
       } else {
         toast.error("Failed to add product to cart.");
       }
