@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt, FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,21 +39,16 @@ const CartPage = () => {
   }, [subTotal]);
 
   const handleIncreaseQuantity = async (productId) => {
-    try {
-      await increaseCartItemQuantity(productId);
-    } catch (error) {
-      console.error("Error increasing item quantity in cart:", error);
-      toast.error("An error occurred while increasing item quantity");
-    }
+    await increaseCartItemQuantity(productId, 1);
   };
 
-  const handleDecreaseQuantity = async (productId, currentQuantity) => {
-    if (currentQuantity <= 1) {
+  const handleDecreaseQuantity = async (productId, quantity) => {
+    if (quantity <= 1) {
       toast.error("Quantity can't be less than 1");
       return;
     }
     try {
-      await decreaseCartItemQuantity(productId);
+      await decreaseCartItemQuantity(productId, 1);
     } catch (error) {
       console.error("Error decreasing item quantity in cart:", error);
       toast.error("An error occurred while decreasing item quantity");
@@ -62,7 +57,7 @@ const CartPage = () => {
 
   if (isLoading || isFetching) {
     return (
-      <div className="mt-2">
+      <div className="container mt-2">
         <Loading />
       </div>
     );
@@ -126,8 +121,15 @@ const CartPage = () => {
                                 item.quantity
                               )
                             }
+                            disabled={item.quantity <= 1}
                           >
-                            -
+                            {item.quantity <= 1 ? (
+                              <div className="text-xl py-1 bg-gray-300">
+                                <FaMinusCircle className="text-gray-500" />
+                              </div>
+                            ) : (
+                              "-"
+                            )}
                           </button>
                           <input
                             type="number"
@@ -140,8 +142,15 @@ const CartPage = () => {
                             onClick={() =>
                               handleIncreaseQuantity(item.productId._id)
                             }
+                            disabled={item.quantity >= item.productId.stock}
                           >
-                            +
+                            {item.quantity >= item.productId.stock ? (
+                              <div className="text-xl py-1 bg-gray-300">
+                                <FaPlusCircle className="text-gray-500" />
+                              </div>
+                            ) : (
+                              "+"
+                            )}
                           </button>
                         </div>
                       </td>

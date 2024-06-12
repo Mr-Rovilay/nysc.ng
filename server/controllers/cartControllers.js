@@ -156,7 +156,6 @@ export const increaseCartItemQuantity = async (req, res) => {
   }
 };
 
-// deleteCart all cart
 export const deleteCart = async (req, res) => {
   const userId = req.decoded.id;
 
@@ -171,7 +170,6 @@ export const deleteCart = async (req, res) => {
   }
 };
 
-// DELETE endpoint to delete an item by ID
 export const deleteCartItem = async (req, res) => {
   const { itemId } = req.params;
   const userId = req.decoded.id;

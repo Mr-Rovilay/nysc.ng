@@ -62,37 +62,37 @@ const useCart = () => {
     }
   };
 
-  // Handle increasing item quantity
-  const increaseCartItemQuantity = async (productId) => {
+  const increaseCartItemQuantity = async (productId, quantity) => {
     try {
-      const response = await userRequest.patch(`/carts/increase/${productId}`);
+      const response = await userRequest.patch(`/carts/increase/${productId}`, {
+        quantity,
+      });
+
       if (response.status === 200) {
         await refetch();
       } else {
-        toast.error("Failed to increase item quantity");
+        toast.error("Failed to increase item quantity in cart");
       }
     } catch (error) {
       console.error("Error increasing item quantity in cart:", error);
-      toast.error("An error occurred while increasing item quantity");
+      toast.error("An error occurred while increasing item quantity in cart");
     }
   };
 
-  // Handle decreasing item quantity with check for minimum quantity
-  const decreaseCartItemQuantity = async (productId, currentQuantity) => {
-    if (currentQuantity <= 1) {
-      toast.error("Quantity can't be less than 1");
-      return;
-    }
+  const decreaseCartItemQuantity = async (productId, quantity) => {
     try {
-      const response = await userRequest.post(`/carts/decrease/${productId}`);
+      const response = await userRequest.post(`/carts/decrease/${productId}`, {
+        quantity,
+      });
+
       if (response.status === 200) {
         await refetch();
       } else {
-        toast.error("Failed to decrease item quantity");
+        toast.error("Failed to decrease item quantity in cart");
       }
     } catch (error) {
       console.error("Error decreasing item quantity in cart:", error);
-      toast.error("An error occurred while decreasing item quantity");
+      toast.error("An error occurred while decreasing item quantity in cart");
     }
   };
 

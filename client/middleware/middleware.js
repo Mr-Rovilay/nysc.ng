@@ -5,11 +5,11 @@ const baseURL = import.meta.env.VITE_SERVER_DOMAIN;
 export const publicRequest = axios.create({
   baseURL,
 });
+console.log(baseURL);
 
 export const userRequest = axios.create({
   baseURL,
 });
-console.log(baseURL);
 
 userRequest.interceptors.request.use(
   (config) => {

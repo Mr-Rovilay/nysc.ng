@@ -13,7 +13,7 @@ const router = express();
 
 router.post("/", verifyJWT, validateCart, createCart);
 router.delete("/:productId", verifyJWT, removeFromCart);
-router.post(
+router.patch(
   "/decrease/:productId",
   verifyJWT,
   validateCart,
