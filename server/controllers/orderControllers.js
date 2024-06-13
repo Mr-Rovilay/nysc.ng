@@ -54,7 +54,7 @@ export const createOrder = async (req, res) => {
 
       lineItems.push({
         price_data: {
-          currency: "usd",
+          currency: "ngn",
           product_data: {
             name: productDoc.title,
           },
@@ -97,7 +97,7 @@ export const createOrder = async (req, res) => {
         ...lineItems,
         {
           price_data: {
-            currency: "usd",
+            currency: "ngn",
             product_data: {
               name: "Delivery Charges",
             },
@@ -186,15 +186,8 @@ export const deleteOrder = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Check if the order is marked as delivered or cancelled
-    if (order.status === "delivered" || order.status === "cancelled") {
-      await Order.deleteOne({ _id: orderId });
-      return res.status(204).json();
-    }
-
-    return res
-      .status(403)
-      .json({ message: "Order has not been delivered or cancelled yet" });
+    await Order.deleteOne({ _id: orderId });
+    return res.status(204).json();
   } catch (error) {
     console.error("Error deleting order:", error);
     res.status(500).json({ error: "Internal server error" });

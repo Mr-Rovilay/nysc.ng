@@ -10,7 +10,7 @@ const useCart = () => {
   const { token } = useContext(AuthContext);
   const {
     refetch,
-    data: cart = [],
+    data: cart = {},
     error,
     isError,
     isLoading,
@@ -47,7 +47,6 @@ const useCart = () => {
     try {
       const response = await userRequest.delete("/carts");
       const success = response.status === 204;
-      handleToast(success, "Cart cleared successfully", "Failed to clear cart");
       if (success) await refetch();
     } catch (error) {
       toast.error("An error occurred while clearing cart");
@@ -57,18 +56,13 @@ const useCart = () => {
 
   /**
    * Deletes a cart item.
-   * @param {string} productId - The ID of the product to delete.
+   * @param {string} productId
    */
   const deleteCartItem = useCallback(
     async (productId) => {
       try {
         const response = await userRequest.delete(`/carts/${productId}`);
         const success = response.status === 204;
-        handleToast(
-          success,
-          "Item removed from cart",
-          "Failed to remove item from cart"
-        );
         if (success) await refetch();
       } catch (error) {
         toast.error("An error occurred while removing item from cart");
@@ -91,11 +85,6 @@ const useCart = () => {
           { quantity }
         );
         const success = response.status === 200;
-        handleToast(
-          success,
-          "Item quantity increased",
-          "Failed to increase item quantity in cart"
-        );
         if (success) await refetch();
       } catch (error) {
         toast.error("An error occurred while increasing item quantity in cart");
@@ -118,14 +107,8 @@ const useCart = () => {
           { quantity }
         );
         const success = response.status === 200;
-        handleToast(
-          success,
-          "Item quantity decreased",
-          "Failed to decrease item quantity in cart"
-        );
         if (success) await refetch();
       } catch (error) {
-        toast.error("An error occurred while decreasing item quantity in cart");
         console.error("Error decreasing item quantity in cart:", error);
       }
     },
@@ -148,15 +131,15 @@ const useCart = () => {
     [decreaseCartItemQuantity]
   );
 
-  return [
+  return {
     cart,
     refetch,
     handleClearCart,
     deleteCartItem,
-    debouncedIncreaseCartItemQuantity,
-    debouncedDecreaseCartItemQuantity,
+    increaseCartItemQuantity: debouncedIncreaseCartItemQuantity,
+    decreaseCartItemQuantity: debouncedDecreaseCartItemQuantity,
     isLoading,
-  ];
+  };
 };
 
 export default useCart;

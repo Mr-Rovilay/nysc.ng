@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Product from "./Product";
 import Pagination from "./Pagination";
 import { publicRequest } from "../../middleware/middleware";
 import Loading from "./Loading";
 
-const Products = ({ category, filters, sort }) => {
+const Products = ({ categories, filters, sort }) => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -19,7 +19,7 @@ const Products = ({ category, filters, sort }) => {
       try {
         const res = await publicRequest.get("/products", {
           params: {
-            category: category,
+            category: categories,
             page: currentPage,
             limit: 8,
             sort,
@@ -37,37 +37,38 @@ const Products = ({ category, filters, sort }) => {
     };
 
     getProducts();
-  }, [category, currentPage, filters, sort]);
+  }, [categories, currentPage, filters, sort]);
 
   useEffect(() => {
+    let filteredProductsList = products;
+
     if (filters) {
-      setFilteredProducts(
-        products.filter((item) =>
-          Object.entries(filters).every(([key, value]) =>
-            item[key].includes(value)
-          )
+      filteredProductsList = filteredProductsList.filter((item) =>
+        Object.entries(filters).every(([key, value]) =>
+          item[key].toLowerCase().includes(value.toLowerCase())
         )
       );
-    } else {
-      setFilteredProducts(products);
     }
-  }, [filters, products]);
 
-  useEffect(() => {
     if (sort === "asc") {
-      setFilteredProducts(
-        [...filteredProducts].sort((a, b) => a.price - b.price)
-      );
+      filteredProductsList.sort((a, b) => a.price - b.price);
     } else if (sort === "desc") {
-      setFilteredProducts(
-        [...filteredProducts].sort((a, b) => b.price - a.price)
-      );
+      filteredProductsList.sort((a, b) => b.price - a.price);
     }
-  }, [sort, filteredProducts]);
+
+    setFilteredProducts(filteredProductsList);
+  }, [filters, products, sort]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  // No items message
+  const noItemsMessage = (
+    <div className="container mx-auto mt-5 text-red-500">
+      No products available for the selected filters.
+    </div>
+  );
 
   return (
     <div className="container px-16 py-8 bg-gray-100 mb-6">
@@ -77,6 +78,8 @@ const Products = ({ category, filters, sort }) => {
         </div>
       ) : error ? (
         <p>{error}</p>
+      ) : filteredProducts.length === 0 ? (
+        noItemsMessage
       ) : (
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -84,13 +87,15 @@ const Products = ({ category, filters, sort }) => {
               <Product key={item._id} item={item} />
             ))}
           </div>
-          <div className="container flex justify-center mt-6">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
+          {totalPages > 1 && (
+            <div className="container flex justify-center mt-6">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
         </>
       )}
     </div>

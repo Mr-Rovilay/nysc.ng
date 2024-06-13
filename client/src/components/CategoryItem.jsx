@@ -4,7 +4,7 @@ import Button from "./Button";
 const CategoryItem = ({ item }) => {
   return (
     <div className="relative flex-1 m-1 h-[50vh] md:h-[70vh]">
-      <Link to={`/products/${item.category}`}>
+      <Link to={`/products/${item.categories}`}>
         <img
           src={item.img}
           alt={item.title}

@@ -10,6 +10,7 @@ import {
   ListItemPrefix,
 } from "@material-tailwind/react";
 import Buttons from "./Button";
+import { Link } from "react-router-dom";
 
 const ContactPop = () => {
   const openWhatsApp = () => {
@@ -41,7 +42,10 @@ const ContactPop = () => {
             </div>
           </div>
           <List className="p-0">
-            <a href="#" className="text-initial font-medium text-blue-gray-500">
+            <Link
+              to="#"
+              className="text-initial font-medium text-blue-gray-500"
+            >
               <ListItem>
                 <ListItemPrefix>
                   <svg
@@ -61,8 +65,11 @@ const ContactPop = () => {
                 </ListItemPrefix>
                 NYSCKIT LTD
               </ListItem>
-            </a>
-            <a href="#" className="text-initial font-medium text-blue-gray-500">
+            </Link>
+            <Link
+              to="#"
+              className="text-initial font-medium text-blue-gray-500"
+            >
               <ListItem>
                 <ListItemPrefix>
                   <svg
@@ -78,10 +85,13 @@ const ContactPop = () => {
                     />
                   </svg>
                 </ListItemPrefix>
-                <a href="tel:+2348114080865">tel:+2348114080865</a>
+                <Link to="tel:+2348114080865">tel:+2348114080865</Link>
               </ListItem>
-            </a>
-            <a href="#" className="text-initial font-medium text-blue-gray-500">
+            </Link>
+            <Link
+              to="#"
+              className="text-initial font-medium text-blue-gray-500"
+            >
               <ListItem>
                 <ListItemPrefix>
                   <svg
@@ -107,7 +117,7 @@ const ContactPop = () => {
                   onClick={openWhatsApp}
                 />
               </ListItem>
-            </a>
+            </Link>
           </List>
         </PopoverContent>
       </Popover>

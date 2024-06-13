@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 
 const ProductList = () => {
   const location = useLocation();
-  const category = location.pathname.split("/")[2] || ""; // Handle empty category
+  const categories = location.pathname.split("/")[2] || "";
   const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState(""); // Set default sort as null or ""
+  const [sort, setSort] = useState("");
 
   const handleFilters = (value, filterType) => {
     setFilters({
@@ -22,7 +22,7 @@ const ProductList = () => {
     <AnimationWrapper>
       <div className="container pt-20 px-6">
         <h1 className="text-xl font-bold capitalize">
-          Dresses: {category ? category : "All"}
+          Dresses: {categories ? categories : "All"}
         </h1>
 
         <div className="md:w-full md:max-w-5xl mx-auto flex flex-col md:flex-row justify-between md:px-6 md:py-4 md:space-x-4">
@@ -79,10 +79,28 @@ const ProductList = () => {
               </Select>
             </div>
           </div>
+          <div className="flex flex-col gap-4 md:w-1/2">
+            <span className="text-xl font-semibold mr-5 mb-2 md:mb-0">
+              Categories:
+            </span>
+            <div className="w-full md:w-72">
+              <Select
+                onChange={(value) => handleFilters(value, "categories")}
+                name="categories"
+                label="Categories"
+                className="cursor-pointer"
+              >
+                <Option value="">All</Option>
+                <Option value="Female">Female</Option>
+                <Option value="Male & Female">Male & Female</Option>
+                <Option value="Male">Male</Option>
+              </Select>
+            </div>
+          </div>
         </div>
       </div>
       <Products
-        category={category}
+        categories={categories}
         filters={filters}
         sort={sort || "newest"} // Handle default sort
       />

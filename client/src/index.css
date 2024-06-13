@@ -42,3 +42,38 @@ a:hover {
 .mt {
   margin-top: 20px;
 }
+
+/* Hide the clear button on Edge */
+input[type="search"]::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Hide the clear button on Chrome */
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* Hide the clear button on Firefox */
+input[type="search"] {
+  -moz-appearance: none;
+}
+/* Add this to your CSS file or inside a <style> tag in your component */
+h1.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%; /* Ensure it respects the container's width */
+}
+
+/* Additional styles to ensure alignment and consistent layout */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #fff;
+}
