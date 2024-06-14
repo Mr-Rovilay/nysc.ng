@@ -51,10 +51,9 @@ export const getProduct = async (req, res) => {
 
 export const getAllProduct = async (req, res) => {
   const isNew = req.query.new === "true";
-  const category = req.query.category;
+  const category = req.query.categories;
   const searchQuery = req.query.search;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const limit = parseInt(req.query.limit) || 6; // Set default limit
 
   try {
     let query = {};
@@ -62,11 +61,7 @@ export const getAllProduct = async (req, res) => {
     if (isNew) {
       query = {};
     } else if (category) {
-      query = {
-        categories: {
-          $in: [category],
-        },
-      };
+      query.categories = category;
     }
 
     if (searchQuery) {
@@ -74,18 +69,14 @@ export const getAllProduct = async (req, res) => {
     }
 
     const totalProducts = await Product.countDocuments(query);
-    const totalPages = Math.ceil(totalProducts / limit);
 
-    let currentPage = page;
-    if (page < 1) {
-      currentPage = 1;
-    } else if (page > totalPages) {
-      currentPage = totalPages;
-    }
+    // Calculate totalPages and skip
+    const totalPages = Math.ceil(totalProducts / limit);
+    const skip = 0; // Since we're not using `page` in the query anymore
 
     const products = await Product.find(query)
       .sort({ createdAt: isNew ? -1 : 1 })
-      .skip((currentPage - 1) * limit)
+      .skip(skip)
       .limit(limit);
 
     res.status(200).json({
@@ -93,7 +84,7 @@ export const getAllProduct = async (req, res) => {
       pagination: {
         totalProducts,
         totalPages,
-        currentPage: currentPage,
+        currentPage: 1, // Hardcoded to 1 since we're not using `page`
         perPage: limit,
       },
     });

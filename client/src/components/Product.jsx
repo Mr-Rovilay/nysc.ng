@@ -15,7 +15,7 @@ const Product = ({ item }) => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [cart, refetch] = useCart();
+  const { cart, refetch } = useCart();
 
   useEffect(() => {
     const checkCart = async () => {
@@ -75,7 +75,7 @@ const Product = ({ item }) => {
   };
 
   return (
-    <div className="container my-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
+    <div className="container my-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md break-all">
       <div className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl group">
         <img
           className="absolute top-0 right-0 h-full w-full object-cover transition-all duration-1000 group-hover:right-0"
@@ -92,9 +92,9 @@ const Product = ({ item }) => {
         <div className="fixed inset-0 z-50 grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm">
           <div className="relative m-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl">
             <div className="flex items-center p-4 text-2xl font-semibold leading-snug text-blue-gray-900">
-              <h1 className="capitalize">Product Name: {item.title}</h1>
+              <h1 className="capitalize">{item.title}</h1>
             </div>
-            <div className="relative p-4 text-base font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
+            <div className="relative p-4 text-base font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500 break-all">
               {item.description}
             </div>
             <div className="flex items-center justify-end p-4">
@@ -109,15 +109,15 @@ const Product = ({ item }) => {
         </div>
       )}
       <div className="mt-4 px-5 pb-5">
-        <h1 className="capitalize">Product Name: {item.title}</h1>
+        <h1 className="capitalize truncate max-w-full">{item.title}</h1>
         <div className="mt-2 mb-5 flex items-center justify-between">
           <p>
             <span className="text-xl font-semibold text-slate-900">
-              Price: ${item.price}
+              Price: ₦{item.price}
             </span>
           </p>
         </div>
-        <div>Categories: {item.categories}</div>
+        <div className="flex flex-0 truncate">Category: {item.categories}</div>
         <div>Color: {item.color}</div>
         <div>
           Available Stock: <span className="font-bold">{item.stock}</span>

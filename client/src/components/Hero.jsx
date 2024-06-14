@@ -13,7 +13,7 @@ const Button = ({ text, variant, onClick }) => {
 
 const Hero = () => {
   return (
-    <div className="relative bg-gradient-to-r h-screen bg-gray-100 text-white overflow-hidden">
+    <div className="relative bg-gradient-to-r h-screen text-white overflow-hidden">
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
         <h1 className="text-5xl text-black font-bold leading-tight mb-4">
           Welcome to Our Awesome Website

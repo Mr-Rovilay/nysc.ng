@@ -18,7 +18,7 @@ const SingleProduct = () => {
   const [error, setError] = useState(null);
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [cart, refetch] = useCart();
+  const { cart, refetch } = useCart();
   const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
@@ -127,7 +127,7 @@ const SingleProduct = () => {
                     Price:
                   </span>
                   <span className="text-gray-600 dark:text-gray-300 ml-2">
-                    ${product.price}
+                    ₦{product.price}
                   </span>
                 </div>
                 <div>

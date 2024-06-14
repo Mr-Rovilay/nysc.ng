@@ -1,10 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { userRequest } from "./middleware";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const useOrders = () => {
   const queryClient = useQueryClient();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
+  const [cancelError, setCancelError] = useState(null);
 
   // Fetch orders function
   const fetchOrders = async () => {
@@ -28,44 +33,48 @@ const useOrders = () => {
     queryFn: fetchOrders,
   });
 
-  // Delete order mutation
-  const deleteOrderMutation = useMutation({
-    mutationFn: async (orderId) => {
+  // Delete order function
+  const deleteOrder = async (orderId) => {
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
       await userRequest.delete(`/orders/${orderId}`);
-    },
-    onSuccess: () => {
       queryClient.invalidateQueries("orders");
       toast.success("Order deleted successfully");
-    },
-    onError: (error) => {
+    } catch (error) {
       console.error("Error deleting order:", error);
-      toast.error("Error deleting order");
-    },
-  });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
-  // Cancel order mutation
-  const cancelOrderMutation = useMutation({
-    mutationFn: async (orderId) => {
+  // Cancel order function
+  const cancelOrder = async (orderId) => {
+    setIsCancelling(true);
+    setCancelError(null);
+    try {
       const response = await userRequest.post(`/orders/${orderId}/cancel`);
-      return response.data;
-    },
-    onSuccess: () => {
       queryClient.invalidateQueries("orders");
       toast.success("Order canceled successfully");
-    },
-    onError: (error) => {
-      console.error("Error canceling order:", error);
-      toast.error("Error canceling order");
-    },
-  });
+      return response.data;
+    } catch (error) {
+      setCancelError("Error canceling order");
+    } finally {
+      setIsCancelling(false);
+    }
+  };
 
   return {
     orders,
     isLoading,
     isError,
     error,
-    deleteOrder: deleteOrderMutation.mutate,
-    cancelOrder: cancelOrderMutation.mutate,
+    isDeleting,
+    deleteError,
+    deleteOrder,
+    isCancelling,
+    cancelError,
+    cancelOrder,
   };
 };
 

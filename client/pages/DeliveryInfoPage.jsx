@@ -6,7 +6,7 @@ import { userRequest } from "../middleware/middleware";
 import Loading from "../src/components/Loading";
 
 const DeliveryInfoPage = () => {
-  const [cart] = useCart();
+  const { cart } = useCart();
   const [subTotal, setSubTotal] = useState(0);
   const deliveryPrice = 20;
   const [totalPrice, setTotalPrice] = useState(0);
@@ -181,14 +181,14 @@ const DeliveryInfoPage = () => {
               <h3 className="py-1.5 font-medium">Shopping Details</h3>
               <p>Total Items: {cart.products?.length || 0}</p>
               <p>
-                Sub Total: <span>${subTotal.toFixed(2)}</span>
+                Sub Total: <span>₦{subTotal.toFixed(2)}</span>
               </p>
               <p>
                 Delivery Price:{" "}
-                <span>${subTotal === 0 ? 0 : deliveryPrice}</span>
+                <span>₦{subTotal === 0 ? 0 : deliveryPrice}</span>
               </p>
               <p>
-                Total Price: <span>${totalPrice.toFixed(2)}</span>
+                Total Price: <span>₦{totalPrice.toFixed(2)}</span>
               </p>
               <div className="mt-4 flex items-center">
                 <button

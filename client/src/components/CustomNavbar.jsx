@@ -34,7 +34,7 @@ const CustomNavbar = () => {
   const [openNav, setOpenNav] = useState(false);
   const { isAuthenticated, logout, userInfo } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [cart, refetch] = useCart();
+  const { cart, refetch } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogout = () => {
@@ -97,7 +97,7 @@ const CustomNavbar = () => {
   );
 
   return (
-    <Navbar className="container sticky bg-transparent top-0 z-50 h-max max-w-full rounded-md px-4 py-2 lg:px-8 lg:py-4 w-full shadow-md">
+    <Navbar className="sticky bg-transparent top-0 z-50 h-max max-w-full rounded-md px-4 py-2 lg:px-8 lg:py-4 w-full shadow-md">
       <div className="flex items-center justify-between">
         <Link to={"/"}>
           <Typography className="mr-4 cursor-pointer py-1.5 font-medium text-green-500">
@@ -115,7 +115,10 @@ const CustomNavbar = () => {
               className="pr-20"
               value={searchQuery}
               onChange={handleSearchChange}
-              containerProps={{ className: "min-w-[288px]" }}
+              style={{
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+              }}
             />
             <Button
               size="sm"
@@ -129,10 +132,10 @@ const CustomNavbar = () => {
         </div>
         <div className="flex items-center gap-4">
           <Link to={"/cart"}>
-            <IconButton variant="text" color="blue-gray" className="relative">
+            <IconButton variant="text" color="blue-gray" className="">
               <FiShoppingCart size={24} />
               {cart.products && cart.products.length > 0 && (
-                <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+                <span className="absolute bottom-3 left-3 flex h-5 w-5 items-center justify-center rounded-full bg-green-400 text-xs text-white">
                   {cart.products.length}
                 </span>
               )}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button, Card, Typography } from "@material-tailwind/react";
@@ -9,17 +9,16 @@ import AnimationWrapper from "../src/common/AnimationWrapper";
 const OrdersPage = () => {
   const { orders, isLoading, isError, error, deleteOrder, cancelOrder } =
     useOrders();
-  const [cancelingOrderId, setCancelingOrderId] = useState(null); // Track the order being canceled
+  const [cancelingOrderId, setCancelingOrderId] = useState(null);
 
   useEffect(() => {
     if (isError) {
-      toast.error("Error fetching orders");
       console.error("Error fetching orders:", error);
     }
   }, [isError, error]);
 
   const handleCancelOrder = async (orderId) => {
-    setCancelingOrderId(orderId); // Set the current order being canceled
+    setCancelingOrderId(orderId);
     try {
       await cancelOrder(orderId);
       toast.success("Order canceled successfully");
@@ -27,54 +26,12 @@ const OrdersPage = () => {
       console.error("Error canceling order:", error);
       toast.error("Error canceling order");
     } finally {
-      setCancelingOrderId(null); // Reset the canceling order
+      setCancelingOrderId(null);
     }
   };
 
-  const handleDeleteOrder = async (orderId) => {
-    try {
-      await deleteOrder(orderId);
-      toast.success("Order deleted successfully");
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      toast.error("Error deleting order");
-    }
-  };
-
-  const renderOrderStatus = (status) => {
-    const statusStyles = {
-      Delivered: "text-green-500",
-      Processing: "text-yellow-500",
-      Shipped: "text-blue-500",
-      Cancelled: "text-red-500",
-    };
-    return (
-      <Typography
-        variant="small"
-        className={`font-bold ${statusStyles[status] || "text-gray-500"}`}
-      >
-        {status === "Delivered" ? "✔" : "•"} {status}
-      </Typography>
-    );
-  };
-
-  const renderOrderProducts = (products) => {
-    if (!products.length) {
-      return <Typography variant="small">No products</Typography>;
-    }
-    return products.map((product) => (
-      <div
-        key={product.productId}
-        className="flex justify-between items-center mb-2"
-      >
-        <Typography variant="small" className="font-normal">
-          {product.title} (x{product.quantity})
-        </Typography>
-        <Typography variant="small" className="font-normal">
-          Price: ${product.price}
-        </Typography>
-      </div>
-    ));
+  const handleDeleteOrder = (orderId) => {
+    deleteOrder(orderId);
   };
 
   if (isLoading) {
@@ -149,13 +106,41 @@ const OrdersPage = () => {
                     <Typography variant="small" className="font-semibold">
                       Status:
                     </Typography>
-                    {renderOrderStatus(status)}
+                    <Typography variant="small" className="font-bold">
+                      {status === "Delivered" ? (
+                        <span className="text-green-500">&#x2714; </span>
+                      ) : status === "Processing" ? (
+                        <span className="text-yellow-500">&#x25cf; </span>
+                      ) : status === "Shipped" ? (
+                        <span className="text-blue-500">&#x25cf; </span>
+                      ) : (
+                        <span className="text-red-500">&#x25cf; </span>
+                      )}
+                      {status}
+                    </Typography>
                   </div>
+
                   <div>
                     <Typography variant="small" className="font-semibold">
                       Products:
                     </Typography>
-                    {renderOrderProducts(products)}
+                    {products.length === 0 ? (
+                      <Typography variant="small">No products</Typography>
+                    ) : (
+                      products.map((product) => (
+                        <div
+                          key={product.productId}
+                          className="flex justify-between items-center mb-2"
+                        >
+                          <Typography variant="small" className="font-normal">
+                            {product.title} (x{product.quantity})
+                          </Typography>
+                          <Typography variant="small" className="font-normal">
+                            Price: ${product.price}
+                          </Typography>
+                        </div>
+                      ))
+                    )}
                   </div>
                   <div>
                     <Typography variant="small" className="font-semibold">
@@ -175,7 +160,7 @@ const OrdersPage = () => {
                         <div className="flex items-center gap-2">
                           <Loading small /> Canceling...
                         </div>
-                      ) : status === "Cancelled" ? (
+                      ) : status == "Cancelled" ? (
                         "Cancelled"
                       ) : (
                         "Cancel Order"

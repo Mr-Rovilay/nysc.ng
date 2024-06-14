@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 
 const ProductList = () => {
   const location = useLocation();
-  const category = location.pathname.split("/")[2] || ""; // Handle empty category
+  const categories = location.pathname.split("/")[2] || "";
   const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState(""); // Set default sort as null or ""
+  const [sort, setSort] = useState("");
 
   const handleFilters = (value, filterType) => {
     setFilters({
@@ -18,11 +18,18 @@ const ProductList = () => {
     });
   };
 
+  const formatCategoryString = (category) => {
+    if (!category) return "All";
+    return category
+      .replace(/%20/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
   return (
     <AnimationWrapper>
       <div className="container pt-20 px-6">
         <h1 className="text-xl font-bold capitalize">
-          Dresses: {category ? category : "All"}
+          Dresses: {formatCategoryString(categories)}
         </h1>
 
         <div className="md:w-full md:max-w-5xl mx-auto flex flex-col md:flex-row justify-between md:px-6 md:py-4 md:space-x-4">
@@ -79,13 +86,32 @@ const ProductList = () => {
               </Select>
             </div>
           </div>
+          <div className="flex flex-col gap-4 md:w-1/2">
+            <span className="text-xl font-semibold mr-5 mb-2 md:mb-0">
+              Categories:
+            </span>
+            <div className="w-full md:w-72">
+              <Select
+                onChange={(value) => handleFilters(value, "categories")}
+                name="categories"
+                label="All"
+                className="cursor-pointer"
+              >
+                <Option value="Female">Female</Option>
+                <Option value="Male">Male</Option>
+                <Option value="Male & Female">Male & Female</Option>
+              </Select>
+            </div>
+          </div>
         </div>
       </div>
-      <Products
-        category={category}
-        filters={filters}
-        sort={sort || "newest"} // Handle default sort
-      />
+      <div className="py-8">
+        <Products
+          categories={categories}
+          filters={filters}
+          sort={sort || "newest"} // Handle default sort
+        />
+      </div>
       <Footer />
     </AnimationWrapper>
   );
