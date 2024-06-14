@@ -58,8 +58,8 @@ const CartItem = ({ item, index }) => {
 
   return (
     <tr key={item._id}>
-      <td className="p-4">{index + 1}</td>
-      <td className="p-4">
+      <td className="p-2 sm:p-4">{index + 1}</td>
+      <td className="p-2 sm:p-4">
         <div className="w-12 h-12 overflow-hidden rounded-full">
           <img
             src={item.productId.image}
@@ -68,8 +68,8 @@ const CartItem = ({ item, index }) => {
           />
         </div>
       </td>
-      <td className="p-4 capitalize">{item.productId.title}</td>
-      <td className="p-4">
+      <td className="p-2 sm:p-4 capitalize">{item.productId.title}</td>
+      <td className="p-2 sm:p-4">
         <div className="flex items-center">
           <button
             className={`text-xl px-2 ${
@@ -91,8 +91,8 @@ const CartItem = ({ item, index }) => {
           />
           <button
             className={`text-xl px-2 ${
-              quantity <= 1
-                ? "bg-gray-300 text-gray-500"
+              quantity >= item.productId.stock
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-gray-300 hover:bg-gray-400"
             }`}
             onClick={handleQuantityIncrease}
@@ -102,8 +102,10 @@ const CartItem = ({ item, index }) => {
           </button>
         </div>
       </td>
-      <td className="p-4">₦{(item.productId.price * quantity).toFixed(2)}</td>
-      <td className="p-4">
+      <td className="p-2 sm:p-4">
+        ₦{(item.productId.price * quantity).toFixed(2)}
+      </td>
+      <td className="p-2 sm:p-4">
         <button
           className="text-red-500 hover:text-red-600"
           onClick={() => deleteCartItem(item.productId._id)}
@@ -166,16 +168,16 @@ const CartPage = () => {
               </div>
             </div>
 
-            <Card className="overflow-scroll mb-6">
+            <Card className="overflow-auto mb-6">
               <table className="w-full min-w-max table-auto text-left">
                 <thead>
                   <tr>
-                    <th className="p-4">#</th>
-                    <th className="p-4">Image</th>
-                    <th className="p-4">Product Name</th>
-                    <th className="p-4">Quantity</th>
-                    <th className="p-4">Price</th>
-                    <th className="p-4">Action</th>
+                    <th className="p-2 sm:p-4">#</th>
+                    <th className="p-2 sm:p-4">Image</th>
+                    <th className="p-2 sm:p-4">Product Name</th>
+                    <th className="p-2 sm:p-4">Quantity</th>
+                    <th className="p-2 sm:p-4">Price</th>
+                    <th className="p-2 sm:p-4">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -187,14 +189,14 @@ const CartPage = () => {
             </Card>
 
             <div className="flex flex-col md:flex-row justify-between items-start my-8 gap-8 bg-white p-4 rounded-lg shadow-md">
-              <div className="md:w-1/2">
+              <div className="w-full md:w-1/2">
                 <h3 className="text-lg font-medium mb-2">Shopping Details</h3>
                 <p>Total Items: {cart.products?.length || 0}</p>
                 <p>Sub Total: ₦{subTotal.toFixed(2)}</p>
                 <p>Delivery Price: ₦{subTotal === 0 ? 0 : deliveryPrice}</p>
                 <p>Total Price: ₦{totalPrice.toFixed(2)}</p>
                 <Link to="/delivery-info">
-                  <MaterialButton className="mt-4 bg-green-500">
+                  <MaterialButton className="mt-4 bg-green-500 md:w-auto">
                     Proceed to Delivery Info
                   </MaterialButton>
                 </Link>

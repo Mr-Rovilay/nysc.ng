@@ -63,7 +63,6 @@ const Products = ({ categories, filters, sort }) => {
     setCurrentPage(newPage);
   };
 
-  // No items message
   const noItemsMessage = (
     <div className="container mx-auto mt-5 text-red-500">
       No products available for the selected filters.
@@ -71,7 +70,7 @@ const Products = ({ categories, filters, sort }) => {
   );
 
   return (
-    <div className="container px-16 py-8 bg-gray-100 mb-6">
+    <div className="container px-16 py-18 bg-gray-100 mb-6">
       {loading ? (
         <div className="mt-3">
           <Loading />
@@ -82,7 +81,7 @@ const Products = ({ categories, filters, sort }) => {
         noItemsMessage
       ) : (
         <>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-18">
             {filteredProducts.map((item) => (
               <Product key={item._id} item={item} />
             ))}

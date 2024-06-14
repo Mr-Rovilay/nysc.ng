@@ -21,18 +21,24 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   };
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center justify-center gap-3 p-2">
       <Button
         variant="text"
         className="flex items-center gap-2 bg-green-500"
         onClick={prev}
         disabled={currentPage === 1}
+        size="sm"
       >
         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" /> Previous
       </Button>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2">
         {Array.from({ length: totalPages }, (_, i) => (
-          <IconButton className="bg-green-500" key={i} {...getItemProps(i + 1)}>
+          <IconButton
+            className="bg-green-500"
+            key={i}
+            {...getItemProps(i + 1)}
+            size="sm"
+          >
             {i + 1}
           </IconButton>
         ))}
@@ -42,6 +48,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         className="flex items-center gap-2 bg-green-500"
         onClick={next}
         disabled={currentPage === totalPages}
+        size="sm"
       >
         Next
         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />

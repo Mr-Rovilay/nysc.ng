@@ -18,11 +18,18 @@ const ProductList = () => {
     });
   };
 
+  const formatCategoryString = (category) => {
+    if (!category) return "All";
+    return category
+      .replace(/%20/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
   return (
     <AnimationWrapper>
       <div className="container pt-20 px-6">
         <h1 className="text-xl font-bold capitalize">
-          Dresses: {categories ? categories : "All"}
+          Dresses: {formatCategoryString(categories)}
         </h1>
 
         <div className="md:w-full md:max-w-5xl mx-auto flex flex-col md:flex-row justify-between md:px-6 md:py-4 md:space-x-4">
@@ -87,23 +94,24 @@ const ProductList = () => {
               <Select
                 onChange={(value) => handleFilters(value, "categories")}
                 name="categories"
-                label="Categories"
+                label="All"
                 className="cursor-pointer"
               >
-                <Option value="">All</Option>
                 <Option value="Female">Female</Option>
-                <Option value="Male & Female">Male & Female</Option>
                 <Option value="Male">Male</Option>
+                <Option value="Male & Female">Male & Female</Option>
               </Select>
             </div>
           </div>
         </div>
       </div>
-      <Products
-        categories={categories}
-        filters={filters}
-        sort={sort || "newest"} // Handle default sort
-      />
+      <div className="py-8">
+        <Products
+          categories={categories}
+          filters={filters}
+          sort={sort || "newest"} // Handle default sort
+        />
+      </div>
       <Footer />
     </AnimationWrapper>
   );
