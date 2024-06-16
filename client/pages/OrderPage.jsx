@@ -43,7 +43,7 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="container min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       <AnimationWrapper />
       <ToastContainer />
       <div className="p-5 sm:p-2">

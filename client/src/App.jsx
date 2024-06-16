@@ -50,7 +50,14 @@ const App = () => {
         <Route path="/delivery-info" element={<DeliveryInfoPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path="/myOrders" element={<OrdersPage />} />
+        <Route
+          path="/myOrders"
+          element={
+            <ProtectedRoute>
+              <OrdersPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin/dashboard"
