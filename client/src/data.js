@@ -15,6 +15,6 @@ export const categories = [
     id: 3,
     img: "https://nyscebonyistate.com/wp-content/uploads/2016/10/Esg_iPgXAAEYwIt.jpg",
     title: "MALE STYLE",
-    categories: "male",
+    categories: "Male",
   },
 ];
