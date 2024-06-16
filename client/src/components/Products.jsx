@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Product from "./Product";
 import Pagination from "./Pagination";
 import { publicRequest } from "../../middleware/middleware";
 import Loading from "./Loading";
 
-const Products = ({ categories, filters, sort }) => {
+const Products = ({ categories, filters, sort, isHomePage }) => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -22,8 +22,6 @@ const Products = ({ categories, filters, sort }) => {
             category: categories,
             page: currentPage,
             limit: 8,
-            sort,
-            new: filters ? "true" : "false",
           },
         });
 
@@ -86,7 +84,7 @@ const Products = ({ categories, filters, sort }) => {
               <Product key={item._id} item={item} />
             ))}
           </div>
-          {totalPages > 1 && (
+          {!isHomePage && totalPages > 1 && (
             <div className="container flex justify-center mt-6">
               <Pagination
                 currentPage={currentPage}

@@ -51,6 +51,11 @@ const CustomNavbar = () => {
     if (searchQuery.trim()) {
       navigate(`/search?query=${searchQuery}`);
     }
+    setOpenNav(false);
+  };
+
+  const handleLinkClick = () => {
+    setOpenNav(false);
   };
 
   useEffect(() => {
@@ -80,6 +85,7 @@ const CustomNavbar = () => {
               item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "")}`
             }
             className="flex items-center"
+            onClick={handleLinkClick}
           >
             {item}
           </Link>
@@ -131,8 +137,8 @@ const CustomNavbar = () => {
           {navList}
         </div>
         <div className="flex items-center gap-4">
-          <Link to={"/cart"}>
-            <IconButton variant="text" color="blue-gray" className="">
+          <Link to={"/cart"} onClick={handleLinkClick}>
+            <IconButton variant="text" color="blue-gray" className="relative">
               <FiShoppingCart size={24} />
               {cart.products && cart.products.length > 0 && (
                 <span className="absolute bottom-3 left-3 flex h-5 w-5 items-center justify-center rounded-full bg-green-400 text-xs text-white">
@@ -153,6 +159,7 @@ const CustomNavbar = () => {
                   <MenuItem
                     key={label}
                     className="flex items-center gap-2 rounded hover:bg-gray-200"
+                    onClick={handleLinkClick} // Close nav on menu item click
                   >
                     {React.createElement(icon, {
                       className: "h-4 w-4",
@@ -173,6 +180,7 @@ const CustomNavbar = () => {
                   <MenuItem
                     key="Admin"
                     className="flex items-center gap-2 rounded hover:bg-gray-200"
+                    onClick={handleLinkClick}
                   >
                     {React.createElement(Cog6ToothIcon, {
                       className: "h-4 w-4",
@@ -190,7 +198,10 @@ const CustomNavbar = () => {
                   </MenuItem>
                 )}
                 <MenuItem
-                  onClick={handleLogout}
+                  onClick={() => {
+                    handleLogout();
+                    handleLinkClick();
+                  }}
                   className="flex items-center gap-2 rounded hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
                 >
                   <PowerIcon className="h-4 w-4 text-red-500" strokeWidth={2} />
@@ -258,7 +269,7 @@ const CustomNavbar = () => {
         </div>
       </div>
       <Collapse open={openNav}>
-        <div className="relative flex w-full gap-2 md:w-max p-4 lg:hidden">
+        <div className="relative flex flex-col w-full gap-2 md:w-max p-4 lg:hidden pl-0">
           <form
             onSubmit={handleSearchSubmit}
             className="relative flex w-full gap-2 md:w-max"
@@ -269,11 +280,15 @@ const CustomNavbar = () => {
               className="pr-20"
               value={searchQuery}
               onChange={handleSearchChange}
+              style={{
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+              }}
             />
             <Button
               size="sm"
               type="submit"
-              className="bg-green-500 right-1 top-1 rounded"
+              className="!absolute right-1 top-1 rounded font-medium bg-green-500"
             >
               Search
             </Button>
@@ -282,12 +297,24 @@ const CustomNavbar = () => {
         {navList}
         {!isAuthenticated && (
           <div className="flex items-center gap-x-1">
-            <Button fullWidth variant="text" size="sm">
+            <Button
+              fullWidth
+              variant="text"
+              size="sm"
+              className="py-3"
+              onClick={handleLinkClick}
+            >
               <Link to={"/signin"}>
                 <span>Log In</span>
               </Link>
             </Button>
-            <Button fullWidth variant="gradient" size="sm">
+            <Button
+              fullWidth
+              variant="gradient"
+              className="py-3"
+              size="sm"
+              onClick={handleLinkClick}
+            >
               <Link to={"/signup"}>
                 <span>Sign Up</span>
               </Link>

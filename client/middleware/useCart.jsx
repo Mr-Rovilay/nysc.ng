@@ -121,7 +121,6 @@ const useCart = () => {
     }
   }, [isError, error]);
 
-  // Debounce the increaseCartItemQuantity and decreaseCartItemQuantity functions
   const debouncedIncreaseCartItemQuantity = useCallback(
     debounce(increaseCartItemQuantity, 500),
     [increaseCartItemQuantity]

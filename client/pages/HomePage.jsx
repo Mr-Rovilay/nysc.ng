@@ -14,7 +14,7 @@ const HomePage = () => {
         <Categories />
       </AnimationWrapper>
       <AnimationWrapper>
-        <Products />
+        <Products isHomePage={true} />
       </AnimationWrapper>
       <AnimationWrapper>
         <Footer />

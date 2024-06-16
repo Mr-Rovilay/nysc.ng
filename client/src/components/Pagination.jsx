@@ -24,7 +24,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     <div className="flex flex-wrap items-center justify-center gap-3 p-2">
       <Button
         variant="text"
-        className="flex items-center gap-2 bg-green-500"
+        className={`flex items-center gap-2 ${
+          currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-green-500"
+        }`}
         onClick={prev}
         disabled={currentPage === 1}
         size="sm"
@@ -34,8 +36,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <div className="flex flex-wrap items-center justify-center gap-2">
         {Array.from({ length: totalPages }, (_, i) => (
           <IconButton
-            className="bg-green-500"
             key={i}
+            className={`${
+              currentPage === i + 1 ? "bg-green-700" : "bg-green-500"
+            }`}
             {...getItemProps(i + 1)}
             size="sm"
           >
@@ -45,7 +49,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       </div>
       <Button
         variant="text"
-        className="flex items-center gap-2 bg-green-500"
+        className={`flex items-center gap-2 ${
+          currentPage === totalPages
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-green-500"
+        }`}
         onClick={next}
         disabled={currentPage === totalPages}
         size="sm"

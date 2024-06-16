@@ -17,7 +17,6 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-// Register the necessary Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -51,8 +50,7 @@ const Dashboard = () => {
             userRequest.get("/orders?status=completed"),
           ]);
 
-        // Extracting the necessary data from the response objects
-        const usersCount = usersRes.data.count || 0; // Assuming there's a count property for the total users
+        const usersCount = usersRes.data.count || 0;
         const productsArray = productsRes.data.products || [];
         const ordersArray = ordersRes.data.orders || [];
         const deliveredArray = deliveredRes.data.orders || [];
@@ -84,11 +82,11 @@ const Dashboard = () => {
           );
         }
 
-        setLoading(false); // Stop loading once data is fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching summary data:", error);
         toast.error("Failed to fetch summary data");
-        setLoading(false); // Stop loading on error
+        setLoading(false);
       }
     };
 

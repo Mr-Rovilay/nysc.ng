@@ -17,7 +17,7 @@ const ContactPop = () => {
     window.open("https://api.whatsapp.com/send?text=text&phone=+2348114080865");
   };
   return (
-    <div className="container">
+    <div>
       <Popover placement="bottom-end">
         <PopoverHandler>
           <Button className="font-medium bg-green-500">Contact Us</Button>

@@ -1,4 +1,3 @@
-import Footer from "../src/components/Footer";
 import Button from "../src/components/Button";
 import AnimationWrapper from "../src/common/AnimationWrapper";
 import { Navigate, useLocation } from "react-router-dom";

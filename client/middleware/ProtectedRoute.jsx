@@ -8,8 +8,6 @@ const ProtectedRoute = ({
   redirectPath = "/",
 }) => {
   const { isAuthenticated, userInfo } = useContext(AuthContext);
-
-  // Check if the user is authenticated
   if (!isAuthenticated) {
     console.error("ProtectedRoute: User is not authenticated.");
     return <Navigate to={redirectPath} />;

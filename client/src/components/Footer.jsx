@@ -1,4 +1,5 @@
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlinePhoneInTalk } from "react-icons/md";
 import { CiMail } from "react-icons/ci";
@@ -7,7 +8,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="container bg-gray-100 py-12 px-6 md:px-20">
+    <footer className="container py-12 px-6 md:px-20">
       <div className="flex flex-col md:flex-row justify-between">
         <div className="flex-1 md:mr-10 mb-6 md:mb-0">
           <h1 className="cursor-pointer py-1.5 font-medium text-green-500 mb-4">
@@ -27,7 +28,7 @@ const Footer = () => {
               <FaInstagram className="w-8 h-8 text-pink-600" />
             </a>
             <a href="#" aria-label="Twitter">
-              <FaTwitter className="w-8 h-8 text-blue-400" />
+              <FaXTwitter className="w-8 h-8 " />
             </a>
           </div>
         </div>
@@ -38,12 +39,9 @@ const Footer = () => {
           <ul className="list-none space-y-2">
             {[
               { label: "Home", link: "/" },
-              { label: "Cart", link: "/cart" },
-              { label: "Man Fashion", link: "#" },
-              { label: "Woman Fashion", link: "#" },
               { label: "Accessories", link: "#" },
               { label: "My Account", link: "#" },
-              { label: "Order Tracking", link: "#" },
+              { label: "Order Tracking", link: "/orders" },
               { label: "Products", link: "/products" },
               { label: "Terms", link: "#" },
             ].map((item, index) => (

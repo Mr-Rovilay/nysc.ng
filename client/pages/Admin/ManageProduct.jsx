@@ -5,7 +5,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { userRequest } from "../../middleware/middleware";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Button, Card, Typography } from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react";
 import Pagination from "../../src/components/Pagination";
 import Loading from "../../src/components/Loading";
 import { Link } from "react-router-dom";

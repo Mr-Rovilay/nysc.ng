@@ -11,7 +11,7 @@ import Loading from "../../src/components/Loading";
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loadingUser, setLoadingUser] = useState(null);
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { isAuthenticated } = useContext(AuthContext);
