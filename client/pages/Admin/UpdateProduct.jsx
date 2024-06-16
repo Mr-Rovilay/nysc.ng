@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -52,8 +52,8 @@ const UpdateProduct = () => {
         title: data.title,
         description: data.description,
         image: data.imageUrl,
-        categories: categories, // Ensure this is an array
-        size: size, // Ensure this is an array
+        categories: categories,
+        size: size,
         stock: data.stock,
         color: data.color,
         price: parseFloat(data.price),

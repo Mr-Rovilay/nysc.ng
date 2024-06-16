@@ -1,19 +1,20 @@
 export const categories = [
   {
     id: 1,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lTk3lwykJpuxbFkUeGdGdrlzV8l4vop_7w&s",
+    img: "https://pbs.twimg.com/media/EkX2_doXYAAxlyX.jpg",
     title: "FEMALE STYLE!",
-    categories: "female",
+    categories: "Female",
   },
   {
     id: 2,
-    img: "https://cdn.punchng.com/wp-content/uploads/2023/03/24215813/Ruth-Innocent.jpg",
+    img: "https://nigezie.tv/storage/2023/03/Shortest-corper-at-NYSC-camp-set-to-wed-tallest-corper.png",
     title: "MALE & FEMALE",
-    categories: "male and female",
+    categories: "Male+%26+Female",
+
   },
   {
     id: 3,
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxh3aa0PaCqM0kkeBe0tvvvCijlLid1AXgKQ&s",
+    img: "https://nyscebonyistate.com/wp-content/uploads/2016/10/Esg_iPgXAAEYwIt.jpg",
     title: "MALE STYLE",
     categories: "male",
   },

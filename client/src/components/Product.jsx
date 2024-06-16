@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { userRequest } from "../../middleware/middleware";
 import { AuthContext } from "../../middleware/AuthContext";
@@ -11,7 +11,7 @@ import useCart from "../../middleware/useCart";
 
 const Product = ({ item }) => {
   const [inCart, setInCart] = useState(false);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -44,7 +44,7 @@ const Product = ({ item }) => {
       return;
     }
 
-    setLoading(true); // Set loading to true when adding to cart
+    setLoading(true);
 
     try {
       const response = await userRequest.post("/carts", {
@@ -90,7 +90,7 @@ const Product = ({ item }) => {
       </div>
       {dialogOpen && (
         <div className="fixed inset-0 z-50 grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm">
-          <div className="relative m-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl">
+          <div className="max-w-[80%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl">
             <div className="flex items-center p-4 text-2xl font-semibold leading-snug text-blue-gray-900">
               <h1 className="capitalize">{item.title}</h1>
             </div>
