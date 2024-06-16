@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { FaTrashAlt, FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Card, Button as MaterialButton } from "@material-tailwind/react";
 import Button from "../src/components/Button";

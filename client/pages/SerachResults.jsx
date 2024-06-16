@@ -10,9 +10,7 @@ const useQuery = () => {
 const SearchResults = () => {
   const query = useQuery();
   const searchQuery = query.get("query");
-  const pageQuery = query.get("page") || 1;
   const [results, setResults] = useState([]);
-  const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,10 +18,9 @@ const SearchResults = () => {
       setLoading(true);
       try {
         const response = await publicRequest.get(
-          `/products?search=${searchQuery}&page=${pageQuery}&limit=10`
+          `/products?search=${searchQuery}`
         );
         setResults(response.data.products);
-        setPagination(response.data.pagination);
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
@@ -33,22 +30,13 @@ const SearchResults = () => {
     if (searchQuery) {
       fetchResults();
     }
-  }, [searchQuery, pageQuery]);
-
-  const handlePageChange = (pageNumber) => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.append("query", searchQuery);
-    params.append("page", pageNumber);
-    window.location.search = params.toString();
-  };
+  }, [searchQuery]);
 
   return (
     <div className="container">
       <h1>Search Results for "{searchQuery}"</h1>
       {loading ? (
-        <p>
-          <Loading />
-        </p>
+        <Loading />
       ) : results.length > 0 ? (
         <div>
           <ul>
@@ -60,20 +48,9 @@ const SearchResults = () => {
               </li>
             ))}
           </ul>
-          <div>
-            {Array.from({ length: pagination.totalPages }, (_, index) => (
-              <button
-                key={index}
-                onClick={() => handlePageChange(index + 1)}
-                disabled={pagination.currentPage === index + 1}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
         </div>
       ) : (
-        <p>No results found.</p>
+        <p>No results found for "{searchQuery}".</p>
       )}
     </div>
   );
