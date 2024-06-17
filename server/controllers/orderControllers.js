@@ -5,9 +5,10 @@ import Cart from "../models/cartModel.js"; // Assuming you have a cart model
 
 const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 
+// const frontend_url = "http://localhost:5173";
 // Order creation endpoint
 export const createOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5173";
+  const frontend_url = "https://nysckit-ng-1.onrender.com";
 
   try {
     const { products, address } = req.body;
