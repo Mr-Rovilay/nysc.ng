@@ -3,8 +3,10 @@ import Product from "./Product";
 import Pagination from "./Pagination";
 import { publicRequest } from "../../middleware/middleware";
 import Loading from "./Loading";
+import useCart from "../../middleware/useCart";
 
 const Products = ({ categories, filters, sort, isHomePage }) => {
+  const { cart, refetch: refetchCart } = useCart();
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -81,7 +83,12 @@ const Products = ({ categories, filters, sort, isHomePage }) => {
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-18">
             {filteredProducts.map((item) => (
-              <Product key={item._id} item={item} />
+              <Product
+                key={item._id}
+                item={item}
+                cart={cart}
+                onProductAdd={refetchCart}
+              />
             ))}
           </div>
           {!isHomePage && totalPages > 1 && (

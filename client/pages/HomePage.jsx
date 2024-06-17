@@ -5,6 +5,8 @@ import Hero from "../src/components/Hero";
 import Products from "../src/components/Products";
 
 const HomePage = () => {
+  // const { cart, refetch } = useCart();
+
   return (
     <div className="">
       <AnimationWrapper>

@@ -7,36 +7,30 @@ import { useNavigate } from "react-router-dom";
 
 import Loading from "./Loading";
 import { Button } from "@material-tailwind/react";
-import useCart from "../../middleware/useCart";
 
-const Product = ({ item }) => {
+const Product = ({ item, cart = {}, onProductAdd = () => {} }) => {
   const [inCart, setInCart] = useState(false);
   const [loading, setLoading] = useState(false);
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { cart, refetch } = useCart();
 
   useEffect(() => {
-    const checkCart = async () => {
-      try {
-        const response = await userRequest.get("/carts");
-        if (response.status === 200) {
-          const cart = response.data;
-          const productInCart = cart.products.find(
-            (product) => product.productId._id === item._id
-          );
-          if (productInCart) {
-            setInCart(true);
-          }
+    const checkCart = () => {
+      if (cart) {
+        const productInCart = cart?.products?.find(
+          (product) => product.productId._id === item._id
+        );
+        if (productInCart) {
+          setInCart(true);
+        } else {
+          setInCart(false);
         }
-      } catch (error) {
-        console.error("Error checking cart:", error);
       }
     };
 
     checkCart();
-  }, [item._id]);
+  }, [item._id, cart?.products]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -54,7 +48,7 @@ const Product = ({ item }) => {
 
       if (response.status === 201) {
         setInCart(true);
-        refetch(cart);
+        onProductAdd();
       } else {
         toast.error("Failed to add product to cart.");
       }
