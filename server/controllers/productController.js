@@ -85,7 +85,7 @@ export const getAllProduct = async (req, res) => {
     }
 
     const products = await Product.find(query)
-      .sort({ createdAt: isNew ? -1 : 1 })
+      .sort({ createdAt: -1 })
       .skip((currentPage - 1) * limit)
       .limit(limit);
 

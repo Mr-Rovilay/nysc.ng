@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Navbar,
   Typography,
@@ -78,9 +78,9 @@ const CustomNavbar = () => {
           as="li"
           variant="small"
           color="blue-gray"
-          className="p-1 font-medium"
+          className="p-1 font-medium "
         >
-          <Link
+          <NavLink
             to={
               item === "Home" ? "/" : `/${item.toLowerCase().replace(" ", "")}`
             }
@@ -88,7 +88,7 @@ const CustomNavbar = () => {
             onClick={handleLinkClick}
           >
             {item}
-          </Link>
+          </NavLink>
         </Typography>
       ))}
       <Typography
@@ -105,11 +105,11 @@ const CustomNavbar = () => {
   return (
     <Navbar className="sticky bg-transparent top-0 z-50 h-max max-w-full rounded-md px-4 py-2 lg:px-8 lg:py-4 w-full shadow-md">
       <div className="flex items-center justify-between">
-        <Link to={"/"}>
+        <NavLink to={"/"}>
           <Typography className="mr-4 cursor-pointer py-1.5 font-medium text-green-500">
             NYSCKIT.NG
           </Typography>
-        </Link>
+        </NavLink>
         <div className="hidden lg:flex items-center gap-4">
           <form
             onSubmit={handleSearchSubmit}
@@ -137,7 +137,7 @@ const CustomNavbar = () => {
           {navList}
         </div>
         <div className="flex items-center gap-4">
-          <Link to={"/cart"} onClick={handleLinkClick}>
+          <NavLink to={"/cart"} onClick={handleLinkClick}>
             <IconButton variant="text" color="blue-gray" className="relative">
               <FiShoppingCart size={24} />
               {cart.products && cart.products.length > 0 && (
@@ -146,7 +146,7 @@ const CustomNavbar = () => {
                 </span>
               )}
             </IconButton>
-          </Link>
+          </NavLink>
           {isAuthenticated ? (
             <Menu>
               <MenuHandler>
@@ -165,7 +165,7 @@ const CustomNavbar = () => {
                       className: "h-4 w-4",
                       strokeWidth: 2,
                     })}
-                    <Link to={to} className="flex items-center">
+                    <NavLink to={to} className="flex items-center">
                       <Typography
                         as="span"
                         variant="small"
@@ -173,7 +173,7 @@ const CustomNavbar = () => {
                       >
                         {label}
                       </Typography>
-                    </Link>
+                    </NavLink>
                   </MenuItem>
                 ))}
                 {userInfo?.isAdmin === true && (
@@ -186,7 +186,11 @@ const CustomNavbar = () => {
                       className: "h-4 w-4",
                       strokeWidth: 2,
                     })}
-                    <Link to="/admin/dashboard" className="flex items-center">
+                    <NavLink
+                      to="/admin/dashboard"
+                      className="flex items-center"
+                      activeClassName="text-green-500 font-bold" // Apply Tailwind classes for active state
+                    >
                       <Typography
                         as="span"
                         variant="small"
@@ -194,7 +198,7 @@ const CustomNavbar = () => {
                       >
                         Admin
                       </Typography>
-                    </Link>
+                    </NavLink>
                   </MenuItem>
                 )}
                 <MenuItem
@@ -219,15 +223,15 @@ const CustomNavbar = () => {
           ) : (
             <div className="hidden lg:flex items-center gap-x-1">
               <Button variant="text" size="sm">
-                <Link to="/signin">
+                <NavLink to="/signin">
                   <span>Log In</span>
-                </Link>
+                </NavLink>
               </Button>
-              <Link to="/signup">
+              <NavLink to="/signup">
                 <Button variant="gradient" size="sm">
                   <span>Sign Up</span>
                 </Button>
-              </Link>
+              </NavLink>
             </div>
           )}
           <IconButton
@@ -304,9 +308,9 @@ const CustomNavbar = () => {
               className="py-3"
               onClick={handleLinkClick}
             >
-              <Link to={"/signin"}>
+              <NavLink to={"/signin"}>
                 <span>Log In</span>
-              </Link>
+              </NavLink>
             </Button>
             <Button
               fullWidth
@@ -315,9 +319,9 @@ const CustomNavbar = () => {
               size="sm"
               onClick={handleLinkClick}
             >
-              <Link to={"/signup"}>
+              <NavLink to={"/signup"}>
                 <span>Sign Up</span>
-              </Link>
+              </NavLink>
             </Button>
           </div>
         )}

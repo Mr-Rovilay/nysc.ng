@@ -1,9 +1,10 @@
-import React from "react";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion";
 
 const About = () => {
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+    <div className="container bg-gray-100 min-h-screen flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -43,23 +44,16 @@ const About = () => {
           </p>
         </div>
         <div className="text-center mt-8">
-          <h2 className="text-2xl font-semibold mb-4">Connect with Us</h2>
+          <h2 className="text-2xl font-semibold mb-4">Connect with Me</h2>
           <div className="flex justify-center space-x-4">
-            <a
-              href="https://instagram.com"
-              className="text-gray-500 hover:text-gray-900"
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12 6.63 0 12-5.37 12-12C24 5.37 18.63 0 12 0zM14.963 7.5H12.75c-.375 0-.75.375-.75.75v1.5h2.25v2.25h-2.25v6h-2.25v-6h-1.5v-2.25h1.5V8.25C10.5 7.875 11.25 7.5 12 7.5h2.963z" />
-              </svg>
+            <a href="#" aria-label="Facebook">
+              <FaFacebook className="w-8 h-8 text-blue-600" />
             </a>
-            <a
-              href="https://facebook.com"
-              className="text-gray-500 hover:text-gray-900"
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12 6.63 0 12-5.37 12-12C24 5.37 18.63 0 12 0zM14.963 7.5H12.75c-.375 0-.75.375-.75.75v1.5h2.25v2.25h-2.25v6h-2.25v-6h-1.5v-2.25h1.5V8.25C10.5 7.875 11.25 7.5 12 7.5h2.963z" />
-              </svg>
+            <a href="#" aria-label="Instagram">
+              <FaInstagram className="w-8 h-8 text-pink-600" />
+            </a>
+            <a href="#" aria-label="Twitter">
+              <FaXTwitter className="w-8 h-8 " />
             </a>
           </div>
         </div>

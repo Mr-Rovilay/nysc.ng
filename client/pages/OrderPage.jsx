@@ -65,7 +65,7 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen container bg-gray-100">
       <AnimationWrapper />
       <ToastContainer />
       <div className="p-5 sm:p-2">
@@ -170,7 +170,7 @@ const OrdersPage = () => {
                             ) : (
                               products.map((product) => (
                                 <div
-                                  key={product.productId}
+                                  key={product.productId._id}
                                   className="flex justify-between items-center mb-2"
                                 >
                                   <Typography
@@ -199,7 +199,6 @@ const OrdersPage = () => {
                       Status:
                     </Typography>
                     <Typography variant="small" className="font-bold">
-                      {/* Render status with different colors based on status */}
                       {status === "Delivered" ? (
                         <span className="text-green-500">&#x2714; </span>
                       ) : status === "Processing" ? (
@@ -221,7 +220,6 @@ const OrdersPage = () => {
                     </Typography>
                   </div>
                   <div className="flex gap-3 mt-4">
-                    {/* Button to cancel order */}
                     <Button
                       className={`py-1.5 font-medium ${
                         cancelingOrderId === _id ||
@@ -246,10 +244,6 @@ const OrdersPage = () => {
                       ) : (
                         "Cancel Order"
                       )}
-                    </Button>
-                    {/* Button to delete order */}
-                    <Button color="red" onClick={() => handleDeleteOrder(_id)}>
-                      Delete Order
                     </Button>
                   </div>
                 </Card>

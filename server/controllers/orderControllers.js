@@ -42,13 +42,11 @@ export const createOrder = async (req, res) => {
 
     // If any product has insufficient stock, return error
     if (insufficientStockProducts.length > 0) {
-      return res
-        .status(400)
-        .json({
-          error: `Insufficient stock for: ${insufficientStockProducts.join(
-            ", "
-          )}`,
-        });
+      return res.status(400).json({
+        error: `Insufficient stock for: ${insufficientStockProducts.join(
+          ", "
+        )}`,
+      });
     }
 
     // Loop through each product in the request to calculate total price and create line items
@@ -218,7 +216,9 @@ export const getMyOrders = async (req, res) => {
   const userId = req.decoded.id;
 
   try {
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId })
+      .populate("products.productId")
+      .sort({ createdAt: -1 });
     if (!orders || orders.length === 0) {
       return res.status(404).json({ message: "No orders found for this user" });
     }
@@ -236,6 +236,7 @@ export const getAllOrders = async (req, res) => {
 
   try {
     const orders = await Order.find()
+      .populate("products.productId")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
