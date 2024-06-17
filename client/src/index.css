@@ -32,6 +32,12 @@ a:hover {
   color: green;
 }
 
+a.active {
+  text-decoration: underline;
+  color: green;
+  font-size: 12px;
+}
+
 .container {
   width: 100%;
   max-width: 1200px;

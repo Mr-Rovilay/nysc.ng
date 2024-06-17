@@ -149,43 +149,46 @@ const CartPage = () => {
   return (
     <div className="container min-h-screen bg-gray-100">
       <ToastContainer />
-      <h1 className="text-2xl font-semibold text-center mt-8 mb-6">
-        YOUR CART
-      </h1>
       <div className="mx-auto p-4">
         {cart.products?.length > 0 ? (
           <div>
-            <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-lg shadow-md mb-6">
-              <Link to="/products">
-                <MaterialButton className="mb-2 sm:mb-0 bg-green-500">
-                  CONTINUE SHOPPING
-                </MaterialButton>
-              </Link>
-              <div className="flex flex-col sm:flex-row items-center">
-                <span className="underline cursor-pointer mx-2 mb-2 sm:mb-0">
-                  Shopping Bag ({cart.products.length})
-                </span>
-              </div>
-            </div>
-
             <Card className="overflow-auto mb-6">
-              <table className="w-full min-w-max table-auto text-left">
-                <thead>
-                  <tr>
-                    <th className="p-2 sm:p-4">#</th>
-                    <th className="p-2 sm:p-4">Image</th>
-                    <th className="p-2 sm:p-4">Product Name</th>
-                    <th className="p-2 sm:p-4">Quantity</th>
-                    <th className="p-2 sm:p-4">Price</th>
-                    <th className="p-2 sm:p-4">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cart.products?.map((item, i) => (
-                    <CartItem item={item} index={i} key={item._id} />
-                  ))}
-                </tbody>
-              </table>
+              <div className="">
+                <table className="w-full max-w-4xl min-w-max table-auto text-left">
+                  <thead>
+                    <tr>
+                      <th className="p-6 sm:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                        #
+                      </th>
+                      <th className="p-6 sm:p-4 border-b border-blue-gray-100 bg-blue-gray-50 ">
+                        Image
+                      </th>
+                      <th className="p-6 sm:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                        Product Name
+                      </th>
+                      <th className="p-6 sm:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                        Quantity
+                      </th>
+                      <th className="p-6 sm:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                        Price
+                      </th>
+                      <th className="p-6 sm:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cart.products?.map((item, i) => (
+                      <CartItem
+                        item={item}
+                        index={i}
+                        key={item._id}
+                        className={i % 2 === 0 ? "bg-blue-gray-50/50" : ""}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </Card>
 
             <div className="flex flex-col md:flex-row justify-between items-start my-8 gap-8 bg-white p-4 rounded-lg shadow-md">

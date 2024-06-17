@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, Typography, Button } from "@material-tailwind/react";
 import { userRequest } from "../../middleware/middleware";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../../src/components/Loading";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,7 +16,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -94,11 +94,7 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="mt-3">
-        <Loading />
-      </div>
-    );
+    return <Loading />;
   }
 
   const orderStatusData = {
@@ -131,73 +127,55 @@ const Dashboard = () => {
       <ToastContainer />
       <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <Typography className="p-4" variant="h5">
-            Total Users
-          </Typography>
-          <Typography className="p-4" variant="h2">
-            {summary.totalUsers}
-          </Typography>
-        </Card>
-        <Card>
-          <Typography className="p-4" variant="h5">
-            Total Products
-          </Typography>
-          <Typography className="p-4" variant="h2">
-            {summary.totalProducts}
-          </Typography>
-        </Card>
-        <Card>
-          <Typography className="p-4" variant="h5">
-            Total Orders
-          </Typography>
-          <Typography className="p-4" variant="h2">
-            {summary.totalOrders}
-          </Typography>
-        </Card>
-        <Card>
-          <Typography className="p-4" variant="h5">
-            Total Sales
-          </Typography>
-          <Typography className="p-4" variant="h2">
-            ${summary.totalSales.toFixed(2)}
-          </Typography>
-        </Card>
-        <Card>
-          <Typography className="p-4" variant="h5">
-            Delivered Orders
-          </Typography>
-          <Typography className="p-4" variant="h2">
-            {summary.deliveredOrders}
-          </Typography>
-        </Card>
-        <Card>
-          <Typography className="p-4" variant="h5">
-            Completed Orders
-          </Typography>
-          <Typography className="p-4" variant="h2">
-            {summary.completedOrders}
-          </Typography>
-        </Card>
+        <DashboardCard title="Total Users" value={summary.totalUsers} />
+        <DashboardCard title="Total Products" value={summary.totalProducts} />
+        <DashboardCard title="Total Orders" value={summary.totalOrders} />
+        <DashboardCard
+          title="Total Sales"
+          value={`$${summary.totalSales.toFixed(2)}`}
+        />
+        <DashboardCard
+          title="Delivered Orders"
+          value={summary.deliveredOrders}
+        />
+        <DashboardCard
+          title="Completed Orders"
+          value={summary.completedOrders}
+        />
       </div>
       <div className="my-10">
         <Line data={orderStatusData} />
       </div>
       <div className="my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Link to={"/admin/dashboard/manageProducts"}>
-          <Button color="green" as={Link} to="">
-            Manage Products
-          </Button>
-        </Link>
-        <Link to={"/admin/dashboard/users"}>
-          <Button color="green">Manage Users</Button>
-        </Link>
-        <Link to={"/admin/dashboard/manageOrders"}>
-          <Button color="green">Manage Orders</Button>
-        </Link>
+        <DashboardLinkButton to="/admin/dashboard/manageProducts">
+          Manage Products
+        </DashboardLinkButton>
+        <DashboardLinkButton to="/admin/dashboard/users">
+          Manage Users
+        </DashboardLinkButton>
+        <DashboardLinkButton to="/admin/dashboard/manageOrders">
+          Manage Orders
+        </DashboardLinkButton>
       </div>
     </div>
   );
 };
+
+const DashboardCard = ({ title, value }) => (
+  <Card>
+    <Typography className="p-4" variant="h5">
+      {title}
+    </Typography>
+    <Typography className="p-4" variant="h2">
+      {value}
+    </Typography>
+  </Card>
+);
+
+const DashboardLinkButton = ({ to, children }) => (
+  <Link to={to}>
+    <Button color="green">{children}</Button>
+  </Link>
+);
 
 export default Dashboard;

@@ -139,15 +139,6 @@ const ManageOrders = () => {
                   Date
                 </Typography>
               </th>
-              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  Action
-                </Typography>
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -207,7 +198,7 @@ const ManageOrders = () => {
                       >
                         {order.products.map((product, i) => (
                           <div key={i}>
-                            {product.quantity} x {product.productId} (₦
+                            {product.quantity} x {product.productId.title} (₦
                             {product.price})
                           </div>
                         ))}
@@ -247,26 +238,6 @@ const ManageOrders = () => {
                       >
                         {formattedDate} at {formattedTime}
                       </Typography>
-                    </td>
-                    <td className="p-4">
-                      <Button
-                        className="bg-green hover:bg-dark-green"
-                        onClick={() =>
-                          handleStatusChange(order._id, "Delivered")
-                        }
-                        disabled={loadingOrder === order._id}
-                      >
-                        <FaCheck className="text-green-500" />
-                      </Button>
-                      <Button
-                        className="bg-red hover:bg-dark-red ml-2"
-                        onClick={() =>
-                          handleStatusChange(order._id, "Cancelled")
-                        }
-                        disabled={loadingOrder === order._id}
-                      >
-                        <FaTrashAlt className="text-red-500" />
-                      </Button>
                     </td>
                   </tr>
                 );

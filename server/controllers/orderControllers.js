@@ -1,4 +1,3 @@
-import express from "express";
 import stripe from "stripe";
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
@@ -8,7 +7,8 @@ const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 
 // Order creation endpoint
 export const createOrder = async (req, res) => {
-  const frontend_url = "https://nysckit-ng-1.onrender.com";
+  const frontend_url = "http://localhost:5173";
+
   try {
     const { products, address } = req.body;
 
@@ -18,19 +18,21 @@ export const createOrder = async (req, res) => {
     }
 
     // Create an object to hold the product quantities for easy access
-    const productQuantities = products.reduce((acc, item) => {
-      acc[item.productId] = item.quantity;
-      return acc;
-    }, {});
+    const productQuantities = {};
+    products.forEach((item) => {
+      productQuantities[item.productId] = item.quantity;
+    });
 
     // Initialize variables for total price and line items
     let totalPrice = 0;
     const lineItems = [];
+
     // Find all products in a single query
     const productIds = products.map((item) => item.productId);
     const productDocs = await Product.find({ _id: { $in: productIds } });
 
     // Check stock for all products
+    const insufficientStockProducts = [];
     productDocs.forEach((product) => {
       const requiredQuantity = productQuantities[product._id.toString()];
       if (product.stock < requiredQuantity) {
@@ -38,19 +40,29 @@ export const createOrder = async (req, res) => {
       }
     });
 
-    // Loop through each product in the request
+    // If any product has insufficient stock, return error
+    if (insufficientStockProducts.length > 0) {
+      return res.status(400).json({
+        error: `Insufficient stock for: ${insufficientStockProducts.join(
+          ", "
+        )}`,
+      });
+    }
+
+    // Loop through each product in the request to calculate total price and create line items
     for (const product of products) {
-      const { productId, quantity } = product;
-      const productDoc = await Product.findById(productId);
+      const productDoc = productDocs.find(
+        (doc) => doc._id.toString() === product.productId
+      );
 
       if (!productDoc) {
         return res
           .status(400)
-          .json({ error: `Product not found: ${productId}` });
+          .json({ error: `Product not found: ${product.productId}` });
       }
 
       const price = productDoc.price;
-      totalPrice += price * quantity;
+      totalPrice += price * product.quantity;
 
       lineItems.push({
         price_data: {
@@ -60,15 +72,8 @@ export const createOrder = async (req, res) => {
           },
           unit_amount: price * 100, // Convert to cents
         },
-        quantity: quantity,
+        quantity: product.quantity,
       });
-    }
-
-    // Deduct stock for all products after creating the order
-    for (let product of productDocs) {
-      const quantity = productQuantities[product._id.toString()];
-      product.stock -= quantity;
-      await product.save();
     }
 
     // Add delivery charges to the total price
@@ -83,12 +88,6 @@ export const createOrder = async (req, res) => {
       address: address,
       payment: false, // Assuming payment is not completed yet
     });
-
-    // Create the order if all products have sufficient stock
-    const amount = productDocs.reduce((total, product) => {
-      const quantity = productQuantities[product._id.toString()];
-      return total + product.price * quantity;
-    }, 0);
 
     // Create a session with line items for Stripe checkout
     const session = await stripeClient.checkout.sessions.create({
@@ -217,7 +216,9 @@ export const getMyOrders = async (req, res) => {
   const userId = req.decoded.id;
 
   try {
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId })
+      .populate("products.productId")
+      .sort({ createdAt: -1 });
     if (!orders || orders.length === 0) {
       return res.status(404).json({ message: "No orders found for this user" });
     }
@@ -235,6 +236,7 @@ export const getAllOrders = async (req, res) => {
 
   try {
     const orders = await Order.find()
+      .populate("products.productId")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });

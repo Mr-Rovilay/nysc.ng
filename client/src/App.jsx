@@ -22,6 +22,7 @@ import ProtectedRoute from "../middleware/ProtectedRoute";
 import ManageOrders from "../pages/Admin/ManageOrders";
 import SearchResults from "../pages/SerachResults";
 import SingleProduct from "../pages/SingleProduct";
+import About from "../pages/About";
 
 const App = () => {
   const location = useLocation();
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/signin" element={<Signin />} />
         <Route path="/products/:category" element={<ProductList />} />
         <Route path="/products" element={<ProductList />} />
+        <Route path="/aboutus" element={<About />} />
         <Route path="/product/:id" element={<SingleProduct />} />
         <Route
           path="/cart"
@@ -51,7 +53,7 @@ const App = () => {
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/search" element={<SearchResults />} />
         <Route
-          path="/myOrders"
+          path="/orders"
           element={
             <ProtectedRoute>
               <OrdersPage />

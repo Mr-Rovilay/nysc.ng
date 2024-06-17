@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 import { Typography, Input, Button } from "@material-tailwind/react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import AnimationWrapper from "../common/AnimationWrapper";
@@ -32,11 +32,11 @@ const Signup = () => {
       return toast.error("Enter email address");
     }
     if (!emailRegex.test(email)) {
-      return toast.error("invalid email address");
+      return toast.error("Invalid email address");
     }
     if (!passwordRegex.test(password)) {
       return toast.error(
-        "password should be 6 to 20 characters long with numeric, 1 lowercase and 1 uppercase letter"
+        "Password should be 6 to 20 characters long with numeric, 1 lowercase and 1 uppercase letter"
       );
     }
     try {
@@ -56,6 +56,12 @@ const Signup = () => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSignUp();
+    }
+  };
+
   return (
     <>
       <AnimationWrapper>
@@ -68,9 +74,13 @@ const Signup = () => {
             <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
               Enter your fullname, email and password to sign up
             </Typography>
-            <form action="#" className="mx-auto max-w-[24rem] text-left">
+            <form
+              action="#"
+              className="mx-auto max-w-[24rem] text-left"
+              onKeyPress={handleKeyPress} // Handle key press events
+            >
               <div className="mb-6">
-                <label htmlFor="email">
+                <label htmlFor="fullname">
                   <Typography
                     variant="small"
                     className="mb-2 block font-medium text-gray-900"
@@ -86,7 +96,7 @@ const Signup = () => {
                   name="fullname"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
-                  placeholder="your full name"
+                  placeholder="Your full name"
                   className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
                   labelProps={{
                     className: "hidden",
@@ -154,7 +164,7 @@ const Signup = () => {
                 className="mt-6"
                 fullWidth
               >
-                sign in
+                Sign Up
               </Button>
               <div className="!mt-4 flex justify-end">
                 <Typography
@@ -164,7 +174,7 @@ const Signup = () => {
                   variant="small"
                   className="font-medium"
                 >
-                  Forgot password ?
+                  Forgot password?
                 </Typography>
               </div>
               <Button
@@ -177,16 +187,16 @@ const Signup = () => {
                   alt="google"
                   className="h-6 w-6"
                 />{" "}
-                sign in with google
+                Sign up with Google
               </Button>
               <Typography
                 variant="small"
                 color="gray"
                 className="!mt-4 text-center font-normal"
               >
-                registered?{" "}
+                Already registered?{" "}
                 <Link to="/signin" className="font-medium text-gray-900">
-                  Login to account
+                  Login to your account
                 </Link>
               </Typography>
             </form>
