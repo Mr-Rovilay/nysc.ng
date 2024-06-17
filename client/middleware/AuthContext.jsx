@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 
@@ -34,16 +33,31 @@ const AuthProvider = ({ children }) => {
 
   const isTokenExpired = (token) => {
     try {
-      const decoded = jwtDecode(token);
+      const decoded = parseJwt(token);
       return decoded.exp * 1000 < Date.now();
     } catch (e) {
       return true;
     }
   };
 
+  const parseJwt = (token) => {
+    if (!token) return null;
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  };
+
   const getUserInfoFromToken = (token) => {
     try {
-      const decoded = jwtDecode(token);
+      const decoded = parseJwt(token);
       return decoded || null;
     } catch (e) {
       return null;

@@ -19,7 +19,7 @@ const VerifyPage = () => {
       });
 
       if (response.data.success) {
-        navigate("/myOrders");
+        navigate("/orders");
       } else {
         toast.error("Order verification failed");
         navigate("/");

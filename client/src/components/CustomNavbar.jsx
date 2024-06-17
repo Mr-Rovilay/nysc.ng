@@ -25,9 +25,9 @@ import { AuthContext } from "../../middleware/AuthContext";
 import useCart from "../../middleware/useCart";
 
 const profileMenuItems = [
-  { label: "My Profile", icon: UserCircleIcon, to: "#" },
-  { label: "Orders", icon: InboxArrowDownIcon, to: "/myOrders" },
-  { label: "Settings", icon: LifebuoyIcon, to: "#" },
+  // { label: "My Profile", icon: UserCircleIcon, to: "#" },
+  { label: "Orders", icon: InboxArrowDownIcon, to: "/orders" },
+  // { label: "Settings", icon: LifebuoyIcon, to: "#" },
 ];
 
 const CustomNavbar = () => {

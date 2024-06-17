@@ -27,11 +27,11 @@ const Signin = () => {
       return toast.error("Enter email address");
     }
     if (!emailRegex.test(email)) {
-      return toast.error("invalid email address");
+      return toast.error("Invalid email address");
     }
     if (!passwordRegex.test(password)) {
       return toast.error(
-        "password should be 6 to 20 characters long with numeric, 1 lowercase and 1 uppercase letter"
+        "Password should be 6 to 20 characters long with numeric, 1 lowercase and 1 uppercase letter"
       );
     }
     try {
@@ -50,6 +50,12 @@ const Signin = () => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSignIn();
+    }
+  };
+
   return (
     <>
       <AnimationWrapper>
@@ -62,7 +68,11 @@ const Signin = () => {
             <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
               Enter your email and password to sign in
             </Typography>
-            <form action="#" className="mx-auto max-w-[24rem] text-left">
+            <form
+              action="#"
+              className="mx-auto max-w-[24rem] text-left"
+              onKeyPress={handleKeyPress} // Handle key press events
+            >
               <div className="mb-6">
                 <label htmlFor="email">
                   <Typography
@@ -124,7 +134,7 @@ const Signin = () => {
                 className="mt-6"
                 fullWidth
               >
-                sign in
+                Sign In
               </Button>
               <div className="!mt-4 flex justify-end">
                 <Typography
@@ -147,7 +157,7 @@ const Signin = () => {
                   alt="google"
                   className="h-6 w-6"
                 />{" "}
-                sign in with google
+                Sign in with Google
               </Button>
               <Typography
                 variant="small"
