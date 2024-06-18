@@ -55,7 +55,6 @@ const useOrders = () => {
     try {
       const response = await userRequest.post(`/orders/${orderId}/cancel`);
       queryClient.invalidateQueries("orders");
-      toast.success("Order canceled successfully");
       return response.data;
     } catch (error) {
       setCancelError("Error canceling order");
