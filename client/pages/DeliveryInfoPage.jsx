@@ -8,7 +8,7 @@ import Loading from "../src/components/Loading";
 const DeliveryInfoPage = () => {
   const { cart } = useCart();
   const [subTotal, setSubTotal] = useState(0);
-  const deliveryPrice = 20;
+  const deliveryPrice = 2000;
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +47,12 @@ const DeliveryInfoPage = () => {
 
   const placeOrder = async (e) => {
     e.preventDefault();
+
+    // Validate phone number
+    if (!data.phone.match(/^\d{11}$/)) {
+      toast.error("Please provide a valid phone number");
+      return;
+    }
 
     const orderItems = cart.products?.map((item) => ({
       productId: item.productId._id,
@@ -169,9 +175,10 @@ const DeliveryInfoPage = () => {
           name="phone"
           onChange={onChangeHandler}
           value={data.phone}
-          type="number"
-          placeholder="Phone"
+          type="text"
+          placeholder="Phone (e.g., 12345678901)"
           className="w-full p-2 mb-4 border border-gray-300 rounded outline-none focus:outline-tomato"
+          title="Phone number should be in the format 123-456-7890"
         />
       </div>
       <div className="w-full max-w-[min(40%,500px)]">
