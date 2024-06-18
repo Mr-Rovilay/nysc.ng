@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button, Card, Typography } from "@material-tailwind/react";
 import useOrders from "../middleware/useOrders";
 import Loading from "../src/components/Loading";
 import AnimationWrapper from "../src/common/AnimationWrapper";
+
+const formatPrice = (amount) => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+  }).format(amount);
+};
 
 const OrdersPage = () => {
   const { orders, isLoading, isError, error, deleteOrder, cancelOrder } =
@@ -184,7 +191,7 @@ const OrdersPage = () => {
                                     variant="small"
                                     className="font-normal"
                                   >
-                                    Price: ${product.price}
+                                    Price: {formatPrice(product.price)}
                                   </Typography>
                                 </div>
                               ))
@@ -194,7 +201,7 @@ const OrdersPage = () => {
                       </div>
                     </div>
                   )}
-                  <div className="mb-4">
+                  <div className="mb-4 flex gap-2">
                     <Typography variant="small" className="font-semibold">
                       Status:
                     </Typography>
@@ -211,12 +218,12 @@ const OrdersPage = () => {
                       {status}
                     </Typography>
                   </div>
-                  <div>
+                  <div className="flex gap-2">
                     <Typography variant="small" className="font-semibold">
                       Total Amount:
                     </Typography>
                     <Typography variant="small">
-                      ${amount.toFixed(2)}
+                      {formatPrice(amount)}
                     </Typography>
                   </div>
                   <div className="flex gap-3 mt-4">

@@ -16,6 +16,7 @@ const Signup = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // New state for loading
   const [error, setError] = useState("");
 
   const handleSignUp = async () => {
@@ -39,6 +40,9 @@ const Signup = () => {
         "Password should be 6 to 20 characters long with numeric, 1 lowercase and 1 uppercase letter"
       );
     }
+
+    setIsLoading(true); // Set loading state to true
+
     try {
       const response = await publicRequest.post("/auth/signup", {
         fullname,
@@ -53,6 +57,8 @@ const Signup = () => {
     } catch (error) {
       toast.error("Sign up error:", error);
       setError(error.response.data.error);
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
   };
 
@@ -161,10 +167,15 @@ const Signup = () => {
                 onClick={handleSignUp}
                 color="gray"
                 size="lg"
-                className="mt-6"
+                className="mt-6 flex items-center justify-center"
                 fullWidth
+                disabled={isLoading} // Disable button while loading
               >
-                Sign Up
+                {isLoading ? (
+                  <LoadingSpinner /> // Use a loading spinner or text
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
               <div className="!mt-4 flex justify-end">
                 <Typography
@@ -204,6 +215,31 @@ const Signup = () => {
         </section>
       </AnimationWrapper>
     </>
+  );
+};
+
+const LoadingSpinner = () => {
+  return (
+    <svg
+      className="animate-spin h-5 w-5 text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
+    </svg>
   );
 };
 

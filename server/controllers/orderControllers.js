@@ -5,7 +5,7 @@ import Cart from "../models/cartModel.js"; // Assuming you have a cart model
 
 const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 
-// const frontend_url = "http://localhost:5173";
+//  const frontend_url = "http://localhost:5173";
 // Order creation endpoint
 export const createOrder = async (req, res) => {
   const frontend_url = "https://nysckit-ng-1.onrender.com";
@@ -19,10 +19,10 @@ export const createOrder = async (req, res) => {
     }
 
     // Create an object to hold the product quantities for easy access
-    const productQuantities = {};
-    products.forEach((item) => {
-      productQuantities[item.productId] = item.quantity;
-    });
+    const productQuantities = products.reduce((acc, item) => {
+      acc[item.productId] = item.quantity;
+      return acc;
+    }, {});
 
     // Initialize variables for total price and line items
     let totalPrice = 0;
@@ -77,8 +77,15 @@ export const createOrder = async (req, res) => {
       });
     }
 
+    // Deduct stock for all products after creating the order
+    for (let product of productDocs) {
+      const quantity = productQuantities[product._id.toString()];
+      product.stock -= quantity;
+      await product.save();
+    }
+
     // Add delivery charges to the total price
-    const deliveryCharges = 20; // Example delivery charges
+    const deliveryCharges = 2000; // Example delivery charges
     totalPrice += deliveryCharges;
 
     // Save the order details in the database
@@ -89,6 +96,12 @@ export const createOrder = async (req, res) => {
       address: address,
       payment: false, // Assuming payment is not completed yet
     });
+
+    // Create the order if all products have sufficient stock
+    const amount = productDocs.reduce((total, product) => {
+      const quantity = productQuantities[product._id.toString()];
+      return total + product.price * quantity;
+    }, 0);
 
     // Create a session with line items for Stripe checkout
     const session = await stripeClient.checkout.sessions.create({

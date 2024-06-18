@@ -9,6 +9,13 @@ import useCart from "../middleware/useCart";
 import Loading from "../src/components/Loading";
 import debounce from "../middleware/debounce";
 
+const formatPrice = (amount) => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+  }).format(amount);
+};
+
 const CartItem = ({ item, index }) => {
   const { deleteCartItem, increaseCartItemQuantity, decreaseCartItemQuantity } =
     useCart();
@@ -103,7 +110,7 @@ const CartItem = ({ item, index }) => {
         </div>
       </td>
       <td className="p-2 sm:p-4">
-        ₦{(item.productId.price * quantity).toFixed(2)}
+        {formatPrice(item.productId.price * quantity)}
       </td>
       <td className="p-2 sm:p-4">
         <button
@@ -119,11 +126,11 @@ const CartItem = ({ item, index }) => {
 
 const CartPage = () => {
   const { cart, isLoading } = useCart();
-  const [subTotal, setSubTotal] = React.useState(0);
-  const deliveryPrice = 20;
-  const [totalPrice, setTotalPrice] = React.useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+  const deliveryPrice = 2000;
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const calculateSubTotal = () => {
       const total = cart.products?.reduce(
         (acc, item) => acc + item.quantity * item.productId.price,
@@ -134,7 +141,7 @@ const CartPage = () => {
     calculateSubTotal();
   }, [cart]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTotalPrice(subTotal + (subTotal > 0 ? deliveryPrice : 0));
   }, [subTotal]);
 
@@ -195,9 +202,12 @@ const CartPage = () => {
               <div className="w-full md:w-1/2">
                 <h3 className="text-lg font-medium mb-2">Shopping Details</h3>
                 <p>Total Items: {cart.products?.length || 0}</p>
-                <p>Sub Total: ₦{subTotal.toFixed(2)}</p>
-                <p>Delivery Price: ₦{subTotal === 0 ? 0 : deliveryPrice}</p>
-                <p>Total Price: ₦{totalPrice.toFixed(2)}</p>
+                <p>Sub Total: {formatPrice(subTotal)}</p>
+                <p>
+                  Delivery Price:{" "}
+                  {formatPrice(subTotal === 0 ? 0 : deliveryPrice)}
+                </p>
+                <p>Total Price: {formatPrice(totalPrice)}</p>
                 <Link to="/delivery-info">
                   <MaterialButton className="mt-4 bg-green-500 md:w-auto">
                     Proceed to Delivery Info

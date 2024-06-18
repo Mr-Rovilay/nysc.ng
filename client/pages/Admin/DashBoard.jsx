@@ -94,7 +94,11 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="container">
+        <Loading />
+      </div>
+    );
   }
 
   const orderStatusData = {

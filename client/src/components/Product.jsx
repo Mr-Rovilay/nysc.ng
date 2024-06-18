@@ -4,9 +4,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { userRequest } from "../../middleware/middleware";
 import { AuthContext } from "../../middleware/AuthContext";
 import { useNavigate } from "react-router-dom";
-
 import Loading from "./Loading";
 import { Button } from "@material-tailwind/react";
+
+const formatPrice = (amount) => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+  }).format(amount);
+};
 
 const Product = ({ item, cart = {}, onProductAdd = () => {} }) => {
   const [inCart, setInCart] = useState(false);
@@ -107,7 +113,7 @@ const Product = ({ item, cart = {}, onProductAdd = () => {} }) => {
         <div className="mt-2 mb-5 flex items-center justify-between">
           <p>
             <span className="text-xl font-semibold text-slate-900">
-              Price: ₦{item.price}
+              Price: {formatPrice(item.price)}
             </span>
           </p>
         </div>
