@@ -3,10 +3,8 @@ import { Typography, Input, Button } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import AnimationWrapper from "../src/common/AnimationWrapper";
 import { publicRequest } from "../middleware/middleware";
-import { AuthContext } from "../middleware/AuthContext";
+import AnimationWrapper from "../src/common/AnimationWrapper";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -31,9 +29,7 @@ const ForgotPassword = () => {
         email,
       });
       if (response.data.status === "Success") {
-        toast.success(
-          "Password reset link sent successfully. Check your email."
-        );
+        toast.success(response.data.message);
         navigate("/signin");
       } else {
         toast.error(

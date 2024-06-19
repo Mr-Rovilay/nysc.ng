@@ -109,7 +109,7 @@ const forgotPassword = async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: "Reset your password",
-      text: `Click the link to reset your password: http://localhost:5173/forgot-password/${user._id}/${token}`,
+      text: `Click the link to reset your password: http://localhost:5173/reset_password/${user._id}/${token}`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -121,8 +121,46 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { id, token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    if (!newPassword) {
+      return res.status(400).json({ error: "Password cannot be empty" });
+    }
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        error:
+          "Password should be 6 to 20 characters long with at least one numeric, one lowercase, and one uppercase letter",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await User.findById(id);
+
+    // Update user password and clear reset token fields
+    user.password = hashedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpiry = undefined;
+
+    await user.save();
+    return res
+      .status(200)
+      .json({ status: "Success", message: "Password reset successfully" });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while resetting the password" });
+  }
+};
+
 export default {
   signIn,
   signUp,
   forgotPassword,
+  resetPassword,
 };
