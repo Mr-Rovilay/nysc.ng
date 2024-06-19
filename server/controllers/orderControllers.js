@@ -1,15 +1,13 @@
 import stripe from "stripe";
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
-import Cart from "../models/cartModel.js"; // Assuming you have a cart model
+import Cart from "../models/cartModel.js";
 
 const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
 
 //  const frontend_url = "http://localhost:5173";
-// Order creation endpoint
 export const createOrder = async (req, res) => {
-  // const frontend_url = "https://nysckit-ng-1.onrender.com";
-  const frontend_url = "http://localhost:5173";
+  const frontend_url = "https://nysckit-ng-1.onrender.com";
 
   try {
     const { products, address } = req.body;
@@ -38,7 +36,7 @@ export const createOrder = async (req, res) => {
     productDocs.forEach((product) => {
       const requiredQuantity = productQuantities[product._id.toString()];
       if (product.stock < requiredQuantity) {
-        insufficientStockProducts.push(product.title); // Collect product titles with insufficient stock
+        insufficientStockProducts.push(product.title);
       }
     });
 
@@ -86,16 +84,16 @@ export const createOrder = async (req, res) => {
     }
 
     // Add delivery charges to the total price
-    const deliveryCharges = 2000; // Example delivery charges
+    const deliveryCharges = 2000;
     totalPrice += deliveryCharges;
 
     // Save the order details in the database
     const order = new Order({
-      userId: req.decoded.id, // Assuming you have user authentication and get the user ID from the request
+      userId: req.decoded.id,
       products: products,
       amount: totalPrice,
       address: address,
-      payment: false, // Assuming payment is not completed yet
+      payment: false,
     });
 
     // Create the order if all products have sufficient stock
@@ -246,7 +244,7 @@ export const getMyOrders = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = 10; // Adjust limit as needed
+  const limit = 10;
   const skip = (page - 1) * limit;
 
   try {
@@ -290,7 +288,7 @@ export const cancelOrder = async (req, res) => {
     const currentTime = new Date().getTime();
     const timeDifference = currentTime - orderCreationTime;
 
-    const timeLimit = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    const timeLimit = 24 * 60 * 60 * 1000;
 
     if (timeDifference > timeLimit) {
       return res

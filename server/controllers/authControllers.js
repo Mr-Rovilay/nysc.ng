@@ -109,7 +109,7 @@ const forgotPassword = async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: "Reset your password",
-      text: `Click the link to reset your password: http://localhost:5173/reset_password/${user._id}/${token}`,
+      text: `Click the link to reset your password: https://nysckit-ng-1.onrender.com/reset_password/${user._id}/${token}`,
     };
 
     await transporter.sendMail(mailOptions);
