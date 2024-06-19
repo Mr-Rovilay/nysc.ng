@@ -104,7 +104,7 @@ const ForgotPassword = () => {
             <div className="mt-4 text-center">
               <Typography variant="small" color="gray" className="font-normal">
                 Remembered your password?{" "}
-                <Link to="/login" className="font-medium text-gray-900">
+                <Link to="/signin" className="font-medium text-gray-900">
                   Sign In
                 </Link>
               </Typography>

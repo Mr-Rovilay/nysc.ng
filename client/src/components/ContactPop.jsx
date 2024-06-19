@@ -2,9 +2,7 @@ import {
   Popover,
   PopoverHandler,
   PopoverContent,
-  Avatar,
   Button,
-  Typography,
   List,
   ListItem,
   ListItemPrefix,
@@ -16,6 +14,11 @@ const ContactPop = () => {
   const openWhatsApp = () => {
     window.open("https://api.whatsapp.com/send?text=text&phone=+2348114080865");
   };
+
+  const Callto = ({ phone, children }) => {
+    return <a href={`tel:${phone}`}>{children}</a>;
+  };
+
   return (
     <div>
       <Popover placement="bottom-end">
@@ -23,24 +26,6 @@ const ContactPop = () => {
           <Button className="font-medium bg-green-500">Contact Us</Button>
         </PopoverHandler>
         <PopoverContent className="w-72 z-0">
-          <div className="mb-4 flex items-center gap-4 border-b border-blue-gray-50 pb-4">
-            <Avatar
-              src="https://docs.material-tailwind.com/img/team-4.jpg"
-              alt="tania andrew"
-            />
-            <div className="mt-10">
-              <Typography variant="h6" color="blue-gray">
-                Maria Akinola
-              </Typography>
-              <Typography
-                variant="small"
-                color="gray"
-                className="font-medium text-blue-gray-500"
-              >
-                General Manager
-              </Typography>
-            </div>
-          </div>
           <List className="p-0">
             <Link
               to="#"
@@ -85,7 +70,7 @@ const ContactPop = () => {
                     />
                   </svg>
                 </ListItemPrefix>
-                <Link to="tel:+2348114080865">tel:+2348114080865</Link>
+                <Callto phone="+2348114080865">Call me!</Callto>
               </ListItem>
             </Link>
             <Link

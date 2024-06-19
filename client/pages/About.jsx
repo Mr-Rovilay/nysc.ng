@@ -1,6 +1,7 @@
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion";
+import mariaPic from "../assets/maria.jpg";
 
 const About = () => {
   return (
@@ -13,9 +14,9 @@ const About = () => {
       >
         <div className="texxt-left">
           <img
-            src="https://via.placeholder.com/150"
+            src={mariaPic}
             alt="Profile"
-            className="w-32 h-32 mx-auto rounded-full shadow-lg mb-4"
+            className="img mx-auto rounded-full overflow-hidden shadow-lg mb-4"
           />
           <h1 className="text-4xl font-bold mb-4">About Me</h1>
           <p className="text-lg text-gray-700 mb-6">

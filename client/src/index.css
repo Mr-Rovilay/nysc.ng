@@ -83,3 +83,9 @@ h1.truncate {
   border-radius: 0.5rem;
   background-color: #fff;
 }
+.img {
+  width: 80px;
+  height: 80px;
+  rotate: 27deg;
+  object-fit: cover;
+}
