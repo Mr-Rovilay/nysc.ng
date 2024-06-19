@@ -5,7 +5,6 @@ import AnimationWrapper from "../common/AnimationWrapper";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { publicRequest } from "../../middleware/middleware";
 import { AuthContext } from "../../middleware/AuthContext";
 
@@ -17,11 +16,11 @@ const Signin = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // New state for loading
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async () => {
-    let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
     if (!email.length) {
       return toast.error("Enter email address");
@@ -35,7 +34,7 @@ const Signin = () => {
       );
     }
 
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
 
     try {
       const response = await publicRequest.post("/auth/signin", {
@@ -44,14 +43,18 @@ const Signin = () => {
       });
       const { token } = response.data;
       localStorage.setItem("token", token);
-      login(token); // Pass the token to the login function
+      login(token);
       navigate("/");
       toast.success("Sign in successful");
     } catch (error) {
-      toast.error("User not found");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error); // Display the server error message
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
       console.error(error);
     } finally {
-      setIsLoading(false); // Set loading state to false
+      setIsLoading(false);
     }
   };
 
@@ -73,7 +76,7 @@ const Signin = () => {
             <form
               action="#"
               className="mx-auto max-w-[24rem] text-left"
-              onKeyPress={handleKeyPress} // Handle key press events
+              onKeyPress={handleKeyPress}
             >
               <div className="mb-6">
                 <label htmlFor="email">
@@ -135,18 +138,14 @@ const Signin = () => {
                 size="lg"
                 className="mt-6 flex items-center justify-center"
                 fullWidth
-                disabled={isLoading} // Disable button while loading
+                disabled={isLoading}
               >
-                {isLoading ? (
-                  <LoadingSpinner /> // Use a loading spinner or text
-                ) : (
-                  "Sign In"
-                )}
+                {isLoading ? <LoadingSpinner /> : "Sign In"}
               </Button>
               <div className="!mt-4 flex justify-end">
                 <Typography
                   as="a"
-                  href="#"
+                  href="/forgot-password"
                   color="blue-gray"
                   variant="small"
                   className="font-medium"
@@ -154,18 +153,6 @@ const Signin = () => {
                   Forgot password ?
                 </Typography>
               </div>
-              {/* <Button
-                size="lg"
-                className="mt-6 flex h-12 items-center justify-center gap-2 bg-green-500"
-                fullWidth
-              >
-                <img
-                  src={`https://www.material-tailwind.com/logos/logo-google.png`}
-                  alt="google"
-                  className="h-6 w-6"
-                />{" "}
-                Sign in with Google
-              </Button> */}
               <Typography
                 variant="small"
                 color="gray"

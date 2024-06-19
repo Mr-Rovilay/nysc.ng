@@ -16,19 +16,17 @@ const Signup = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // New state for loading
-  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = async () => {
-    let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-    let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
     if (fullname) {
       if (fullname.length < 3) {
         return toast.error("Fullname must be at least 3 characters long");
       }
     }
-
     if (!email.length) {
       return toast.error("Enter email address");
     }
@@ -41,7 +39,7 @@ const Signup = () => {
       );
     }
 
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
 
     try {
       const response = await publicRequest.post("/auth/signup", {
@@ -55,8 +53,12 @@ const Signup = () => {
       navigate("/");
       toast.success("Sign up successful");
     } catch (error) {
-      toast.error("Sign up error:", error);
-      setError(error.response.data.error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error); // Display the server error message
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
+      console.error(error);
     } finally {
       setIsLoading(false); // Set loading state to false
     }
@@ -77,9 +79,6 @@ const Signup = () => {
             <Typography variant="h3" color="blue-gray" className="mb-2">
               Sign Up
             </Typography>
-            {/* <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
-              Enter your fullname, email and password to sign up
-            </Typography> */}
             <form
               action="#"
               className="mx-auto max-w-[24rem] text-left"
@@ -177,17 +176,6 @@ const Signup = () => {
                   "Sign Up"
                 )}
               </Button>
-              <div className="!mt-4 flex justify-end">
-                <Typography
-                  as="a"
-                  href="#"
-                  color="blue-gray"
-                  variant="small"
-                  className="font-medium"
-                >
-                  Forgot password?
-                </Typography>
-              </div>
               {/* <Button
                 size="lg"
                 className="mt-6 flex h-12 items-center justify-center gap-2 bg-green-500"

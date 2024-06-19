@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
-
+import nodemailer from "nodemailer";
 import {
   emailRegex,
   formatDataToSend,
@@ -82,7 +82,47 @@ const signIn = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email.length) {
+      return res.status(400).json({ error: "Email address is required" });
+    }
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email address" });
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "Email not found" });
+    }
+
+    const token = formatDataToSend(user).token;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Reset your password",
+      text: `Click the link to reset your password: http://localhost:5173/forgot-password/${user._id}/${token}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return res
+      .status(200)
+      .json({ status: "Success", message: "Password reset email sent" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   signIn,
   signUp,
+  forgotPassword,
 };

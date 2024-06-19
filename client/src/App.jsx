@@ -23,6 +23,7 @@ import ManageOrders from "../pages/Admin/ManageOrders";
 import SearchResults from "../pages/SerachResults";
 import SingleProduct from "../pages/SingleProduct";
 import About from "../pages/About";
+import ForgotPassword from "../pages/ForgotPassword";
 
 const App = () => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/products/:category" element={<ProductList />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/aboutus" element={<About />} />
