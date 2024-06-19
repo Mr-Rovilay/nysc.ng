@@ -14,12 +14,6 @@ const Footer = () => {
           <h1 className="cursor-pointer py-1.5 font-medium text-green-500 mb-4">
             NYSCKIT.NG
           </h1>
-          <p className="mb-4">
-            There are many variations of passages of Lorem Ipsum available, but
-            the majority have suffered alteration in some form, by injected
-            humour, or randomised words which don’t look even slightly
-            believable.
-          </p>
           <div className="flex space-x-4">
             <a href="#" aria-label="Facebook">
               <FaFacebook className="w-8 h-8 text-blue-600" />

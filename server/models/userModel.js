@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema(
       type: String,
       lowercase: true,
       required: true,
-      minlength: [3, "fullname must be 3 letters long"],
+      minlength: [3, "Fullname must be at least 3 characters long"],
     },
     email: {
       type: String,
@@ -14,17 +14,22 @@ const userSchema = mongoose.Schema(
       lowercase: true,
       unique: true,
     },
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: true,
+    },
     isAdmin: {
       type: Boolean,
       default: false,
     },
+    resetToken: String, // Token for password reset
+    resetTokenExpiry: Date, // Expiry date for the reset token
   },
   {
     timestamps: true,
   }
 );
 
-const userModel = mongoose.model("users", userSchema);
+const userModel = mongoose.model("User", userSchema);
 
 export default userModel;
