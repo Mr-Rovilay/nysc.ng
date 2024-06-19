@@ -34,10 +34,6 @@ const Footer = () => {
               14 Akinola Osan Street, Igando Egan, Lagos
             </p>
           </div>
-          <div className="flex items-center mb-4">
-            <MdOutlinePhoneInTalk className="w-6 h-6 mr-2" />
-            <p>+1 234 56 78</p>
-          </div>
           <div className="flex items-center mb-4 cursor-pointer">
             <CiMail className="w-6 h-6 mr-2" />
             <a href="mailto:maria@gmail.com">maria@gmail.com</a>
