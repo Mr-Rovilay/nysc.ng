@@ -70,7 +70,7 @@ const Products = ({ categories, filters, sort, isHomePage }) => {
   );
 
   return (
-    <div className="container px-16 py-18 bg-gray-100 mb-6">
+    <div className="container px-16 py-18 mb-6">
       {loading ? (
         <div className="mt-3">
           <Loading />

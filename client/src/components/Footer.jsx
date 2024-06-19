@@ -32,25 +32,6 @@ const Footer = () => {
             </a>
           </div>
         </div>
-        <div className="flex-1 md:mr-10 mb-6 md:mb-0">
-          <h1 className="py-1.5 font-medium text-green-500 mb-4">
-            Useful Links
-          </h1>
-          <ul className="list-none space-y-2">
-            {[
-              { label: "Home", link: "/" },
-              { label: "Accessories", link: "#" },
-              { label: "My Account", link: "#" },
-              { label: "Order Tracking", link: "/orders" },
-              { label: "Products", link: "/products" },
-              { label: "Terms", link: "#" },
-            ].map((item, index) => (
-              <li key={index} className="hover:text-green-500">
-                <a href={item.link}>{item.label}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
         <div className="flex-1">
           <h1 className="py-1.5 font-medium text-green-500 mb-4">Contact</h1>
           <div className="flex items-center mb-4">
@@ -67,11 +48,6 @@ const Footer = () => {
             <CiMail className="w-6 h-6 mr-2" />
             <a href="mailto:maria@gmail.com">maria@gmail.com</a>
           </div>
-          <img
-            src="https://i.ibb.co/Qfvn4z6/payment.png"
-            alt="Payment"
-            className="w-1/2"
-          />
         </div>
       </div>
       <div className="mt-8 border-t border-gray-300 pt-4 text-center text-gray-600">

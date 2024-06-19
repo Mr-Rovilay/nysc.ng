@@ -27,6 +27,13 @@ ChartJS.register(
   Legend
 );
 
+const formatPrice = (amount) => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+  }).format(amount);
+};
+
 const Dashboard = () => {
   const [summary, setSummary] = useState({
     totalUsers: 0,
@@ -50,7 +57,7 @@ const Dashboard = () => {
             userRequest.get("/orders?status=completed"),
           ]);
 
-        const usersCount = usersRes.data.count || 0;
+        const usersCount = usersRes.data.pagination.totalUsers || 0;
         const productsArray = productsRes.data.products || [];
         const ordersArray = ordersRes.data.orders || [];
         const deliveredArray = deliveredRes.data.orders || [];
@@ -136,7 +143,7 @@ const Dashboard = () => {
         <DashboardCard title="Total Orders" value={summary.totalOrders} />
         <DashboardCard
           title="Total Sales"
-          value={`$${summary.totalSales.toFixed(2)}`}
+          value={formatPrice(summary.totalSales)}
         />
         <DashboardCard
           title="Delivered Orders"

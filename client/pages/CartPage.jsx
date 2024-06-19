@@ -154,7 +154,7 @@ const CartPage = () => {
   }
 
   return (
-    <div className="container min-h-screen bg-gray-100">
+    <div className="container min-h-screen">
       <ToastContainer />
       <div className="mx-auto p-4">
         {cart.products?.length > 0 ? (

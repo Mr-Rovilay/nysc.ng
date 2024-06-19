@@ -43,7 +43,7 @@ const SearchResults = () => {
             {results.map((product) => (
               <li key={product._id}>
                 <Link to={`/product/${product._id}`}>
-                  {product.title} - ${product.price}
+                  {product.title} - ₦{product.price}
                 </Link>
               </li>
             ))}

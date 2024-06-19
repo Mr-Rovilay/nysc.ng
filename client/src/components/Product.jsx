@@ -119,8 +119,16 @@ const Product = ({ item, cart = {}, onProductAdd = () => {} }) => {
         </div>
         <div className="flex flex-0 truncate">Category: {item.categories}</div>
         <div>Color: {item.color}</div>
-        <div>
-          Available Stock: <span className="font-bold">{item.stock}</span>
+        <div className="flex gap-2">
+          Available Stock:{" "}
+          <span className="text-gray-500 dark:text-gray-300">
+            {" "}
+            {item.stock > 0 ? (
+              <p className="text-green-500"> In stock</p>
+            ) : (
+              "Out of Stock"
+            )}
+          </span>
         </div>
         <Button
           className="flex items-center justify-center bg-green-500 rounded-md px-5 py-2.5 text-center text-sm font-medium cursor-pointer mt-3"

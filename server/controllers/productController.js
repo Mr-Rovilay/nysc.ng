@@ -1,4 +1,5 @@
 import Product from "../models/productModel.js";
+import mongoose from "mongoose";
 
 export const createProduct = async (req, res) => {
   const { title, description, image, categories, size, stock, color, price } =
@@ -36,16 +37,25 @@ export const deleteProduct = async (req, res) => {
 };
 
 export const getProduct = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).send("Product ID is required");
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send("Invalid Product ID format");
+  }
+
   try {
-    const id = req.params.id;
     const product = await Product.findById(id);
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).send("Product not found");
     }
-    res.status(200).json(product);
+    res.send(product);
   } catch (error) {
-    console.error("Error fetching menu item:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error fetching product:", error);
+    res.status(500).send("Server error");
   }
 };
 

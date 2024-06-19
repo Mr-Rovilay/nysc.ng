@@ -70,9 +70,6 @@ const Signin = () => {
             <Typography variant="h3" color="blue-gray" className="mb-2">
               Sign In
             </Typography>
-            <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
-              Enter your email and password to sign in
-            </Typography>
             <form
               action="#"
               className="mx-auto max-w-[24rem] text-left"
@@ -84,7 +81,7 @@ const Signin = () => {
                     variant="small"
                     className="mb-2 block font-medium text-gray-900"
                   >
-                    Your Email
+                    Email
                   </Typography>
                 </label>
                 <Input
@@ -157,7 +154,7 @@ const Signin = () => {
                   Forgot password ?
                 </Typography>
               </div>
-              <Button
+              {/* <Button
                 size="lg"
                 className="mt-6 flex h-12 items-center justify-center gap-2 bg-green-500"
                 fullWidth
@@ -168,7 +165,7 @@ const Signin = () => {
                   className="h-6 w-6"
                 />{" "}
                 Sign in with Google
-              </Button>
+              </Button> */}
               <Typography
                 variant="small"
                 color="gray"

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Button from "./Button"; // Import the Button component
 import { Link } from "react-router-dom";
+import bgimg from "../../assets/header-shape.svg";
 
 const Hero = () => {
   return (
@@ -38,6 +39,9 @@ const Hero = () => {
             <Button text="Shop Now" variant="primary" className={"bg-white"} />
           </Link>
         </motion.div>
+      </div>
+      <div className="absolute bottom-0 left-0 w-full">
+        <img src={bgimg} alt="" className="w-full block" />
       </div>
     </div>
   );

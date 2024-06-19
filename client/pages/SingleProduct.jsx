@@ -20,6 +20,13 @@ const SingleProduct = () => {
   const { cart, refetch } = useCart();
   const { isAuthenticated } = useContext(AuthContext);
 
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+    }).format(amount);
+  };
+
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -120,35 +127,42 @@ const SingleProduct = () => {
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2 capitalize">
                 {product.title}
               </h2>
-              <div className="flex mb-4">
-                <div className="mr-4">
-                  <span className="font-bold text-gray-700 dark:text-gray-300">
-                    Price:
-                  </span>
-                  <span className="text-gray-600 dark:text-gray-300 ml-2">
-                    ₦{product.price}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold text-gray-700 dark:text-gray-300">
-                    Availability:
-                  </span>
-                  <span className="text-gray-600 dark:text-gray-300 ml-2">
-                    {product.stock > 0 ? "In Stock" : "Out of Stock"}
-                  </span>
-                </div>
+
+              <div className="mr-4">
+                <span className="font-bold text-gray-700 dark:text-gray-300">
+                  Price:
+                </span>
+                <span className="text-gray-600 dark:text-gray-300 ml-2">
+                  {""} {formatPrice(product.price)}
+                </span>
               </div>
-              <div className="mb-4">
+              <div className="flex">
+                <span className="font-bold text-gray-700 dark:text-gray-300">
+                  Availability:
+                </span>{" "}
+                <span className="text-gray-500 dark:text-gray-300">
+                  {" "}
+                  {product.stock > 0 ? (
+                    <p className="text-green-500 ml-3"> In stock</p>
+                  ) : (
+                    "Out of Stock"
+                  )}
+                </span>
+              </div>
+
+              <div className="mb-4 flex gap-2">
                 <span className="font-bold text-gray-700 dark:text-gray-300">
                   Select Color:
                 </span>
-                <div className="">{product.color}</div>
+                <div className="">
+                  {""} {product.color}
+                </div>
               </div>
               <div className="mb-4">
                 <span className="font-bold text-gray-700 dark:text-gray-300">
                   Select Size:
                 </span>
-                {product.size}
+                {""} {product.size}
               </div>
               <div>
                 <span className="font-bold text-gray-700 dark:text-gray-300">

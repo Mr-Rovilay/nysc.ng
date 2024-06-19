@@ -77,9 +77,9 @@ const Signup = () => {
             <Typography variant="h3" color="blue-gray" className="mb-2">
               Sign Up
             </Typography>
-            <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
+            {/* <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
               Enter your fullname, email and password to sign up
-            </Typography>
+            </Typography> */}
             <form
               action="#"
               className="mx-auto max-w-[24rem] text-left"
@@ -115,7 +115,7 @@ const Signup = () => {
                     variant="small"
                     className="mb-2 block font-medium text-gray-900"
                   >
-                    Your Email
+                    Email
                   </Typography>
                 </label>
                 <Input
@@ -188,7 +188,7 @@ const Signup = () => {
                   Forgot password?
                 </Typography>
               </div>
-              <Button
+              {/* <Button
                 size="lg"
                 className="mt-6 flex h-12 items-center justify-center gap-2 bg-green-500"
                 fullWidth
@@ -199,7 +199,7 @@ const Signup = () => {
                   className="h-6 w-6"
                 />{" "}
                 Sign up with Google
-              </Button>
+              </Button> */}
               <Typography
                 variant="small"
                 color="gray"

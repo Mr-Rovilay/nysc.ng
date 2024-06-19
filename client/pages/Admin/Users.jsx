@@ -118,7 +118,7 @@ const Users = () => {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    isAdmin
+                    Role
                   </Typography>
                 </th>
                 <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -172,14 +172,13 @@ const Users = () => {
                       className="font-normal capitalize"
                     >
                       {user.isAdmin ? (
-                        "true"
+                        <h1>Admin</h1>
                       ) : (
                         <button
                           onClick={() => handleMakeAdmin(user)}
-                          className="btn btn-circle bg-twitter hover:bg-twitter "
                           disabled={loadingUser === user._id}
                         >
-                          <FaUsers />
+                          <h1>User</h1>
                         </button>
                       )}
                     </Typography>

@@ -5,6 +5,8 @@ import { Button, Card, Typography } from "@material-tailwind/react";
 import useOrders from "../middleware/useOrders";
 import Loading from "../src/components/Loading";
 import AnimationWrapper from "../src/common/AnimationWrapper";
+import { Link, useLocation } from "react-router-dom";
+import { publicRequest } from "../middleware/middleware";
 
 const formatPrice = (amount) => {
   return new Intl.NumberFormat("en-NG", {
@@ -16,9 +18,24 @@ const formatPrice = (amount) => {
 const OrdersPage = () => {
   const { orders, isLoading, isError, error, deleteOrder, cancelOrder } =
     useOrders();
+  const location = useLocation();
+  const id = location.pathname.split("/")[2];
   const [cancelingOrderId, setCancelingOrderId] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const response = await publicRequest.get(`/products/${id}`);
+        setResults(response.data.products);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
+    };
+    getProduct();
+  }, [id]);
 
   useEffect(() => {
     if (isError) {
@@ -28,11 +45,7 @@ const OrdersPage = () => {
   }, [isError, error]);
 
   const handleCancelOrder = async (orderId, status) => {
-    if (
-      status === "Processing" ||
-      status === "Shipped" ||
-      status === "Delivered"
-    ) {
+    if (["Shipped", "Delivered"].includes(status)) {
       toast.error(`Cannot cancel order with status: ${status}`);
       return;
     }
@@ -47,10 +60,6 @@ const OrdersPage = () => {
     } finally {
       setCancelingOrderId(null);
     }
-  };
-
-  const handleDeleteOrder = (orderId) => {
-    deleteOrder(orderId);
   };
 
   const openDialog = (order) => {
@@ -72,11 +81,11 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="min-h-screen container bg-gray-100">
+    <div className="min-h-screen container ">
       <AnimationWrapper />
       <ToastContainer />
       <div className="p-5 sm:p-2">
-        <h1 className="py-1.5 font-medium text-center mb-8">Your Orders</h1>
+        <h1 className="py-1.5 font-medium text-center mb-8">Orders</h1>
         <div className="flex flex-col">
           {!orders || orders.length === 0 ? (
             <div className="flex items-center justify-center h-full">
@@ -105,7 +114,6 @@ const OrdersPage = () => {
                   className="mb-8 p-4 bg-white rounded-lg shadow-md relative"
                 >
                   <Typography variant="h6" className="font-bold mb-4">
-                    {/* Button specifically for order ID */}
                     <button
                       onClick={() => openDialog(order)}
                       className="font-bold text-blue-500 hover:underline focus:outline-none"
@@ -113,20 +121,20 @@ const OrdersPage = () => {
                       Order ID: {_id}
                     </button>
                   </Typography>
-                  {/* Conditional rendering for order details dialog */}
                   {dialogOpen && selectedOrder && selectedOrder._id === _id && (
                     <div className="fixed inset-0 z-50 grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm">
                       <div className="max-w-[80%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl">
-                        <div className="flex items-center p-4 text-2xl font-semibold leading-snug text-blue-gray-900">
-                          <h1 className="capitalize">Order Details</h1>
-                          <Button
+                        <div className="flex justify-between p-4 text-xl leading-snug text-blue-gray-900">
+                          <h1 className="capitalize font-semibold ">
+                            Order Details
+                          </h1>
+                          <p
                             onClick={closeDialog}
-                            color="red"
                             size="sm"
-                            className="ml-auto"
+                            className="cursor-pointer"
                           >
-                            Close
-                          </Button>
+                            x
+                          </p>
                         </div>
                         <div className="relative p-4 text-base font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500 break-all">
                           <div className="mb-4">
@@ -169,7 +177,6 @@ const OrdersPage = () => {
                             >
                               Products:
                             </Typography>
-                            {/* Map through products in the order */}
                             {products.length === 0 ? (
                               <Typography variant="small">
                                 No products
@@ -184,8 +191,14 @@ const OrdersPage = () => {
                                     variant="small"
                                     className="font-normal"
                                   >
-                                    {product.productId.title} (x
-                                    {product.quantity})
+                                    <li key={product._id}>
+                                      <Link
+                                        to={`/product/${product.productId._id}`}
+                                      >
+                                        {product.productId.title}
+                                      </Link>
+                                      {""} - (x{product.quantity})
+                                    </li>
                                   </Typography>
                                   <Typography
                                     variant="small"
@@ -196,6 +209,17 @@ const OrdersPage = () => {
                                 </div>
                               ))
                             )}
+                          </div>
+                          <div className="flex gap-2 mt-3">
+                            <Typography
+                              variant="small"
+                              className="font-semibold"
+                            >
+                              Total Amount:
+                            </Typography>
+                            <Typography variant="small">
+                              {formatPrice(amount)}
+                            </Typography>
                           </div>
                         </div>
                       </div>
@@ -227,31 +251,29 @@ const OrdersPage = () => {
                     </Typography>
                   </div>
                   <div className="flex gap-3 mt-4">
-                    <Button
-                      className={`py-1.5 font-medium ${
-                        cancelingOrderId === _id ||
-                        status === "Cancelled" ||
-                        status === "Delivered"
-                          ? "cursor-not-allowed"
-                          : "bg-green-500"
-                      }`}
-                      onClick={() => handleCancelOrder(_id, status)}
-                      disabled={
-                        cancelingOrderId === _id ||
-                        status === "Cancelled" ||
-                        status === "Delivered"
-                      }
-                    >
-                      {cancelingOrderId === _id ? (
-                        <div className="flex items-center gap-2">
-                          <Loading small /> Canceling...
-                        </div>
-                      ) : status === "Cancelled" ? (
-                        "Cancelled"
-                      ) : (
-                        "Cancel Order"
-                      )}
-                    </Button>
+                    {status !== "Delivered" && status !== "Cancelled" && (
+                      <Button
+                        className={`py-1.5 font-medium ${
+                          cancelingOrderId === _id || status === "Cancelled"
+                            ? "cursor-not-allowed"
+                            : "bg-green-500"
+                        }`}
+                        onClick={() => handleCancelOrder(_id, status)}
+                        disabled={
+                          cancelingOrderId === _id || status === "Cancelled"
+                        }
+                      >
+                        {cancelingOrderId === _id ? (
+                          <div className="flex items-center gap-2">
+                            <Loading small /> Canceling...
+                          </div>
+                        ) : status === "Cancelled" ? (
+                          "Cancelled"
+                        ) : (
+                          "Cancel Order"
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );

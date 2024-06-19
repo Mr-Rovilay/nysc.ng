@@ -11,7 +11,7 @@ const About = () => {
         transition={{ duration: 0.6 }}
         className="bg-white shadow-lg rounded-lg max-w-4xl p-8"
       >
-        <div className="text-center">
+        <div className="texxt-left">
           <img
             src="https://via.placeholder.com/150"
             alt="Profile"
