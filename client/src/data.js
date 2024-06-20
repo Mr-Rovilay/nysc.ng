@@ -7,7 +7,7 @@ export const categories = [
   },
   {
     id: 2,
-    img: "https://nigezie.tv/storage/2023/03/Shortest-corper-at-NYSC-camp-set-to-wed-tallest-corper.png",
+    img: "https://www.correctng.com/wp-content/uploads/2023/03/tallest-shortest-corp-member5.jpg",
     title: "MALE & FEMALE",
     categories: "Male+%26+Female",
   },
