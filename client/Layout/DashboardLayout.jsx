@@ -39,7 +39,7 @@ const DashboardLayout = () => {
         </Link>
       </div>
       <Outlet />
-      <Drawer open={open} onClose={closeDrawer} className="bg-gray-100">
+      <Drawer open={open} onClose={closeDrawer}>
         <div className="bg-gray-100">
           <div className="mb-2 flex items-center justify-between p-4">
             <Typography color="blue-gray" className="py-1.5 font-medium">
